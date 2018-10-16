@@ -28,6 +28,8 @@ from time import sleep
 from subprocess import call
 from packets import Packet
 
+from compat import *
+
 parser = optparse.OptionParser(usage='python %prog -I eth0 -i 10.20.30.40 -g 10.20.30.254 -t 10.20.30.48 -r 10.20.40.1',
                                prog=sys.argv[0],
                                )

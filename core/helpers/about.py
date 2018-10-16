@@ -86,17 +86,16 @@ class frmAbout(PickleModule):
 
     def Qui_update(self):
         self.logoapp = QtGui.QLabel('')
-        self.logoapp.setPixmap(QtGui.QPixmap('icons/icon.png').scaled(64,64))
+        self.logoapp.setPixmap(QtGui.QPixmap('icons/pickle1.png').scaled(64,64))
         self.form = QtGui.QFormLayout()
         self.form2 = QtGui.QHBoxLayout()
-        self.form.addRow(self.logoapp,QtGui.QLabel(
-            QtCore.QString('<h2>WiFi-Pickle {}</h2>'.format(self.version))))
+        self.form.addRow(self.logoapp,QtGui.QLabel('<h2>WiFi-Pickle {}</h2>'.format(self.version)))
         self.tabwid = QtGui.QTabWidget(self)
         self.TabAbout = QtGui.QWidget(self)
         self.TabVersion = QtGui.QWidget(self)
-        self.TabTranks  = QtGui.QWidget(self)
+        #self.TabTranks  = QtGui.QWidget(self)
         self.TabChangelog = QtGui.QWidget(self)
-        self.TabDonate   = QtGui.QWidget(self)
+        #self.TabDonate   = QtGui.QWidget(self)
         self.btn_exit = QtGui.QPushButton("Close")
         self.btn_exit.setFixedWidth(90)
         self.btn_exit.setIcon(QtGui.QIcon('icons/cancel.png'))
@@ -104,9 +103,9 @@ class frmAbout(PickleModule):
 
         self.formAbout = QtGui.QFormLayout()
         self.formVersion = QtGui.QFormLayout()
-        self.formTranks = QtGui.QFormLayout()
+        #self.formTranks = QtGui.QFormLayout()
         self.formChange = QtGui.QFormLayout()
-        self.formDonate = QtGui.QFormLayout()
+        #self.formDonate = QtGui.QFormLayout()
 
         # About section
         self.formAbout.addRow(self.desc)
@@ -115,26 +114,25 @@ class frmAbout(PickleModule):
         self.formAbout.addRow(QtGui.QLabel('Feedback:'))
         self.formAbout.addRow(QtGui.QLabel(self.emails[0]))
         self.formAbout.addRow(QtGui.QLabel(self.emails[1]+'<br>'))
-        self.formAbout.addRow(QtGui.QLabel('Copyright 2015-2017, '+self.author[:-14]))
+        self.formAbout.addRow(QtGui.QLabel('Copyright 2018, '+self.author)) #[:-14]))
         self.gnu = QtGui.QLabel('<a href="link">License: GNU General Public License Version</a><br>')
         self.gnu.linkActivated.connect(self.link)
         self.formAbout.addRow(self.gnu)
-        self.formAbout.addRow(QtGui.QLabel('<center>{}</center>'.format(self.author[-14:])))
         self.TabAbout.setLayout(self.formAbout)
 
         #Donate section
-        self.formDonate.addRow(QtGui.QLabel('Open source project require developer time.<br>'
-        ' You need dev time to fix bugs, you need dev time<br> to add features,'
-        " thank you for your contribution! "))
-        self.imagePay =  QtGui.QLabel()
-        self.imagePay.setPixmap(QtGui.QPixmap('icons/donatepay.gif'))
-        self.formDonate.addRow(QtGui.QLabel(''))
-        self.formDonate.addRow(QtGui.QLabel('Support Donations:'))
-        self.formDonate.addRow(self.imagePay)
-        self.formDonate.addRow(QtGui.QLabel('Paypal:'),QtGui.QLabel('<a href="http://purple.com">'))
-        self.formDonate.addRow(QtGui.QLabel('BTC:'),QtGui.QLabel('<a href="http://purple.com"</a>'))
-        self.formDonate.addRow(QtGui.QLabel('Patreon:'),QtGui.QLabel('<a href="http://purple.com"</a>'))
-        self.TabDonate.setLayout(self.formDonate)
+        #self.formDonate.addRow(QtGui.QLabel('Open source project require developer time.<br>'
+        #' You need dev time to fix bugs, you need dev time<br> to add features,'
+        #" thank you for your contribution! "))
+        #self.imagePay =  QtGui.QLabel()
+        #self.imagePay.setPixmap(QtGui.QPixmap('icons/donatepay.gif'))
+        #self.formDonate.addRow(QtGui.QLabel(''))
+        #self.formDonate.addRow(QtGui.QLabel('Support Donations:'))
+        #self.formDonate.addRow(self.imagePay)
+        #self.formDonate.addRow(QtGui.QLabel('Paypal:'),QtGui.QLabel('<a href="http://purple.com">'))
+        #self.formDonate.addRow(QtGui.QLabel('BTC:'),QtGui.QLabel('<a href="http://purple.com"</a>'))
+        #self.formDonate.addRow(QtGui.QLabel('Patreon:'),QtGui.QLabel('<a href="http://purple.com"</a>'))
+        #self.TabDonate.setLayout(self.formDonate)
 
         # Version Section
         self.formVersion.addRow(QtGui.QLabel('<strong>Version: {}</strong><br>'.format(self.version)))
@@ -149,9 +147,9 @@ class frmAbout(PickleModule):
         self.TabVersion.setLayout(self.formVersion)
 
         # Tranks Section
-        self.TabpageTranks = QtGui.QVBoxLayout(self.TabTranks)
-        self.formTE = SettingsTranks()
-        self.TabpageTranks.addLayout(self.formTE)
+        #self.TabpageTranks = QtGui.QVBoxLayout(self.TabTranks)
+        #self.formTE = SettingsTranks()
+        #self.TabpageTranks.addLayout(self.formTE)
 
         # Changelog Section
         self.formChange.addRow(ChangeLog())
@@ -161,8 +159,8 @@ class frmAbout(PickleModule):
         self.tabwid.addTab(self.TabAbout,'About')
         self.tabwid.addTab(self.TabVersion,'Version')
         self.tabwid.addTab(self.TabChangelog,'ChangeLog')
-        self.tabwid.addTab(self.TabTranks,'TranksTo')
-        self.tabwid.addTab(self.TabDonate, 'Donate')
+        #self.tabwid.addTab(self.TabTranks,'TranksTo')
+        #self.tabwid.addTab(self.TabDonate, 'Donate')
         self.form.addRow(self.tabwid)
         self.form2.addSpacing(240)
         self.form2.addWidget(self.btn_exit)

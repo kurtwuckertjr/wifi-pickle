@@ -61,7 +61,7 @@ if __name__ == '__main__':
         if networkcontrol.run():
             if  networkcontrol.isWiFiConnected() and len(networkcontrol.ifaceAvaliable) > 0:
                 settings = UI_NetworkManager(main)
-                settings.setWindowIcon(QtGui.QIcon('icons/icon.png'))
+                settings.setWindowIcon(QtGui.QIcon('icons/pickle2.svg'))
                 settings.show()
                 exit(app.exec_())
     main.show()

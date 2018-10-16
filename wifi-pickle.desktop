@@ -1,8 +1,8 @@
 [Desktop Entry]
 Name=WiFi-Pickle
-Comment=A tool for creating a WiFi-Hotspot and executing MitM-Attacks
+Comment=A salty tool for creating a WiFi-Hotspot and executing MitM-Attacks
 Exec=gksudo wifi-pickle
-Icon=/usr/share/WiFi-Pickle/icons/icon.png
+Icon=/usr/share/WiFi-Pickle/icons/pickle1.png
 Terminal=false
 Type=Application
 StartupNotify=false

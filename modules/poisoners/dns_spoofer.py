@@ -8,6 +8,9 @@ from scapy.all import get_if_hwaddr
 from core.loaders.models.PackagesUI import *
 from modules.spreads.update_fake_attack import frm_update_attack
 from core.packets.network import ThARP_posion,ThreadDNSspoofNF
+
+from compat import *
+
 threadloading = {'template':[],'dnsspoof':[],'arps':[]}
 
 """
@@ -84,7 +87,7 @@ class frm_DnsSpoof(PickleModule):
         self.tables.verticalHeader().setVisible(False)
         self.tables.setSortingEnabled(True)
         Headers = []
-        for key in reversed(self.data.keys()):
+        for key in reversed(list(dict(self.data).keys())):
             Headers.append(key)
         self.tables.setHorizontalHeaderLabels(Headers)
         self.tables.verticalHeader().setDefaultSectionSize(23)
@@ -276,14 +279,14 @@ class frm_DnsSpoof(PickleModule):
         self.data['IPaddress'].append(data[0])
         self.data['MacAddress'].append(data[1])
         self.data['Hostname'].append(data[2])
-        for n, key in enumerate(reversed(self.data.keys())):
+        for n, key in enumerate(reversed(list(dict(self.data).keys()))):
             Headers.append(key)
             for m, item in enumerate(self.data[key]):
                 item = QtGui.QTableWidgetItem(item)
                 item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
                 self.tables.setItem(m, n, item)
         Headers = []
-        for key in reversed(self.data.keys()):
+        for key in reversed(list(dict(self.data).keys())):
             Headers.append(key)
         self.tables.setHorizontalHeaderLabels(Headers)
 
@@ -385,7 +388,7 @@ class frm_DnsSpoof(PickleModule):
             self.thread_ScanIP.sendDictResultscan.connect(self.get_result_scanner_ip)
             self.StatusMonitor(True,'stas_scan')
             self.thread_ScanIP.start()
-            for key in reversed(self.data.keys()):
+            for key in reversed(list(dict(self.data).keys())):
                 Headers.append(key)
             return self.tables.setHorizontalHeaderLabels(Headers)
         return QtGui.QMessageBox.information(self,'Error in gateway','gateway not found.')
@@ -401,14 +404,14 @@ class frm_DnsSpoof(PickleModule):
             self.data['IPaddress'].append(dataIP[0])
             self.data['MacAddress'].append(dataIP[1])
             self.data['Hostname'].append('<unknown>')
-            for n, key in enumerate(reversed(self.data.keys())):
+            for n, key in enumerate(reversed(list(dict(self.data).keys()))):
                 Headers.append(key)
                 for m, item in enumerate(self.data[key]):
                     item = QtGui.QTableWidgetItem(item)
                     item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
                     self.tables.setItem(m, n, item)
         Headers = []
-        for key in reversed(self.data.keys()):
+        for key in reversed(list(dict(self.data).keys())):
             Headers.append(key)
         self.tables.setHorizontalHeaderLabels(Headers)
         self.StatusMonitor(False,'stas_scan')
@@ -421,7 +424,7 @@ class frm_DnsSpoof(PickleModule):
         self.thread_ScanIP.stop()
         self.StatusMonitor(False,'stas_scan')
         Headers = []
-        for key in reversed(self.data.keys()):
+        for key in reversed(list(dict(self.data).keys())):
             Headers.append(key)
         self.tables.setHorizontalHeaderLabels(Headers)
         self.tables.setVisible(True)

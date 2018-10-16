@@ -1,6 +1,8 @@
 from PyQt4 import QtGui, QtCore
 from core.utils import Refactor
 
+from compat import *
+
 """
 Description:
     This program is a core for wifi-pickle.py. file which includes functionality

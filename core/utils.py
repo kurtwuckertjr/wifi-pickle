@@ -19,6 +19,8 @@ import core.utility.constants as C
 from shlex import split
 from glob import glob
 
+from compat import *
+
 """
 Description:
     This program is a core for modules wifi-pickle.py. file which includes all Implementation

@@ -13,6 +13,8 @@ from netaddr import EUI
 from collections import OrderedDict
 from shlex import split
 
+from compat import *
+
 from os import (
     system,path,getcwd,
     popen,listdir,mkdir,chown
@@ -86,11 +88,11 @@ Copyright:
 
 
 author      = 'Shane Scott, GoVanguard'
-emails      = ['sscott@gvit.com']
+emails      = ['sscott@gvit.com', 'info@gvit.com']
 license     = ' GNU GPL 3'
 version     = '0.1.0'
 update      = '10/15/2018' # This is the USA :D
-desc        = ['Framework for Rogue Wi-Fi Access Point Attacks']
+desc        = ['A salty tool for Rogue Wi-Fi Access Point Attacks']
 
 class Initialize(QtGui.QMainWindow):
     ''' Main window settings multi-window opened'''
@@ -212,7 +214,7 @@ class WifiPickle(QtGui.QWidget):
         self.item_home = QtGui.QListWidgetItem()
         self.item_home.setText('Home')
         self.item_home.setSizeHint(QtCore.QSize(30,30))
-        self.item_home.setIcon(QtGui.QIcon('icons/home.png'))
+        self.item_home.setIcon(QtGui.QIcon('icons/pickle2.png'))
         self.TabListWidget_Menu.addItem(self.item_home)
 
         self.item_settings = QtGui.QListWidgetItem()
@@ -236,7 +238,7 @@ class WifiPickle(QtGui.QWidget):
         self.item_pickleProxy = QtGui.QListWidgetItem()
         self.item_pickleProxy.setText('Pickle-Proxy')
         self.item_pickleProxy.setSizeHint(QtCore.QSize(30,30))
-        self.item_pickleProxy.setIcon(QtGui.QIcon('icons/pickleproxy.png'))
+        self.item_pickleProxy.setIcon(QtGui.QIcon('icons/pickle2.png'))
         self.TabListWidget_Menu.addItem(self.item_pickleProxy)
 
         self.item_packetsniffer = QtGui.QListWidgetItem()
@@ -664,13 +666,14 @@ class WifiPickle(QtGui.QWidget):
         self.slipt.addWidget(self.GroupAP)
         self.slipt.addWidget(self.GroupApPassphrase)
 
-        self.donatelink = C.DONATE
-        self.donateLabel = ServiceNotify(C.DONATE_TXT,title='Support development',
-        link=self.donatelink,timeout=15000)
+        #self.donatelink = C.DONATE
+        #self.donateLabel = ServiceNotify(C.DONATE_TXT,title='Support development',
+        #link=self.donatelink,timeout=15000)
+
         # set main page Tool
         self.widget = QtGui.QWidget()
         self.layout = QtGui.QVBoxLayout(self.widget)
-        self.layout.addWidget(self.donateLabel)
+        #self.layout.addWidget(self.donateLabel)
         self.layout.addWidget(self.TabInfoAP)
         self.Main_.addWidget(self.widget)
         self.ContentTabHome.addLayout(self.Main_)

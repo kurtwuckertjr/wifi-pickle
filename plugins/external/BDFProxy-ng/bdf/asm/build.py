@@ -15,6 +15,8 @@
 import os, sys, time
 from subprocess import Popen
 from struct import pack
+
+from compat import *
 #=============================================================================#
 def clean( dir="./bin/" ):
 	for root, dirs, files in os.walk( dir ):

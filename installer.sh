@@ -54,6 +54,7 @@ func_install(){
 	apt-get install -y build-essential libnetfilter-queue-dev
 	apt-get install -y python-qt4 python3-scapy hostapd rfkill
 	apt-get install -y python3-dev git
+    apt-get install -y python3-pyasn1 python3-pyasn1-modules
 	apt-get install -y libpcap-dev
     apt-get install -y hostapd
 	dist=$(tr -s ' \011' '\012' < /etc/issue | head -n 1)
@@ -63,6 +64,7 @@ func_install(){
 	pip3 install -r requirements.txt
     pip3 install netaddr
 	pip3 install mitmproxy==0.18.2
+    pip3 install service_identity --upgrade
 	echo "----------------------------------------"
 	echo "[=]$bldblu checking dependencies $txtrst "
 	func_check_install "hostapd"

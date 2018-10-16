@@ -7,6 +7,7 @@ from PyQt4.QtCore import QThread,pyqtSignal
 import dns.message
 from dns import resolver
 
+from compat import *
 
 class OutOfLeasesError(Exception):
     pass
