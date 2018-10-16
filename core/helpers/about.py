@@ -23,45 +23,6 @@ class ChangeLog(QtGui.QTextEdit):
         self.setText(open('CHANGELOG','r').read())
         self.setReadOnly(True)
 
-
-class SettingsTranks(QtGui.QVBoxLayout):
-    def __init__(self,parent = None):
-        super(SettingsTranks, self).__init__(parent)
-        self.mainLayout    = QtGui.QFormLayout()
-        self.scrollwidget = QtGui.QWidget()
-        self.scrollwidget.setLayout(self.mainLayout)
-        self.scroll = QtGui.QScrollArea()
-        self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(self.scrollwidget)
-
-        self.formMode = QtGui.QFormLayout()
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/mitmproxy/mitmproxy"><strong>@mitmproxy</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('ProxyServer tranparent HTTP proxy <br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/TimSchumi"><strong>@TimSchumi</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('Debian package build and password improvements <br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/psychomario"><strong>@psychomario</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/psychomario/PyPXE">PyPXE</a> class implements a DHCP Server<br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/xtr4nge"><strong>@xtr4nge</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('PLugin <a href="https://github.com/xtr4nge/sslstrip">Sslstrip</a> fork inject code<br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/LeonardoNve"><strong>@LeonardoNve</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('Plugin <a href="https://github.com/LeonardoNve/sslstrip2">SSLstrip2</a> version fork'))
-        self.formMode.addRow(QtGui.QLabel('Plugin <a href="https://github.com/LeonardoNve/dns2proxy">Dns2proxy</a> Offensive DNS server <br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/davinerd"><strong>@davinerd</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('Plugin <a href="https://github.com/davinerd/BDFProxy-ng"> BDFProxy-ng</a> version fork <br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/lgandx"><strong> Laurent Gaffie @lgandx</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('Plugin <a href="https://github.com/lgandx/Responder"> Responder</a><br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/supernothing"><strong>Ben Schmidt @supernothing</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('Plugin <a href="https://github.com/supernothing/sergio-proxy">SergioProxy</a> - bypass HSTS<br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="http://www.yasinuludag.com/darkorange.stylesheet"><strong>Yasin Uludag</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('theme1.qss - Qt dark orange stylesheet<br>'))
-        self.formMode.addRow(QtGui.QLabel('<a href="https://github.com/ColinDuquesnoy/QDarkStyleSheet"><strong>Colin Duquesnoy @ColinDuquesnoy</strong></a>'))
-        self.formMode.addRow(QtGui.QLabel('theme2.qss - Qt dark blue stylesheet<br>'))
-        self.mainLayout.addRow(self.formMode)
-
-        self.layout = QtGui.QHBoxLayout()
-        self.layout.addWidget(self.scroll)
-        self.addLayout(self.layout)
-
 class frmAbout(PickleModule):
     def __init__(self,author,emails,version,
         update,license,desc, parent = None):
@@ -93,9 +54,7 @@ class frmAbout(PickleModule):
         self.tabwid = QtGui.QTabWidget(self)
         self.TabAbout = QtGui.QWidget(self)
         self.TabVersion = QtGui.QWidget(self)
-        #self.TabTranks  = QtGui.QWidget(self)
         self.TabChangelog = QtGui.QWidget(self)
-        #self.TabDonate   = QtGui.QWidget(self)
         self.btn_exit = QtGui.QPushButton("Close")
         self.btn_exit.setFixedWidth(90)
         self.btn_exit.setIcon(QtGui.QIcon('icons/cancel.png'))
@@ -103,9 +62,7 @@ class frmAbout(PickleModule):
 
         self.formAbout = QtGui.QFormLayout()
         self.formVersion = QtGui.QFormLayout()
-        #self.formTranks = QtGui.QFormLayout()
         self.formChange = QtGui.QFormLayout()
-        #self.formDonate = QtGui.QFormLayout()
 
         # About section
         self.formAbout.addRow(self.desc)
@@ -120,20 +77,6 @@ class frmAbout(PickleModule):
         self.formAbout.addRow(self.gnu)
         self.TabAbout.setLayout(self.formAbout)
 
-        #Donate section
-        #self.formDonate.addRow(QtGui.QLabel('Open source project require developer time.<br>'
-        #' You need dev time to fix bugs, you need dev time<br> to add features,'
-        #" thank you for your contribution! "))
-        #self.imagePay =  QtGui.QLabel()
-        #self.imagePay.setPixmap(QtGui.QPixmap('icons/donatepay.gif'))
-        #self.formDonate.addRow(QtGui.QLabel(''))
-        #self.formDonate.addRow(QtGui.QLabel('Support Donations:'))
-        #self.formDonate.addRow(self.imagePay)
-        #self.formDonate.addRow(QtGui.QLabel('Paypal:'),QtGui.QLabel('<a href="http://purple.com">'))
-        #self.formDonate.addRow(QtGui.QLabel('BTC:'),QtGui.QLabel('<a href="http://purple.com"</a>'))
-        #self.formDonate.addRow(QtGui.QLabel('Patreon:'),QtGui.QLabel('<a href="http://purple.com"</a>'))
-        #self.TabDonate.setLayout(self.formDonate)
-
         # Version Section
         self.formVersion.addRow(QtGui.QLabel('<strong>Version: {}</strong><br>'.format(self.version)))
         self.formVersion.addRow(QtGui.QLabel('Using:'))
@@ -146,11 +89,6 @@ class frmAbout(PickleModule):
         </ul>'''.format(QtCore.QT_VERSION_STR,python_version)))
         self.TabVersion.setLayout(self.formVersion)
 
-        # Tranks Section
-        #self.TabpageTranks = QtGui.QVBoxLayout(self.TabTranks)
-        #self.formTE = SettingsTranks()
-        #self.TabpageTranks.addLayout(self.formTE)
-
         # Changelog Section
         self.formChange.addRow(ChangeLog())
         self.TabChangelog.setLayout(self.formChange)
@@ -159,8 +97,6 @@ class frmAbout(PickleModule):
         self.tabwid.addTab(self.TabAbout,'About')
         self.tabwid.addTab(self.TabVersion,'Version')
         self.tabwid.addTab(self.TabChangelog,'ChangeLog')
-        #self.tabwid.addTab(self.TabTranks,'TranksTo')
-        #self.tabwid.addTab(self.TabDonate, 'Donate')
         self.form.addRow(self.tabwid)
         self.form2.addSpacing(240)
         self.form2.addWidget(self.btn_exit)

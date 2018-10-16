@@ -118,7 +118,7 @@ class Initialize(QtGui.QMainWindow):
         dock.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
         # set window title
-        self.setWindowTitle(emoji.emojize('WiFi-Pickel :cucumber: 0.1.0'))
+        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.1.0'))
         self.setGeometry(0, 0, C.GEOMETRYH, C.GEOMETRYW) # set geometry window
         self.loadtheme(self.FSettings.get_theme_qss())
 
@@ -438,16 +438,12 @@ class WifiPickle(QtGui.QWidget):
         Menu_update = QtGui.QAction('Check for Updates',self)
         Menu_about = QtGui.QAction('About WiFi-Pickle',self)
         Menu_issue = QtGui.QAction('Submit issue',self)
-        Menu_donate = QtGui.QAction('Donate',self)
         Menu_about.setIcon(QtGui.QIcon('icons/about.png'))
         Menu_issue.setIcon(QtGui.QIcon('icons/report.png'))
         Menu_update.setIcon(QtGui.QIcon('icons/update.png'))
-        Menu_donate.setIcon(QtGui.QIcon('icons/donate.png'))
         Menu_about.triggered.connect(self.about)
         Menu_issue.triggered.connect(self.issue)
-        Menu_donate.triggered.connect(self.donate)
         Menu_update.triggered.connect(self.show_update)
-        Menu_extra.addAction(Menu_donate)
         Menu_extra.addAction(Menu_issue)
         Menu_extra.addAction(Menu_update)
         Menu_extra.addAction(Menu_about)
@@ -666,14 +662,9 @@ class WifiPickle(QtGui.QWidget):
         self.slipt.addWidget(self.GroupAP)
         self.slipt.addWidget(self.GroupApPassphrase)
 
-        #self.donatelink = C.DONATE
-        #self.donateLabel = ServiceNotify(C.DONATE_TXT,title='Support development',
-        #link=self.donatelink,timeout=15000)
-
         # set main page Tool
         self.widget = QtGui.QWidget()
         self.layout = QtGui.QVBoxLayout(self.widget)
-        #self.layout.addWidget(self.donateLabel)
         self.layout.addWidget(self.TabInfoAP)
         self.Main_.addWidget(self.widget)
         self.ContentTabHome.addLayout(self.Main_)
@@ -1577,8 +1568,3 @@ class WifiPickle(QtGui.QWidget):
         url = QtCore.QUrl('https://github.com/P0cL4bs/WiFi-Pickle/issues/new')
         if not QtGui.QDesktopServices.openUrl(url):
             QtGui.QMessageBox.warning(self, 'Open Url', 'Could not open url: {}'.format(url))
-    def donate(self):
-        ''' open page donation the project '''
-        self.Fabout = frmAbout(author,emails,version,update,license,desc)
-        self.Fabout.tabwid.setCurrentIndex(4)
-        self.Fabout.show()
