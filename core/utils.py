@@ -239,8 +239,12 @@ class Refactor:
     def getHwAddr(ifname):
         ''' another functions for get mac adreess '''
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        info = ioctl(s.fileno(), 0x8927,  pack('256s', ifname[:15]))
-        return ':'.join(['%02x' % ord(char) for char in info[18:24]])
+        string = ifname[:15] 
+        strct = struct.Struct('256s')
+        packed_data = strct.pack(string.encode('utf-8'))
+        info = ioctl(s.fileno(), 0x8927,  packed_data)
+        print(str(info))
+        return ':'.join(['%02x' % ord(char) for char in info[18:24].decode()])
 
     @staticmethod
     def kill_procInterfaceBusy():
@@ -356,7 +360,7 @@ class Refactor:
     @staticmethod
     def generateSessionID():
         ''' generate session encoded base64 '''
-        return str(b64encode(str(random.randint(0,100000))))
+        return str(b64encode(str(random.randint(0,100000)).encode()))
 
 class waiterSleepThread(QtCore.QThread):
     ''' Simples Thread for wait 10 segunds for check update app'''

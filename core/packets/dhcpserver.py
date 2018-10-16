@@ -1,4 +1,3 @@
-import IN
 import time
 import socket
 import struct

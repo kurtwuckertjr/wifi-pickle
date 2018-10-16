@@ -149,7 +149,7 @@ class Initialize(QtGui.QMainWindow):
         # check if any wireless card is enable as Monitor mode
         iwconfig = Popen(['iwconfig'], stdout=PIPE,shell=False,stderr=PIPE)
         for i in iwconfig.stdout.readlines():
-            if search('Mode:Monitor',i):
+            if search('Mode:Monitor',i.decode()):
                 self.reply = QtGui.QMessageBox.question(self,
                 'About Exit','Are you sure to quit?', QtGui.QMessageBox.Yes |
                 QtGui.QMessageBox.No, QtGui.QMessageBox.No)
