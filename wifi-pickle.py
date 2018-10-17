@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 from logging import getLogger,ERROR
 getLogger('scapy.runtime').setLevel(ERROR)
 
@@ -27,9 +27,6 @@ Copyright:
 
 from sys import argv,exit,version_info
 import core.utility.constants as C
-#if version_info.major != 2:
-#    exit('[!] WiFi-Pickle need Python 2 :(')
-
 
 if __name__ == '__main__':
     from core.loaders.checker.depedences import check_dep_pickle
