@@ -8,7 +8,7 @@ class PluginTemplate(QObject):
 	name		= 'plugin master'
 	version		= '1.0'
 	config		= SettingsINI(C.PUMPPROXY_INI)
-	loggers 	= {}
+	loggers		= {}
 	send_output = pyqtSignal(object)
 
 	def init_logger(self,session):

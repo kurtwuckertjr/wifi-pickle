@@ -1,5 +1,6 @@
 from os import path
-from mitmproxy.models import decoded
+#from mitmproxy.models import decoded
+from netlib.http import decoded
 from plugins.extension.plugin import PluginTemplate
 
 # Copyright (C) 2015-2016 xtr4nge [_AT_] gmail.com, Marcello Salvati (@byt3bl33d3r)

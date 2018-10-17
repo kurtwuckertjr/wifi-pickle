@@ -1,5 +1,6 @@
 from plugins.extension.plugin import PluginTemplate
-from mitmproxy.models import decoded
+#from mitmproxy.models import decoded
+from netlib.http import decoded
 from PyQt4.QtCore import QObject,pyqtSignal
 import re
 

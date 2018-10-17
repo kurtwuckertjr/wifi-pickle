@@ -1,6 +1,7 @@
-import cStringIO
+from io import StringIO
 from os import path
-from mitmproxy.models import decoded
+#from mitmproxy.models import decoded
+from netlib.http import decoded
 from plugins.extension.plugin import PluginTemplate
 
 """
@@ -45,7 +46,7 @@ class replaceImages(PluginTemplate):
             if path.isfile(self.imagePath):
                 with decoded(flow.response):
                     try:
-                        img = cStringIO.StringIO(open(self.imagePath, 'rb').read())
+                        img = StringIO(open(self.imagePath, 'rb').read())
                         flow.response.content = img.getvalue()
                         self.send_output.emit('[{}] URL:{} image replaced...'.format(self.Name,flow.request.url))
                     except:

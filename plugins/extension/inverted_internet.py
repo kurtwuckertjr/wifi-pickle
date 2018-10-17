@@ -1,4 +1,5 @@
-from mitmproxy.models import decoded
+#from mitmproxy.models import decoded
+from netlib.http import decoded
 from plugins.extension.plugin import PluginTemplate
 
 class inverted_internet(PluginTemplate):

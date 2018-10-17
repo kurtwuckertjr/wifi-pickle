@@ -193,8 +193,8 @@ class DHCPServer(QThread):
         self.iface        = iface
         # If SO_BINDTODEVICE is present, it is possible for dhcpd to operate on Linux with more than one network interface.
         # man 7 socket
-        if not hasattr(IN, "SO_BINDTODEVICE"):
-            IN.SO_BINDTODEVICE = 25
+        if not hasattr(socket, "SO_BINDTODEVICE"):
+            socket.SO_BINDTODEVICE = 25
         self.LoopDhcpStatus = True
         self.ip = self.dhcp_options['router']
         self.port = 67
@@ -225,7 +225,7 @@ class DHCPServer(QThread):
         self.magic = struct.pack('!I', 0x63825363) # magic cookie.
 
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.setsockopt(socket.SOL_SOCKET, IN.SO_BINDTODEVICE, self.iface + '\0')
+        self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BINDTODEVICE, str(self.iface + '\0').encode('utf-8'))
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         self.sock.bind(('', self.port))

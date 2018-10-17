@@ -154,6 +154,7 @@ class ThSpoofAttack(QThread):
             sniff(iface = self.interface,count = 10, filter = self.filter, prn = lambda x : q.put(x))
 
     def sniff(self):
+        import queue as Queue
         self.setIptables(option='A')
         q = Queue.Queue()
         sniffer = Thread(target =self.StartSpoof, args = (q,))

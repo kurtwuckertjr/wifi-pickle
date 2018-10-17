@@ -1,10 +1,7 @@
 from threading import Thread
 from core.utility.collection import  SettingsINI
-try:
-    from mitmproxy import controller,flow
-    from plugins.extension import *
-except ImportError:
-    pass
+from mitmproxy import controller, flow
+from plugins.extension import *
 import core.utility.constants as C
 
 
@@ -45,8 +42,8 @@ class ThreadController(Thread):
 
 
 class MasterHandler(flow.FlowMaster):
-    def __init__(self,opts, server,state,session):
-        flow.FlowMaster.__init__(self,opts, server,state)
+    def __init__(self,opts,server,state,session):
+        flow.FlowMaster.__init__(self,opts,server,state)
         self.config  = SettingsINI(C.PUMPPROXY_INI)
         self.session = session
         self.plugins = []

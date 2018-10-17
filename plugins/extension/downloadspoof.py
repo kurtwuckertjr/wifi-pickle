@@ -1,5 +1,6 @@
 from os import path
-from mitmproxy.models import decoded
+#from mitmproxy.models import decoded
+from netlib.http import decoded
 from plugins.extension.plugin import PluginTemplate
 
 """

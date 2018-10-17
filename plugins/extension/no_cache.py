@@ -1,4 +1,3 @@
-from mitmproxy.models import decoded
 from plugins.extension.plugin import PluginTemplate
 
 """

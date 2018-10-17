@@ -19,12 +19,9 @@ from multiprocessing import Process,Manager
 import core.utility.constants as C
 
 from compat import *
-try:
-    from core.servers.proxy.http.controller.handler import MasterHandler
-    from mitmproxy import proxy,flow,options
-    from mitmproxy.proxy.server import ProxyServer
-except Exception:
-    pass
+from core.servers.proxy.http.controller.handler import MasterHandler
+from mitmproxy import proxy,flow,options
+from mitmproxy.proxy.server import ProxyServer
 
 """
 Description:
@@ -238,7 +235,7 @@ class ProcessHostapd(QObject):
         self.procHostapd = QProcess(self)
         self.procHostapd.setProcessChannelMode(QProcess.MergedChannels)
         QObject.connect(self.procHostapd, SIGNAL('readyReadStandardOutput()'), self, SLOT('read_OutputCommand()'));
-        self.procHostapd.start(self.cmd.keys()[0],self.cmd[self.cmd.keys()[0]])
+        self.procHostapd.start(list(dict(self.cmd).keys())[0],self.cmd[list(dict(self.cmd).keys())[0]])
         print('[New Thread {} ({})]'.format(self.procHostapd.pid(),self.objectName()))
 
     def makeLogger(self):
@@ -272,6 +269,7 @@ class ThreadPickleProxy(QObject):
 
     def start(self):
         print("[*] Pickle-Proxy running on port:8080 \n")
+        from mitmproxy import options, proxy, flow
         opts = options.Options(listen_port=8080,mode="transparent")
         config = proxy.ProxyConfig(opts)
         state = flow.State()
