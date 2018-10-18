@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.5
 from logging import getLogger,ERROR
 getLogger('scapy.runtime').setLevel(ERROR)
 
