@@ -959,7 +959,7 @@ class WifiPickle(QtGui.QWidget):
     def get_Session_ID(self):
         ''' get key id for session AP '''
         session_id = Refactor.generateSessionID()
-        while session_id in self.SessionsAP.keys():
+        while session_id in list(self.SessionsAP.keys()):
             session_id = Refactor.generateSessionID()
         self.window_phishing.session = session_id
         return session_id
@@ -994,7 +994,7 @@ class WifiPickle(QtGui.QWidget):
             device = sub(r'[)|(]',r'',data[5])
             if len(device) == 0: device = 'unknown'
             if Refactor.check_is_mac(data[4]):
-                if data[4] not in self.TabInfoAP.APclients.keys():
+                if data[4] not in list(self.TabInfoAP.APclients.keys()):
                     self.APclients[data[4]] = {'IP': data[2],
                     'device': device,'MAC': data[4],'Vendors' : self.get_mac_vendor(data[4])}
                     self.add_DHCP_Requests_clients(data[4],self.APclients[data[4]])
@@ -1002,13 +1002,13 @@ class WifiPickle(QtGui.QWidget):
             device = sub(r'[)|(]',r'',data[6])
             if len(device) == 0: device = 'unknown'
             if Refactor.check_is_mac(data[5]):
-                if data[5] not in self.TabInfoAP.APclients.keys():
+                if data[5] not in sst(elf.TabInfoAP.APclients.keys()):
                     self.APclients[data[5]] = {'IP': data[2],
                     'device': device,'MAC': data[5],'Vendors' : self.get_mac_vendor(data[5])}
                     self.add_DHCP_Requests_clients(data[5],self.APclients[data[5]])
         elif len(data) == 7:
             if Refactor.check_is_mac(data[4]):
-                if data[4] not in self.TabInfoAP.APclients.keys():
+                if data[4] not in sst(elf.TabInfoAP.APclients.keys()):
                     leases = IscDhcpLeases(C.DHCPLEASES_PATH)
                     hostname = None
                     try:
@@ -1026,7 +1026,7 @@ class WifiPickle(QtGui.QWidget):
                     self.add_DHCP_Requests_clients(data[4],self.APclients[data[4]])
         if self.APclients != {}:
             self.add_data_into_QTableWidget(self.APclients)
-            self.connectedCount.setText(str(len(self.TabInfoAP.APclients.keys())))
+            self.connectedCount.setText(str(len(list(self.TabInfoAP.APclients.keys()))))
 
     def get_mac_vendor(self,mac):
         ''' discovery mac vendor by mac address '''
@@ -1040,7 +1040,7 @@ class WifiPickle(QtGui.QWidget):
     def get_DHCP_Discover_clients(self,message):
         '''get infor client connected with AP '''
         self.APclients = {}
-        if message['mac_addr'] not in self.TabInfoAP.APclients.keys():
+        if message['mac_addr'] not in list(self.TabInfoAP.APclients.keys()):
             self.APclients[message['mac_addr']] = \
             {'IP': message['ip_addr'],
             'device': message['host_name'],
@@ -1049,15 +1049,15 @@ class WifiPickle(QtGui.QWidget):
 
             self.add_DHCP_Requests_clients(message['mac_addr'],self.APclients[message['mac_addr']])
             self.add_data_into_QTableWidget(self.APclients)
-            self.connectedCount.setText(str(len(self.TabInfoAP.APclients.keys())))
+            self.connectedCount.setText(str(len(list(self.TabInfoAP.APclients.keys()))))
 
     def get_Hostapd_Response(self,data):
         ''' get inactivity client from hostapd response'''
         if self.TabInfoAP.APclients != {}:
-            if data in self.TabInfoAP.APclients.keys():
+            if data in list(self.TabInfoAP.APclients.keys()):
                 self.PumpMonitorTAB.addRequests(data,self.TabInfoAP.APclients[data],False)
             self.TabInfoAP.delete_item(data)
-            self.connectedCount.setText(str(len(self.TabInfoAP.APclients.keys())))
+            self.connectedCount.setText(str(len(list(self.TabInfoAP.APclients.keys()))))
 
     def get_error_hostapdServices(self,data):
         '''check error hostapd on mount AP '''
@@ -1121,23 +1121,23 @@ class WifiPickle(QtGui.QWidget):
         ''' get std_output from thread TCPproxy module and add in DockArea'''
         if self.FSettings.Settings.get_setting('accesspoint', 'statusAP', format=bool):
             if hasattr(self,'dockAreaList'):
-                if data.keys()[0] == 'urlsCap':
+                if list(dict(data).keys())[0] == 'urlsCap':
                     if self.PumpSettingsTAB.dockInfo['HTTP-Requests']['active']:
                         self.dockAreaList['HTTP-Requests'].writeModeData(data)
                         self.LogUrlMonitor.info('[ {0[src]} > {0[dst]} ] {1[Method]} {1[Host]}{1[Path]}'.format(
                             data['urlsCap']['IP'], data['urlsCap']['Headers']))
-                elif data.keys()[0] == 'POSTCreds':
+                elif list(dict(data).keys())[0] == 'POSTCreds':
                     if self.PumpSettingsTAB.dockInfo['HTTP-Authentication']['active']:
                         self.dockAreaList['HTTP-Authentication'].writeModeData(data)
                         self.LogCredsMonitor.info('URL: {}'.format(data['POSTCreds']['Url']))
                         self.LogCredsMonitor.info('UserName: {}'.format(data['POSTCreds']['User']))
                         self.LogCredsMonitor.info('UserName: {}'.format(data['POSTCreds']['Pass']))
                         self.LogCredsMonitor.info('Packets: {}'.format(data['POSTCreds']['Destination']))
-                elif data.keys()[0] == 'image':
+                elif list(dict(data).keys())[0] == 'image':
                     self.ImageCapTAB.SendImageTableWidgets(data['image'])
                 else:
                     self.PacketSnifferTAB.tableLogging.writeModeData(data)
-                    self.LogTcpproxy.info('[{}] {}'.format(data.keys()[0],data[data.keys()[0]]))
+                    self.LogTcpproxy.info('[{}] {}'.format(list(dict(data).keys())[0],data[list(dict(data).keys())[0]]))
 
 
     def deleteObject(self,obj):
@@ -1278,7 +1278,7 @@ class WifiPickle(QtGui.QWidget):
 
         # clear before session
         if hasattr(self,'dockAreaList'):
-            for dock in self.dockAreaList.keys():
+            for dock in list(self.dockAreaList.keys()):
                 self.dockAreaList[dock].clear()
                 self.dockAreaList[dock].stopProcess()
         self.PickleProxyTAB.tableLogging.clearContents()

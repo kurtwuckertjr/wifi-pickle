@@ -1,13 +1,15 @@
 #!/bin/bash
 # Install deps
-sudo apt-get install -y build-essential checkinstall libreadline-gplv2-dev libncursesw5-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev python3-dev libssl1.0-dev python-netlib lbjpeg62-turbo-dev
+sudo apt-get update
+sudo apt-get install -y build-essential libreadline-gplv2-dev libncursesw5-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev python3-dev libssl1.0-dev python-netlib libjpeg62-turbo-dev
+
 cd /tmp
 
 # Setup Python3.5
 wget https://www.python.org/ftp/python/3.5.5/Python-3.5.5.tgz
 tar xzf Python-3.5.5.tgz
 cd Python-3.5.5/
-./configure --enable-optimizations
+./configure --enable-optimizations --enable-ipv6 --with-ensurepip=install
 sudo make altinstall
 cd ..
 

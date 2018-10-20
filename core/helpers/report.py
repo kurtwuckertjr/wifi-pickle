@@ -92,13 +92,13 @@ class frm_ReportLogger(PickleModule):
         if not self.checkHTML.isChecked() and not self.checkPDF.isChecked():
             return QtGui.QMessageBox.warning(self, 'WiFi Pickle Options',
             'You have to select a <strong>option</strong> file type  for export.')
-        if  len(all_unchecked.keys()) == Refactor.exportHtml(all_unchecked,'')['Count']:
+        if  len(list(all_unchecked.keys())) == Refactor.exportHtml(all_unchecked,'')['Count']:
             return QtGui.QMessageBox.warning(self, 'WiFi Pickle empty session',
             'logger:ERROR Could not find log files.')
 
         sessions_activated = ''
         apname = self.configure.Settings.get_setting('accesspoint','APname')
-        for key in self.sessions.keys():
+        for key in list(self.sessions.keys()):
             if str(self.CB_Data_Logger.currentText()) == self.sessions[key]['started']:
                 contents = Refactor.exportHtml(all_unchecked,key,
                 [self.sessions[key]['started'],self.sessions[key]['stoped']],apname)
@@ -134,7 +134,7 @@ class frm_ReportLogger(PickleModule):
         # get  activated logger files
         self.model.clear()
         sessions_activated = ''
-        for key in self.sessions.keys():
+        for key in list(self.sessions.keys()):
             if session == self.sessions[key]['started']:
                 self.labelStart.setText(self.sessions[key]['started'])
                 self.labelStop.setText(self.sessions[key]['stoped'])
@@ -184,7 +184,7 @@ class frm_ReportLogger(PickleModule):
         # get all session data add combobox
         self.CB_Data_Logger = QtGui.QComboBox(self)
         all_sessions = []
-        for key in self.sessions.keys():
+        for key in list(self.sessions.keys()):
             all_sessions.append(self.sessions[key]['started'])
         all_sessions.append('select All logger file...')
         self.CB_Data_Logger.addItems(all_sessions)
