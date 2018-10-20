@@ -254,6 +254,7 @@ class Refactor:
         out, err = proc.communicate()
         try:
             for line in out.splitlines():
+                line = line.decode()
                 for name in willkill:
                     if name in line:
                         pid = int(line.split()[0])

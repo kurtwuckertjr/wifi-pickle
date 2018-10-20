@@ -50,10 +50,10 @@ class AutoTableWidget(QtGui.QTableWidget):
 
     def addNextWidget(self, agent={}):
         ''' auto add item in table '''
-        self.items_widgets[agent.keys()[0]] = {}
-        self.APclients[agent.keys()[0]] = agent[agent.keys()[0]]
+        self.items_widgets[list(agent.keys())[0]] = {}
+        self.APclients[list(agent.keys())[0]] = agent[list(agent.keys())[0]]
         for key in agent.keys():
-            for client in agent[key].keys():
+            for client in list(dict(agent[key]).keys()):
                 item = QtGui.QTableWidgetItem(agent[key][client])
                 item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
                 self.setItem(self.row, self.column, item)

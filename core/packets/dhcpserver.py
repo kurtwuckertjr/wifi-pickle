@@ -280,13 +280,14 @@ class DHCPServer(QThread):
         '''Parse a string of TLV-encoded options.'''
         ret = {}
         while(raw):
-            [tag] = struct.unpack('B', raw[0])
+            print(raw)
+            [tag] = tuple([raw[0]]) #struct.unpack('B', str(raw[0]).encode())
             if tag == 0: # padding
                 raw = raw[1:]
                 continue
             if tag == 255: # end marker
                 break
-            [length] = struct.unpack('B', raw[1])
+            [length] = tuple([raw[1]]) #struct.unpack('B', str(raw[1]).encode())
             value = raw[2:2 + length]
             raw = raw[2 + length:]
             if tag in ret:
