@@ -195,32 +195,30 @@ class Refactor:
     def settingsNetworkManager(interface=str,Remove=False):
         ''' mac address of interface to exclude '''
         networkmanager = C.NETWORKMANAGER
-        config  = configparser.RawConfigParser()
+        configNm  = configparser.RawConfigParser()
         MAC     = Refactor.get_interface_mac(interface)
         exclude = {'MAC': 'mac:{}'.format(MAC),'interface': 'interface-name:{}'.format(interface)}
         if  not Remove:
             if path.exists(networkmanager):
-                config.read(networkmanager)
+                configNm.read(networkmanager)
                 try:
-                    config.add_section('keyfile')
+                    configNm.add_section('keyfile')
                 except configparser.DuplicateSectionError as e:
-                    config.set('keyfile','unmanaged-devices','{}'.format(
-                        exclude['interface'] if MAC != None else exclude['MAC']))
+                    configNm.set('keyfile','unmanaged-devices','{0}'.format(exclude['interface'] if MAC != None else exclude['MAC']))
                 else:
-                    config.set('keyfile','unmanaged-devices','{}'.format(
-                        exclude['interface'] if MAC != None else exclude['MAC']))
+                    configNm.set('keyfile','unmanaged-devices','{0}'.format(exclude['interface'] if MAC != None else exclude['MAC']))
                 finally:
-                    with open(networkmanager, 'wb') as configfile:
-                        config.write(configfile)
+                    configfile = open(networkmanager, 'wb')
+                    configNm.write(configfile)
                 return True
             return False
         elif Remove:
             if path.exists(networkmanager):
-                config.read(networkmanager)
+                configNm.read(networkmanager)
                 try:
-                    config.remove_option('keyfile','unmanaged-devices')
+                    configNm.remove_option('keyfile','unmanaged-devices')
                     with open(networkmanager, 'wb') as configfile:
-                        config.write(configfile)
+                        configNm.write(configfile)
                         return True
                 except configparser.NoSectionError:
                     return True
