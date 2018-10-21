@@ -369,13 +369,13 @@ class DHCPServer(QThread):
             router = self.get_namespaced_static('dhcp.binding.{0}.router'.format(self.get_mac(client_mac)), self.router)
             response += self.tlv_encode(3, socket.inet_aton(router)) # router
             dns_servers = self.get_namespaced_static('dhcp.binding.{0}.dns'.format(self.get_mac(client_mac)), [self.dns_server])
-            dns_servers = b''.join([socket.inet_aton(i) for i in dns_servers])
+            dns_servers = ''.join([socket.inet_aton(i).decode() for i in dns_servers])
             response += self.tlv_encode(6, dns_servers)
             response += self.tlv_encode(51, struct.pack('!I', 86400)) # lease time
         print("DHCP Response Options: {response}".format(response=response))
 
         # TFTP Server OR HTTP Server; if iPXE, need both
-        response += self.tlv_encode(66, self.file_server)
+        response += self.tlv_encode(66, socket.inet_aton(self.file_server))
 
         # file_name null terminated
         if not self.ipxe or not self.leases[client_mac]['ipxe']:

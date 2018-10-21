@@ -147,6 +147,7 @@ class dockUrlMonitor(QTreeView):
             if type(value) == type(bytes()):
                 value = value.decode()
             ParentMaster.appendRow([QStandardItem('{}'.format(item)), QStandardItem(value)])
+            print(str(value))
         self.model.appendRow(ParentMaster)
         self.setFirstColumnSpanned(ParentMaster.row(),
         self.rootIndex(), True)

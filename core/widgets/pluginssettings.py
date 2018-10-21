@@ -71,7 +71,7 @@ class BDFProxySettings(PickleModule):
                     datafilter['ESP'][item[0]] = item[1]
             else:
                 if item[0] != '' or item[1] != '':
-                    if item[1] in datafilter.keys():
+                    if item[1] in list(datafilter.keys()):
                         self.key = item[1]
                     else:
                         datafilter[self.key][item[0]] = item[1]
@@ -86,7 +86,7 @@ class BDFProxySettings(PickleModule):
     def checkConfigKeysBDFProxy(self,saveObjct=False):
         ''' save all change into file.conf '''
         if saveObjct: changedData = self.getAllRowTablesWidget()
-        for target in self.userConfig['targets'].keys():
+        for target in list(self.userConfig['targets'].keys()):
             if target == 'ALL':
                 for item in self.userConfig['targets']['ALL']:
                     if type(self.userConfig['targets']['ALL'][item]) == str:
@@ -119,7 +119,7 @@ class BDFProxySettings(PickleModule):
         self.TabSettings.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         #self.TabSettings.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.TabSettings.verticalHeader().setVisible(False)
-        self.TabSettings.setHorizontalHeaderLabels(self.THeaders.keys())
+        self.TabSettings.setHorizontalHeaderLabels(list(self.THeaders.keys()))
         self.TabSettings.verticalHeader().setDefaultSectionSize(23)
 
         self.layout = QtGui.QVBoxLayout(self.widget)
@@ -171,7 +171,7 @@ class ResponderSettings(PickleModule):
 
     def addAllconfigKeys(self):
         ''' get all settings and add into table'''
-        for key in self.userConfig.keys():
+        for key in list(self.userConfig.keys()):
             for items in self.userConfig[key].items():
                 self.addRowTableWidget(items[0],items[1])
 
@@ -179,12 +179,12 @@ class ResponderSettings(PickleModule):
         ''' check number row and save settings '''
         if count:
             lenconfig = 0
-            for key in self.userConfig.keys():
+            for key in list(self.userConfig.keys()):
                 for items in self.userConfig[key].items(): lenconfig += 1
             return lenconfig
         if saveObjct:
             settings = self.getAllRowTablesWidget()
-            for key in self.userConfig.keys():
+            for key in list(self.userConfig.keys()):
                 for items in self.userConfig[key].items():
                     self.userConfig[key][items[0]] = settings[settings.index(items[0])+1]
             self.userConfig.write()
@@ -211,7 +211,7 @@ class ResponderSettings(PickleModule):
         self.TabSettings.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         #self.TabSettings.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.TabSettings.verticalHeader().setVisible(False)
-        self.TabSettings.setHorizontalHeaderLabels(self.THeaders.keys())
+        self.TabSettings.setHorizontalHeaderLabels(list(self.THeaders.keys()))
         self.TabSettings.verticalHeader().setDefaultSectionSize(23)
 
         self.layout = QtGui.QVBoxLayout(self.widget)
@@ -275,7 +275,7 @@ class PickleProxySettings(PickleModule):
         self.TabSettings.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         #self.TabSettings.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.TabSettings.verticalHeader().setVisible(False)
-        self.TabSettings.setHorizontalHeaderLabels(self.THeaders.keys())
+        self.TabSettings.setHorizontalHeaderLabels(list(self.THeaders.keys()))
         self.TabSettings.verticalHeader().setDefaultSectionSize(23)
 
         for item in self.plugin_items:

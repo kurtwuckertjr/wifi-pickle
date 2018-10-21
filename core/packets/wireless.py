@@ -45,6 +45,7 @@ class ThreadScannerAP(QThread):
                 break
 
     def LoopScanmer(self):
+        import queue as Queue
         q = Queue.Queue()
         sniff = Thread(target =self.scannerAP, args = (q,))
         sniff.daemon = True
@@ -112,6 +113,7 @@ class ThreadProbeScan(QThread):
             if self.finished:break
 
     def ProbeResqest(self):
+        import queue as Queue
         q = Queue.Queue()
         self.sniff = Thread(target =self.Startprobe, args = (q,))
         self.sniff.daemon = True
@@ -124,7 +126,7 @@ class ThreadProbeScan(QThread):
               pass
 
     def sniff_probe(self,pkt):
-        if pkt.haslayer(Dot11ProbeReq) and '\x00' not in pkt[Dot11ProbeReq].info:
+        if pkt.haslayer(Dot11ProbeReq) and b'\x00' not in pkt[Dot11ProbeReq].info:
             mac_address = pkt.addr2
             ssid        = pkt[Dot11Elt].info
             if len(ssid) == 0:  ssid='Hidden'
@@ -135,7 +137,8 @@ class ThreadProbeScan(QThread):
                 devices = 'unknown device'
             if not mac_address in self.captured:
                 self.captured.append(mac_address)
-                self.emit(SIGNAL("Activated( QString )"),mac_address + '|'+ssid +'|'+devices)
+                print(mac_addess)
+                self.emit(SIGNAL("Activated( QString )"), mac_address + '|' + ssid + '|' + devices)
 
     def stop(self):
         print("Stop thread:" + self.objectName())

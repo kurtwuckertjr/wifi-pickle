@@ -82,8 +82,8 @@ class MasterHandler(flow.FlowMaster):
                 print('PickleProxy::{0:17} status:On'.format(p().Name))
                 self.plugins.append(p())
         # initialize logging in all plugins enable
-        #for instance in self.plugins:
-        #    instance.init_logger(self.session)
+        for instance in self.plugins:
+            instance.init_logger(self.session)
 
     @controller.handler
     def request(self, flow):
@@ -98,7 +98,8 @@ class MasterHandler(flow.FlowMaster):
         try:
             for p in self.plugins:
                 p.request(flow)
-        except Exception:
+        except Exception as e:
+            print(str(e))
             pass
 
     @controller.handler
@@ -113,8 +114,10 @@ class MasterHandler(flow.FlowMaster):
         print "--------------"
         print
         '''
+        print(str(flow))
         try:
             for p in self.plugins:
                 p.response(flow)
-        except Exception:
+        except Exception as e:
+            print(str(e))
             pass

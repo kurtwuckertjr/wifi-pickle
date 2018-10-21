@@ -17,7 +17,7 @@
 #
 
 from twisted.web.http import HTTPChannel
-from ClientRequest import ClientRequest
+from plugins.external.sergio_proxy.sslstrip.ClientRequest import ClientRequest
 
 class StrippingProxy(HTTPChannel):
     '''sslstrip is, at heart, a transparent proxy server that does some unusual things.
