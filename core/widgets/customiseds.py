@@ -54,7 +54,10 @@ class AutoTableWidget(QtGui.QTableWidget):
         self.APclients[list(agent.keys())[0]] = agent[list(agent.keys())[0]]
         for key in agent.keys():
             for client in list(dict(agent[key]).keys()):
-                item = QtGui.QTableWidgetItem(agent[key][client])
+                value = agent[key][client]
+                if type(value) == type(bytes()):
+                    value = value.decode()
+                item = QtGui.QTableWidgetItem(value)
                 item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
                 self.setItem(self.row, self.column, item)
                 self.items_widgets[key][client] = item

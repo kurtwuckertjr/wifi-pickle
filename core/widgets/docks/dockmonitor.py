@@ -143,8 +143,10 @@ class dockUrlMonitor(QTreeView):
         ParentMaster.setIcon(QIcon('icons/accept.png'))
         ParentMaster.setSizeHint(QSize(30,30))
         for item in data['urlsCap']['Headers']:
-            ParentMaster.appendRow([QStandardItem('{}'.format(item)),
-            QStandardItem(data['urlsCap']['Headers'][item])])
+            value = data['urlsCap']['Headers'][item]
+            if type(value) == type(bytes()):
+                value = value.decode()
+            ParentMaster.appendRow([QStandardItem('{}'.format(item)), QStandardItem(value)])
         self.model.appendRow(ParentMaster)
         self.setFirstColumnSpanned(ParentMaster.row(),
         self.rootIndex(), True)

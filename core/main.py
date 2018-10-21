@@ -561,7 +561,7 @@ class WifiPickle(QtGui.QWidget):
         self.TabInfoAP.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.TabInfoAP.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.TabInfoAP.verticalHeader().setVisible(False)
-        self.TabInfoAP.setHorizontalHeaderLabels(list(dict(self.THeaders).keys()))
+        self.TabInfoAP.setHorizontalHeaderLabels(list(sorted(dict(self.THeaders).keys())))
         self.TabInfoAP.verticalHeader().setDefaultSectionSize(23)
         self.TabInfoAP.horizontalHeader().resizeSection(3,158)
         self.TabInfoAP.horizontalHeader().resizeSection(0,150)
@@ -1002,13 +1002,13 @@ class WifiPickle(QtGui.QWidget):
             device = sub(r'[)|(]',r'',data[6])
             if len(device) == 0: device = 'unknown'
             if Refactor.check_is_mac(data[5]):
-                if data[5] not in sst(elf.TabInfoAP.APclients.keys()):
+                if data[5] not in list(self.TabInfoAP.APclients.keys()):
                     self.APclients[data[5]] = {'IP': data[2],
                     'device': device,'MAC': data[5],'Vendors' : self.get_mac_vendor(data[5])}
                     self.add_DHCP_Requests_clients(data[5],self.APclients[data[5]])
         elif len(data) == 7:
             if Refactor.check_is_mac(data[4]):
-                if data[4] not in sst(elf.TabInfoAP.APclients.keys()):
+                if data[4] not in list(self.TabInfoAP.APclients.keys()):
                     leases = IscDhcpLeases(C.DHCPLEASES_PATH)
                     hostname = None
                     try:
@@ -1121,23 +1121,23 @@ class WifiPickle(QtGui.QWidget):
         ''' get std_output from thread TCPproxy module and add in DockArea'''
         if self.FSettings.Settings.get_setting('accesspoint', 'statusAP', format=bool):
             if hasattr(self,'dockAreaList'):
-                if list(dict(data).keys())[0] == 'urlsCap':
+                if list(sorted(dict(data).keys()))[0] == 'urlsCap':
                     if self.PumpSettingsTAB.dockInfo['HTTP-Requests']['active']:
                         self.dockAreaList['HTTP-Requests'].writeModeData(data)
                         self.LogUrlMonitor.info('[ {0[src]} > {0[dst]} ] {1[Method]} {1[Host]}{1[Path]}'.format(
                             data['urlsCap']['IP'], data['urlsCap']['Headers']))
-                elif list(dict(data).keys())[0] == 'POSTCreds':
+                elif list(sorted(dict(data).keys()))[0] == 'POSTCreds':
                     if self.PumpSettingsTAB.dockInfo['HTTP-Authentication']['active']:
                         self.dockAreaList['HTTP-Authentication'].writeModeData(data)
                         self.LogCredsMonitor.info('URL: {}'.format(data['POSTCreds']['Url']))
                         self.LogCredsMonitor.info('UserName: {}'.format(data['POSTCreds']['User']))
                         self.LogCredsMonitor.info('UserName: {}'.format(data['POSTCreds']['Pass']))
                         self.LogCredsMonitor.info('Packets: {}'.format(data['POSTCreds']['Destination']))
-                elif list(dict(data).keys())[0] == 'image':
+                elif list(sorted(dict(data).keys()))[0] == 'image':
                     self.ImageCapTAB.SendImageTableWidgets(data['image'])
                 else:
                     self.PacketSnifferTAB.tableLogging.writeModeData(data)
-                    self.LogTcpproxy.info('[{}] {}'.format(list(dict(data).keys())[0],data[list(dict(data).keys())[0]]))
+                    self.LogTcpproxy.info('[{}] {}'.format(list(sorted(dict(data).keys()))[0],data[list(sorted(dict(data).keys()))[0]]))
 
 
     def deleteObject(self,obj):

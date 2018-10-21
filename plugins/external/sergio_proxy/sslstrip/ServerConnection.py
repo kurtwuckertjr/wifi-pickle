@@ -51,7 +51,7 @@ class ServerConnection(HTTPClient):
         self.PumpPlugins      = {}
         plugin_classes = Plugin.PluginProxy.__subclasses__()
         for p in plugin_classes: self.PumpPlugins[p._name] = p()
-        for pluginscheck in self.PumpPlugins.keys():
+        for pluginscheck in list(self.PumpPlugins.keys()):
             if self.PumpPlugins[pluginscheck].getInstance()._activated:
                 self.HTMLInjector = self.PumpPlugins[pluginscheck].getInstance()
 

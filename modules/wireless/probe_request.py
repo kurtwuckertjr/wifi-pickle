@@ -61,7 +61,7 @@ class frm_PMonitor(PickleModule):
         self.tables.verticalHeader().setVisible(False)
         self.tables.setSortingEnabled(True)
         Headers = []
-        for key in reversed(list(dict(self.data).keys())):
+        for key in reversed(list(sorted(dict(self.data).keys()))):
             Headers.append(key)
         self.tables.setHorizontalHeaderLabels(Headers)
         self.tables.verticalHeader().setDefaultSectionSize(23)
@@ -129,14 +129,14 @@ class frm_PMonitor(PickleModule):
             self.data['SSIDs'].append(data[1])
             self.data['MacAddress'].append(data[0])
             self.data['Devices'].append(data[2])
-            for n, key in enumerate(reversed(list(dict(self.data).keys()))):
+            for n, key in enumerate(reversed(list(sorted(dict(self.data).keys())))):
                 Headers.append(key)
                 for m, item in enumerate(self.data[key]):
                     item = QtGui.QTableWidgetItem(item)
                     item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
                     self.tables.setItem(m, n, item)
             Headers = []
-            for key in reversed(list(dict(self.data).keys())):
+            for key in reversed(list(sorted(dict(self.data).keys()))):
                 Headers.append(key)
             self.tables.setHorizontalHeaderLabels(Headers)
             self.Requests.append(info)

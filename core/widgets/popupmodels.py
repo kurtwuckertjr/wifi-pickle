@@ -108,7 +108,7 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.tableplugins.verticalHeader().setVisible(False)
         self.tableplugins.verticalHeader().setDefaultSectionSize(23)
         self.tableplugins.setSortingEnabled(True)
-        self.tableplugins.setHorizontalHeaderLabels(list(dict(self.THeadersPluginsProxy).keys()))
+        self.tableplugins.setHorizontalHeaderLabels(list(sorted(dict(self.THeadersPluginsProxy).keys())))
         self.tableplugins.horizontalHeader().resizeSection(0,158)
         self.tableplugins.horizontalHeader().resizeSection(1,80)
         self.tableplugins.resizeRowsToContents()
@@ -124,14 +124,14 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.tableplugincheckbox.verticalHeader().setVisible(False)
         self.tableplugincheckbox.verticalHeader().setDefaultSectionSize(23)
         self.tableplugincheckbox.setSortingEnabled(True)
-        self.tableplugincheckbox.setHorizontalHeaderLabels(list(dict(self.THeadersPlugins).keys()))
+        self.tableplugincheckbox.setHorizontalHeaderLabels(list(sorted(dict(self.THeadersPlugins).keys())))
         self.tableplugincheckbox.horizontalHeader().resizeSection(0,158)
         self.tableplugincheckbox.horizontalHeader().resizeSection(1,80)
         self.tableplugincheckbox.resizeRowsToContents()
 
         # add all widgets in Qtable 1 plgins
         Headers = []
-        for n, key in enumerate(list(dict(self.THeadersPluginsProxy).keys())):
+        for n, key in enumerate(list(sorted(dict(self.THeadersPluginsProxy).keys()))):
             Headers.append(key)
             for m, item in enumerate(self.THeadersPluginsProxy[key]):
                 if type(item) == type(QtGui.QRadioButton()) or type(item) == type(QtGui.QPushButton()):
@@ -139,10 +139,10 @@ class PopUpPlugins(QtGui.QVBoxLayout):
                 else:
                     item = QtGui.QTableWidgetItem(item)
                     self.tableplugins.setItem(m, n, item)
-        self.tableplugins.setHorizontalHeaderLabels(list(dict(self.THeadersPluginsProxy).keys()))
+        self.tableplugins.setHorizontalHeaderLabels(list(sorted(dict(self.THeadersPluginsProxy).keys())))
         # add all widgets in Qtable 2 plugin
         Headers = []
-        for n, key in enumerate(list(dict(self.THeadersPlugins).keys())):
+        for n, key in enumerate(list(sorted(dict(self.THeadersPlugins).keys()))):
             Headers.append(key)
             for m, item in enumerate(self.THeadersPlugins[key]):
                 if type(item) == type(QtGui.QCheckBox()) or type(item) == type(QtGui.QPushButton()):
@@ -150,7 +150,7 @@ class PopUpPlugins(QtGui.QVBoxLayout):
                 else:
                     item = QtGui.QTableWidgetItem(item)
                     self.tableplugincheckbox.setItem(m, n, item)
-        self.tableplugins.setHorizontalHeaderLabels(list(dict(self.THeadersPlugins).keys()))
+        self.tableplugins.setHorizontalHeaderLabels(list(sorted(dict(self.THeadersPlugins).keys())))
 
         self.proxyGroup = QtGui.QButtonGroup()
         self.proxyGroup.addButton(self.check_pickleProxy)

@@ -27,7 +27,7 @@ class DNSQuery:
         }
 
         # Copy Opcode to variable 'tipo'.
-        tipo = (ord(data[2]) >> 3) & 15
+        tipo = (ord(str(data[2])) >> 3) & 15
         if tipo == 0: # Opcode 0 mean a standard query(QUERY)
             ini = 12
             lon = ord(data[ini])
@@ -76,7 +76,7 @@ class DNSQuery:
         return packet
 
     def make_response(self,data,RCODE=None):
-        qry= dns.message.from_wire(data)
+        qry = dns.message.from_wire(data)
         resp = dns.message.make_response(qry)
         resp.flags |= dns.flags.AA
         resp.flags |= dns.flags.RA
@@ -274,13 +274,20 @@ class DHCPServer(QThread):
 
     def tlv_encode(self, tag, value):
         '''Encode a TLV option.'''
-        return struct.pack('BB', tag, len(value)) + value
+        print("TLV Encode Tag: {tag}".format(tag=tag))
+        print("TLV Encode Value: {value}".format(value=value))
+        if type(value) == type(str()):
+            value=value.encode()
+        result = struct.pack('BB', tag, len(value)) + value
+        print("TLV Encode Result: {result}".format(result=result))
+        return result
 
     def tlv_parse(self, raw):
         '''Parse a string of TLV-encoded options.'''
-        ret = {}
+        #ret = {}
+        from collections import OrderedDict
+        ret = OrderedDict()
         while(raw):
-            print(raw)
             [tag] = tuple([raw[0]]) #struct.unpack('B', str(raw[0]).encode())
             if tag == 0: # padding
                 raw = raw[1:]
@@ -288,12 +295,18 @@ class DHCPServer(QThread):
             if tag == 255: # end marker
                 break
             [length] = tuple([raw[1]]) #struct.unpack('B', str(raw[1]).encode())
-            value = raw[2:2 + length]
+            if tag == 53:
+                value = b'\x01'
+            else:
+                value = raw[2:2 + length]
             raw = raw[2 + length:]
             if tag in ret:
                 ret[tag].append(value)
             else:
                 ret[tag] = [value]
+            print("DHCP Request RAW: {raw}".format(raw=raw))
+            print("DHCP Request Parsed TLV: {ret}".format(ret=str(ret)))
+            print(str(type(ret)))
         return ret
 
     def get_mac(self, mac):
@@ -330,13 +343,14 @@ class DHCPServer(QThread):
         response += chaddr # chaddr
 
         # BOOTP legacy pad
-        response += chr(0) * 64 # server name
+        response += str(chr(0) * 64).encode() # server name
         if self.mode_proxy:
-            response += self.file_name
-            response += chr(0) * (128 - len(self.file_name))
+            response += str(self.file_name).encode()
+            response += str(chr(0) * (128 - len(self.file_name))).encode()
         else:
-            response += chr(0) * 128
+            response += str(chr(0) * 128).encode()
         response += self.magic # magic section
+        print("DHCP Response to {client_mac}: {response}".format(client_mac=client_mac, response=response))
         return (client_mac, response)
 
     def craft_options(self, opt53, client_mac):
@@ -354,10 +368,11 @@ class DHCPServer(QThread):
             response += self.tlv_encode(1, socket.inet_aton(subnet_mask)) # subnet mask
             router = self.get_namespaced_static('dhcp.binding.{0}.router'.format(self.get_mac(client_mac)), self.router)
             response += self.tlv_encode(3, socket.inet_aton(router)) # router
-            dns_server = self.get_namespaced_static('dhcp.binding.{0}.dns'.format(self.get_mac(client_mac)), [self.dns_server])
-            dns_server = ''.join([socket.inet_aton(i) for i in dns_server])
-            response += self.tlv_encode(6, dns_server)
+            dns_servers = self.get_namespaced_static('dhcp.binding.{0}.dns'.format(self.get_mac(client_mac)), [self.dns_server])
+            dns_servers = b''.join([socket.inet_aton(i) for i in dns_servers])
+            response += self.tlv_encode(6, dns_servers)
             response += self.tlv_encode(51, struct.pack('!I', 86400)) # lease time
+        print("DHCP Response Options: {response}".format(response=response))
 
         # TFTP Server OR HTTP Server; if iPXE, need both
         response += self.tlv_encode(66, self.file_server)
@@ -384,7 +399,7 @@ class DHCPServer(QThread):
         if self.mode_proxy:
             response += self.tlv_encode(60, 'PXEClient')
             response += struct.pack('!BBBBBBB4sB', 43, 10, 6, 1, 0b1000, 10, 4, chr(0) + 'PXE', 0xff)
-        response += '\xff'
+        response += b'\xff'
         return response
 
     def dhcp_offer(self, message):
@@ -413,6 +428,7 @@ class DHCPServer(QThread):
             [client_mac] = struct.unpack('!28x6s', message[:34])                # Get MAC address
             self.leases[client_mac]['options'] = self.tlv_parse(message[240:])
             type = ord(self.leases[client_mac]['options'][53][0])               # see RFC2131, page 10
+            print("DHCP Request Type: {type}".format(type=str(type)))
             if type == 1:
                 try:
                     self.dhcp_offer(message)
