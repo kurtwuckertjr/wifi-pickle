@@ -10,5 +10,5 @@ sysctl -w net.ipv4.conf.all.send_redirects=0
 #ip6tables -t nat -A PREROUTING -i wlan1 -p tcp --dport 80 -j REDIRECT --to-port 8081
 #ip6tables -t nat -A PREROUTING -i wlan1 -p tcp --dport 443 -j REDIRECT --to-port 8081
 
-mitmproxy --listen-host='0.0.0.0' -p 8081 --mode transparent --no-showhost --scripts=test.py 2>&1> mitmproxy-out
+mitmproxy --listen-host='0.0.0.0' -p 8081 --mode transparent --no-showhost --scripts=test.py  2>&1> mitmproxy-out
 
