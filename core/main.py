@@ -309,6 +309,10 @@ class WifiPickle(QtGui.QWidget):
                 'active' : self.FSettings.Settings.get_setting('dockarea',
                 'dock_bdfproxy',format=bool),
             },
+            'MITMProxy': {
+                'active' : self.FSettings.Settings.get_setting('dockarea',
+                'dock_mitmproxy', format=bool),
+            },
             'Dns2Proxy': { # plugins dns2proxy output
                 'active' : self.FSettings.Settings.get_setting('dockarea',
                 'dock_dns2proxy',format=bool),
@@ -847,7 +851,7 @@ class WifiPickle(QtGui.QWidget):
             self.InternetShareWiFi = True
             self.btrn_find_Inet.setEnabled(True)
             return self.set_StatusConnected_Iface(True, get_interfaces['activated'][0])
-        self.InternetShareWiFi = False
+        #self.InternetShareWiFi = False
         self.btrn_find_Inet.setEnabled(True)
         return self.set_StatusConnected_Iface(False,'')
 
@@ -903,8 +907,9 @@ class WifiPickle(QtGui.QWidget):
 
         if  self.get_interfaces['activated'][0]:
             self.set_StatusConnected_Iface(True,self.get_interfaces['activated'][0])
+            self.InternetShareWiFi = True
         else:
-            self.InternetShareWiFi = False
+            #self.InternetShareWiFi = False
             self.set_StatusConnected_Iface(False,'')
 
         interface = self.FSettings.Settings.get_setting('accesspoint','interfaceAP')
@@ -1111,6 +1116,18 @@ class WifiPickle(QtGui.QWidget):
                     except IndexError:
                         return None
 
+    def get_mitmproxy_output(self, data):
+        if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
+            if hasattr(self,'dockAreaList'):
+                if self.PumpSettingsTAB.dockInfo['MITMProxy']['active']:
+                    try:
+                        data = str(data).split(' : ')[1]
+                        for line in data.split('\n'):
+                            if len(line) > 2:
+                                self.dockAreaList['MITMProxy'].writeModeData(line)
+                    except IndexError:
+                        return None
+
     def get_PickleProxy_output(self,data):
         ''' get std_ouput the thread Pickle-Proxy and add in DockArea '''
         if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
@@ -1209,7 +1226,9 @@ class WifiPickle(QtGui.QWidget):
         # clean iptables settings
         for line in self.SettingsAP['kill']: exec_bash(line)
         # set interface using ifconfig
-        for line in self.SettingsAP['interface']: exec_bash(line)
+        for line in self.SettingsAP['interface']:
+            print(str(line))
+            exec_bash(line)
         # check if dhcp option is enabled.
         if self.FSettings.Settings.get_setting('accesspoint','dhcp_server',format=bool):
             with open(C.DHCPCONF_PATH,'w') as dhcp:
@@ -1357,7 +1376,7 @@ class WifiPickle(QtGui.QWidget):
             chown(leases, uid, gid)
 
             self.Thread_dhcp = ThRunDhcp(['dhcpd','-d','-f','-lf',C.DHCPLEASES_PATH,'-cf',
-            '/etc/dhcp/dhcpd_wp.conf',self.SettingsEnable['AP_iface']],self.currentSessionID)
+            'core/config/dhcpd/dhcpd.conf',self.SettingsEnable['AP_iface']],self.currentSessionID)
             self.Thread_dhcp.sendRequest.connect(self.get_DHCP_Requests_clients)
             self.Thread_dhcp.setObjectName('DHCP')
             self.Apthreads['RougeAP'].append(self.Thread_dhcp)
@@ -1376,6 +1395,7 @@ class WifiPickle(QtGui.QWidget):
 
             if not self.PopUpPlugins.check_dns2proy.isChecked():
                 self.Apthreads['RougeAP'].append(self.ThreadDNSServer)
+                # Cheese
                 #self.PopUpPlugins.set_Dns2proxyRule() # disabled :: redirect UDP port 53
 
             self.ThreadDHCPserver = DHCPServer(self.SettingsEnable['AP_iface'],self.DHCP)
@@ -1456,6 +1476,13 @@ class WifiPickle(QtGui.QWidget):
             self.Thread_PickleProxy.setObjectName('Pickle-Proxy')
             self.Apthreads['RougeAP'].append(self.Thread_PickleProxy)
 
+        elif self.PopUpPlugins.check_mitmproxy.isChecked():
+            # Create thread for MITM Proxy
+            self.Thread_MitmProxy = ProcessThread({'bash':['test.sh']})
+            self.Thread_MitmProxy._ProcssOutput.connect(self.get_mitmproxy_output)
+            self.Thread_MitmProxy.setObjectName('MITM Proxy')
+            self.Apthreads['RougeAP'].append(self.Thread_MitmProxy)
+
         # start thread TCPproxy Module
         if self.PopUpPlugins.check_tcpproxy.isChecked():
             self.Thread_TCPproxy = ThreadSniffingPackets(str(self.selectCard.currentText()),self.currentSessionID)
@@ -1470,13 +1497,15 @@ class WifiPickle(QtGui.QWidget):
         for index in xrange(self.FSettings.ListRules.count()):
            iptables.append(str(self.FSettings.ListRules.item(index).text()))
         for rulesetfilter in iptables:
-            if self.InternetShareWiFi: # disable share internet from network
-                if '$inet' in rulesetfilter:
-                    rulesetfilter = rulesetfilter.replace('$inet',str(self.interfacesLink['activated'][0]))
-                if '$wlan' in rulesetfilter:
-                    rulesetfilter = rulesetfilter.replace('$wlan',self.SettingsEnable['AP_iface'])
+            #if self.InternetShareWiFi: # disable share internet from network
+            if '$inet' in rulesetfilter:
+                rulesetfilter = rulesetfilter.replace('$inet',str(self.interfacesLink['activated'][0]))
+            if '$wlan' in rulesetfilter:
+                rulesetfilter = rulesetfilter.replace('$wlan',str(self.SettingsEnable['AP_iface']))
+            # Cheese
             if '$inet' in rulesetfilter or '$wlan' in rulesetfilter:
                 continue
+            print('Running: {}'.format(rulesetfilter))
             popen(rulesetfilter)
 
         # start all Thread in sessions

@@ -45,6 +45,7 @@ class DNSQuery:
             packet += '\xc0\x0c'   # A domain name to which this resource record pertains.
             packet += '\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04' # type, class, ttl, data-length
             packet += str.join('', map(lambda x: chr(int(x)), ip.split('.')))
+            print("DNS Response Packet: {}".format(str(packet)))
         return packet
 
     def render_packet(self,ip):
@@ -124,6 +125,7 @@ class DNSServer(QThread):
         self.Resolver.lifetime = 1
 
     def run(self):
+        print('DNS Server started')
         self.dns_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
         self.dns_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.dns_sock.settimeout(0.3)  # Set timeout on socket-operations.

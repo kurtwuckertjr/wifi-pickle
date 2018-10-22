@@ -319,7 +319,7 @@ def respuestas(name, type):
     logdns2proxy.info('Query = ' + name + ' ' + type)
     try:
         answers = Resolver.query(name, type)
-    except Exception, e:
+    except Exception as e:
         logdns2proxy.info('Exception...')
         return 0
     return answers
@@ -370,15 +370,15 @@ def requestHandler(address, message):
                     # not implemented
                     resp = make_response(qry=msg, RCODE=4)  # RCODE =  4    Not Implemented
 
-            except Exception, e:
+            except Exception as e:
                 logdns2proxy.info('got ' + repr(e))
                 resp = make_response(qry=msg, RCODE=2)  # RCODE =  2    Server Error
                 logdns2proxy.info('resp = ' + repr(resp.to_wire()))
-        except Exception, e:
+        except Exception as e:
             logdns2proxy.info('got ' + repr(e))
             resp = make_response(id=message_id, RCODE=1)  # RCODE =  1    Format Error
             logdns2proxy.info('resp = ' + repr(resp.to_wire()))
-    except Exception, e:
+    except Exception as e:
         # message was crap, not even the ID
         logdns2proxy.info('got ' + repr(e))
 
@@ -432,9 +432,9 @@ def std_MX_qry(msg):
 
 def std_TXT_qry(msg):
     qs = msg.question
-    print str(len(qs)) + ' questions.'
+    print(str(len(qs)) + ' questions.')
     iparpa = qs[0].to_text().split(' ', 1)[0]
-    print 'Host: ' + iparpa
+    print('Host: ' + iparpa)
     resp = make_response(qry=msg)
 
     host = iparpa[:-1]
@@ -458,12 +458,12 @@ def std_TXT_qry(msg):
 
     hosts = respuestas(iparpa[:-1], 'TXT')
     if isinstance(hosts, numbers.Integral):
-        print 'No host....'
+        print('No host....')
         resp = make_response(qry=msg, RCODE=3)  # RCODE =  3    NXDOMAIN
         return resp
 
     for host in hosts:
-        print 'Adding ' + host.to_text()
+        print('Adding ' + host.to_text())
         rrset = dns.rrset.from_text(iparpa, 1000, dns.rdataclass.IN, dns.rdatatype.TXT, host.to_text())
         resp.answer.append(rrset)
 
@@ -471,9 +471,9 @@ def std_TXT_qry(msg):
 
 def std_SPF_qry(msg):
     qs = msg.question
-    print str(len(qs)) + ' questions.'
+    print(str(len(qs)) + ' questions.')
     iparpa = qs[0].to_text().split(' ', 1)[0]
-    print 'Host: ' + iparpa
+    print('Host: ' + iparpa)
     resp = make_response(qry=msg)
 
     # host = iparpa[:-1]
@@ -496,12 +496,12 @@ def std_SPF_qry(msg):
 
     hosts = respuestas(iparpa[:-1], 'SPF')
     if isinstance(hosts, numbers.Integral):
-        print 'No host....'
+        print('No host....')
         resp = make_response(qry=msg, RCODE=3)  # RCODE =  3    NXDOMAIN
         return resp
 
     for host in hosts:
-        print 'Adding ' + host.to_text()
+        print('Adding ' + host.to_text())
         rrset = dns.rrset.from_text(iparpa, 1000, dns.rdataclass.IN, dns.rdatatype.SPF, host.to_text())
         resp.answer.append(rrset)
 
@@ -695,13 +695,13 @@ def std_ASPOOF_qry(msg):
 
 def make_response(qry=None, id=None, RCODE=0):
     if qry is None and id is None:
-        raise Exception, 'bad use of make_response'
+        raise Exception('bad use of make_response')
     if qry is None:
         resp = dns.message.Message(id)
         # QR = 1
         resp.flags |= dns.flags.QR
         if RCODE != 1:
-            raise Exception, 'bad use of make_response'
+            raise Exception('bad use of make_response')
     else:
         resp = dns.message.make_response(qry)
     resp.flags |= dns.flags.AA
@@ -752,7 +752,7 @@ while True:
     try:
         message, address = s.recvfrom(1024)
         noserv = True
-    except socket.error as (code, msg):
+    except socket.error as code:
         if code != errno.EINTR:
             raise
         break

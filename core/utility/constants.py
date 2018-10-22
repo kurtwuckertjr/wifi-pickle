@@ -51,7 +51,7 @@ DONATE_TXT = 'Consider donating to support the development and maintenance of Wi
 
 #settings DHCP
 DHCPLEASES_PATH = '/var/lib/dhcp/dhcpd.leases'
-DHCPCONF_PATH   = 'core/config/dhcpd_wp.conf'
+DHCPCONF_PATH   = 'core/config/dhcpd/dhcpd.conf'
 
 # settings HOSTAPD
 HOSTAPDCONF_PATH    = 'core/config/hostapd/hostapd.conf'
