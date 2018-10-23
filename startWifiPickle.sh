@@ -53,4 +53,4 @@ then
     fi
 fi
 
-gksu python3.5 wifi-pickle.py
+gksu python3.6 wifi-pickle.py

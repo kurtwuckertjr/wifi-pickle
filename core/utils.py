@@ -151,7 +151,7 @@ class Refactor:
          'injectionPage': {C.LOG_SSLSTRIP:[]},
          'dnsspoofAP': {C.LOG_DNSSPOOF:[]},
          'responder': {C.LOG_RESPONDER:[]},
-         'pickleproxy': {C.LOG_PUMPKINPROXY:[]},
+         'mitmproxy': {C.LOG_PUMPKINPROXY:[]},
          'tcpproxy': {C.LOG_TCPPROXY:[]},
          'phishing': {C.LOG_PHISHING:[]},}
         count_files = len(readFile.keys())
@@ -387,6 +387,7 @@ def is_ascii( text):
 
 def exec_bash(command):
     ''' run command on background hide output'''
+    print('Running {}'.format(command))
     popen(command)
 
 def del_item_folder(directorys):

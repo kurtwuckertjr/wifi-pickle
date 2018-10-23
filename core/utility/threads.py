@@ -19,9 +19,9 @@ from multiprocessing import Process,Manager
 import core.utility.constants as C
 
 from compat import *
-from core.servers.proxy.http.controller.handler import MasterHandler
-from mitmproxy import proxy,flow,options
-from mitmproxy.proxy.server import ProxyServer
+#from core.servers.proxy.http.controller.handler import MasterHandler
+#from mitmproxy import proxy,flow,options
+#from mitmproxy.proxy.server import ProxyServer
 
 """
 Description:
@@ -270,14 +270,14 @@ class ThreadPickleProxy(QObject):
 
     def start(self):
         print("[*] Pickle-Proxy running on port:8080 \n")
-        from mitmproxy import options, proxy, flow
-        opts = options.Options(listen_port=8080,mode="transparent")
-        config = proxy.ProxyConfig(opts)
-        state = flow.State()
-        server = ProxyServer(config)
-        server.allow_reuse_address = True
-        self.m = MasterHandler(opts,server,state,self.session)
-        self.m.run(self.send)
+        #from mitmproxy import options, proxy, flow
+        #opts = options.Options(listen_port=8080,mode="transparent")
+        #config = proxy.ProxyConfig(opts)
+        #state = flow.State()
+        #server = ProxyServer(config)
+        #server.allow_reuse_address = True
+        #self.m = MasterHandler(opts,server,state,self.session)
+        #self.m.run(self.send)
 
     def stop(self):
         self.m.shutdown()
