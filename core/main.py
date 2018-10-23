@@ -28,7 +28,7 @@ from core.utils import (
     setup_logger,is_ascii,is_hexadecimal,exec_bash,del_item_folder
 )
 from core.widgets.tabmodels import (
-    ProxySSLstrip,PickleMitmproxy,PickleMonitor,
+    ProxySSLstrip,Mitmproxy,PickleMonitor,
     PickleSettings,PacketsSniffer,ImageCapture,StatusAccessPoint
 )
 
@@ -102,8 +102,8 @@ class Initialize(QtGui.QMainWindow):
 
         # check mitmproxy lib is installed
         if not pump_proxy_lib and self.FSettings.Settings.get_setting('plugins',
-            'pickleproxy_plugin', format=bool):
-            self.FSettings.Settings.set_setting('plugins', 'pickleproxy_plugin', False)
+            'mitmproxy_plugin', format=bool):
+            self.FSettings.Settings.set_setting('plugins', 'mitmproxy_plugin', False)
             self.FSettings.Settings.set_setting('plugins', 'dns2proxy_plugin', True)
         self.form_widget    = WifiPickle(self)
 
@@ -177,22 +177,22 @@ class WifiPickle(QtGui.QWidget):
         self.mainWindow = mainWindow
         self.InternetShareWiFi = True # share internet options
 
-        # check update from github repository
-        self.Timer = waiterSleepThread()
-        self.Timer.quit.connect(self.get_status_new_commits)
-        self.UpdateSoftware = frm_githubUpdate(version)
-        self.UpdateSoftware.resize(480, 280)
-        self.UpdateSoftware.show()
-        self.UpdateSoftware.setHidden(True)
-        self.UpdateSoftware.checkUpdate()
-        self.Timer.start()
+        # This seems like a bad idea -  check update from github repository
+        #self.Timer = waiterSleepThread()
+        #self.Timer.quit.connect(self.get_status_new_commits)
+        #self.UpdateSoftware = frm_githubUpdate(version)
+        #self.UpdateSoftware.resize(480, 280)
+        #self.UpdateSoftware.show()
+        #self.UpdateSoftware.setHidden(True)
+        #self.UpdateSoftware.checkUpdate()
+        #self.Timer.start()
 
         # define all Widget TABs
         self.MainControl    = QtGui.QVBoxLayout()
         self.TabControl     = QtGui.QTabWidget()
         self.Tab_Default    = QtGui.QWidget()
         self.Tab_Injector   = QtGui.QWidget()
-        self.Tab_PicklePro = QtGui.QWidget()
+        self.Tab_MitmProxy  = QtGui.QWidget()
         self.Tab_Packetsniffer = QtGui.QWidget()
         self.Tab_statusAP   = QtGui.QWidget()
         self.Tab_imageCap   = QtGui.QWidget()
@@ -235,11 +235,11 @@ class WifiPickle(QtGui.QWidget):
         self.item_injector.setIcon(QtGui.QIcon('icons/mac.png'))
         self.TabListWidget_Menu.addItem(self.item_injector)
 
-        self.item_pickleProxy = QtGui.QListWidgetItem()
-        self.item_pickleProxy.setText('Pickle-Proxy')
-        self.item_pickleProxy.setSizeHint(QtCore.QSize(30,30))
-        self.item_pickleProxy.setIcon(QtGui.QIcon('icons/pickle2.png'))
-        self.TabListWidget_Menu.addItem(self.item_pickleProxy)
+        self.item_mitmProxy = QtGui.QListWidgetItem()
+        self.item_mitmProxy.setText('MITM-Proxy')
+        self.item_mitmProxy.setSizeHint(QtCore.QSize(30,30))
+        self.item_mitmProxy.setIcon(QtGui.QIcon('icons/pickle2.png'))
+        self.TabListWidget_Menu.addItem(self.item_mitmProxy)
 
         self.item_packetsniffer = QtGui.QListWidgetItem()
         self.item_packetsniffer.setText('TCP-Proxy')
@@ -278,7 +278,7 @@ class WifiPickle(QtGui.QWidget):
         self.ContentTabHome    = QtGui.QVBoxLayout(self.Tab_Default)
         self.ContentTabsettings= QtGui.QVBoxLayout(self.Tab_Settings)
         self.ContentTabInject  = QtGui.QVBoxLayout(self.Tab_Injector)
-        self.ContentTabPumpPro = QtGui.QVBoxLayout(self.Tab_PicklePro)
+        self.ContentTabMitmProxy = QtGui.QVBoxLayout(self.Tab_MitmProxy)
         self.ContentTabPackets = QtGui.QVBoxLayout(self.Tab_Packetsniffer)
         self.ContentImageCap   = QtGui.QHBoxLayout(self.Tab_imageCap)
         self.ContentTabMonitor = QtGui.QVBoxLayout(self.Tab_ApMonitor)
@@ -287,7 +287,7 @@ class WifiPickle(QtGui.QWidget):
         self.Stack.addWidget(self.Tab_Settings)
         self.Stack.addWidget(self.Tab_Plugins)
         self.Stack.addWidget(self.Tab_Injector)
-        self.Stack.addWidget(self.Tab_PicklePro)
+        self.Stack.addWidget(self.Tab_MitmProxy)
         self.Stack.addWidget(self.Tab_Packetsniffer)
         self.Stack.addWidget(self.Tab_imageCap)
         self.Stack.addWidget(self.Tab_dock)
@@ -320,10 +320,6 @@ class WifiPickle(QtGui.QWidget):
             'Responder': { # plugins responder output
                 'active' : self.FSettings.Settings.get_setting('dockarea',
                 'dock_Responder',format=bool),
-            },
-            'PickleProxy': { # plugins Pickle-Proxy output
-                'active' : self.FSettings.Settings.get_setting('dockarea',
-                'dock_PickleProxy',format=bool),
             }
         }
         self.SettingsEnable     = {
@@ -342,7 +338,7 @@ class WifiPickle(QtGui.QWidget):
         ''' configure GUI default window '''
         self.default_TAB_Content()
         self.injector_TAB_Content()
-        self.pickleProxy_TAB_Content()
+        self.mitmProxy_TAB_Content()
         self.tcpproxy_TAB_Content()
         self.imageCapture_TAB_Content()
         self.settings_TAB_Content()
@@ -473,31 +469,31 @@ class WifiPickle(QtGui.QWidget):
         self.ProxyPluginsTAB.sendError.connect(self.get_Error_Injector_tab)
         self.ContentTabInject.addLayout(self.ProxyPluginsTAB)
 
-    def pickleProxy_TAB_Content(self):
-        ''' add Layout page PickleProxy in dashboard '''
-        self.PickleProxyTAB = PickleMitmproxy(self)
+    def mitmProxy_TAB_Content(self):
+        ''' add Layout page MITM Proxy in dashboard '''
+        self.MitmProxyTAB = Mitmproxy(self)
         if not pump_proxy_lib:
             infoLabel = ServiceNotify(C.PUMPKINPROXY_notify,title='Package Requirement')
-            self.ContentTabPumpPro.addWidget(infoLabel)
-        self.ContentTabPumpPro.addLayout(self.PickleProxyTAB)
+            self.ContentTabMitmProxy.addWidget(infoLabel)
+        self.ContentTabMitmProxy.addLayout(self.MitmProxyTAB)
 
     def statusAP_TAB_Content(self):
-        ''' add Layout page PickleProxy in dashboard '''
+        ''' add Layout page MITM Proxy in dashboard '''
         self.StatusAPTAB = StatusAccessPoint(self)
         #self.ContentTabStatus.addLayout(self.StatusAPTAB)
 
     def tcpproxy_TAB_Content(self):
-        ''' add Layout page PickleProxy in dashboard '''
+        ''' add Layout page MITM Proxy in dashboard '''
         self.PacketSnifferTAB = PacketsSniffer(self)
         self.ContentTabPackets.addLayout(self.PacketSnifferTAB)
 
     def imageCapture_TAB_Content(self):
-        ''' add Layout page PickleProxy in dashboard '''
+        ''' add Layout page MITM Proxy in dashboard '''
         self.ImageCapTAB = ImageCapture(self)
         self.ContentImageCap.addLayout(self.ImageCapTAB)
 
     def apMonitor_Tab_Content(self):
-        ''' add Layout page Pump-Monitor in dashboard '''
+        ''' add Layout page Monitor in dashboard '''
         self.PumpMonitorTAB = PickleMonitor(self.FSettings)
         self.ContentTabMonitor.addLayout(self.PumpMonitorTAB)
 
@@ -769,21 +765,20 @@ class WifiPickle(QtGui.QWidget):
         self.PopUpPlugins.checkBoxTCPproxy()
         if self.FSettings.Settings.get_setting('plugins','responder_plugin',format=bool):
             self.PopUpPlugins.check_responder.setChecked(True)
-
         if self.FSettings.Settings.get_setting('plugins','dns2proxy_plugin',format=bool):
             self.PopUpPlugins.check_dns2proy.setChecked(True)
-        elif self.FSettings.Settings.get_setting('plugins','pickleproxy_plugin',format=bool):
-            self.PopUpPlugins.check_pickleProxy.setChecked(True)
         elif self.FSettings.Settings.get_setting('plugins','sergioproxy_plugin',format=bool):
             self.PopUpPlugins.check_sergioProxy.setChecked(True)
         elif self.FSettings.Settings.get_setting('plugins','bdfproxy_plugin',format=bool):
             self.PopUpPlugins.check_bdfproxy.setChecked(True)
+        elif self.FSettings.Settings.get_setting('plugins','mitmproxy_plugin', format=bool):
+            self.PopUpPlugins.check_mitmproxy.setChecked(True)
         elif self.FSettings.Settings.get_setting('plugins','noproxy',format=bool):
             self.PopUpPlugins.check_noproxy.setChecked(True)
             self.PopUpPlugins.GroupPluginsProxy.setChecked(False)
             self.PopUpPlugins.tableplugincheckbox.setEnabled(True)
         if not pump_proxy_lib:
-            self.PopUpPlugins.check_pickleProxy.setDisabled(True)
+            self.PopUpPlugins.check_mitmproxy.setDisabled(True)
         self.PopUpPlugins.checkGeneralOptions()
 
     def check_key_security_invalid(self):
@@ -1128,11 +1123,11 @@ class WifiPickle(QtGui.QWidget):
                     except IndexError:
                         return None
 
-    def get_PickleProxy_output(self,data):
-        ''' get std_ouput the thread Pickle-Proxy and add in DockArea '''
-        if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
-            self.PickleProxyTAB.tableLogging.writeModeData(data)
-            self.LogPickleproxy.info(data)
+    #def get_PickleProxy_output(self,data):
+    #    ''' get std_ouput the thread Pickle-Proxy and add in DockArea '''
+    #    if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
+    #        self.PickleProxyTAB.tableLogging.writeModeData(data)
+    #        self.LogPickleproxy.info(data)
 
     def get_TCPproxy_output(self,data):
         ''' get std_output from thread TCPproxy module and add in DockArea'''
@@ -1300,7 +1295,7 @@ class WifiPickle(QtGui.QWidget):
             for dock in list(self.dockAreaList.keys()):
                 self.dockAreaList[dock].clear()
                 self.dockAreaList[dock].stopProcess()
-        self.PickleProxyTAB.tableLogging.clearContents()
+        self.MitmProxyTAB.tableLogging.clearContents()
         self.ImageCapTAB.TableImage.clear()
         self.ImageCapTAB.TableImage.setRowCount(0)
 
@@ -1421,12 +1416,12 @@ class WifiPickle(QtGui.QWidget):
                 self.THReactor.start()
 
         #create logging for somes threads
-        setup_logger('pickleproxy', C.LOG_PUMPKINPROXY, self.currentSessionID)
+        setup_logger('mitmproxy', C.LOG_PUMPKINPROXY, self.currentSessionID)
         setup_logger('urls_capture', C.LOG_URLCAPTURE, self.currentSessionID)
         setup_logger('creds_capture', C.LOG_CREDSCAPTURE, self.currentSessionID)
         setup_logger('tcp_proxy', C.LOG_TCPPROXY, self.currentSessionID)
         setup_logger('responder', C.LOG_RESPONDER, self.currentSessionID)
-        self.LogPickleproxy    = getLogger('pickleproxy')
+        self.LogMitmproxy    = getLogger('mitmproxy')
         self.LogUrlMonitor      = getLogger('urls_capture')
         self.LogCredsMonitor    = getLogger('creds_capture')
         self.LogTcpproxy        = getLogger('tcp_proxy')
@@ -1469,12 +1464,12 @@ class WifiPickle(QtGui.QWidget):
             self.Thread_bdfproxy.setObjectName('BDFProxy-ng')
             self.Apthreads['RougeAP'].append(self.Thread_bdfproxy)
 
-        elif self.PopUpPlugins.check_pickleProxy.isChecked():
-            # create thread for plugin Pickle-Proxy
-            self.Thread_PickleProxy = ThreadPickleProxy(self.currentSessionID)
-            self.Thread_PickleProxy.send.connect(self.get_PickleProxy_output)
-            self.Thread_PickleProxy.setObjectName('Pickle-Proxy')
-            self.Apthreads['RougeAP'].append(self.Thread_PickleProxy)
+        #elif self.PopUpPlugins.check_pickleProxy.isChecked():
+        #    # create thread for plugin Pickle-Proxy
+        #    self.Thread_PickleProxy = ThreadPickleProxy(self.currentSessionID)
+        #    self.Thread_PickleProxy.send.connect(self.get_PickleProxy_output)
+        #    self.Thread_PickleProxy.setObjectName('Pickle-Proxy')
+        #    self.Apthreads['RougeAP'].append(self.Thread_PickleProxy)
 
         elif self.PopUpPlugins.check_mitmproxy.isChecked():
             # Create thread for MITM Proxy

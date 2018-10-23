@@ -49,7 +49,6 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.check_netcreds     = QtGui.QCheckBox('net-creds ')
         self.check_responder    = QtGui.QCheckBox('Responder')
         self.check_tcpproxy     = QtGui.QCheckBox('TCP-Proxy')
-        self.check_pickleProxy = QtGui.QRadioButton('Pickle-Proxy')
         self.check_dns2proy     = QtGui.QRadioButton('SSLstrip+|Dns2proxy')
         self.check_sergioProxy  = QtGui.QRadioButton('SSLstrip|Sergio-proxy')
         self.check_bdfproxy     = QtGui.QRadioButton('BDFProxy-ng')
@@ -70,8 +69,6 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         'in Python for the Twisted framework. coded by: LeonardoNve')
         self.check_bdfproxy.setObjectName('Patch Binaries via MITM: BackdoorFactory + mitmProxy, '
         'bdfproxy-ng is a fork and review of the original BDFProxy. coded by: secretsquirrel.')
-        self.check_pickleProxy.setObjectName('Transparent proxy - intercepting HTTP data, '
-        'this proxy server that allows to intercept requests and response on the fly')
         self.check_mitmproxy.setObjectName('Latest man in the middle proxy')
 
         # desction plugin checkbox
@@ -85,9 +82,9 @@ class PopUpPlugins(QtGui.QVBoxLayout):
 
         # table 1 for add plugins with QradioBtton
         self.THeadersPluginsProxy  = OrderedDict(
-        [   ('Plugins',[self.check_mitmproxy,self.check_pickleProxy,self.check_dns2proy,self.check_sergioProxy,self.check_bdfproxy]),
+        [   ('Plugins',[self.check_mitmproxy,self.check_dns2proy,self.check_sergioProxy,self.check_bdfproxy]),
             ('Settings',[QtGui.QPushButton('None'),QtGui.QPushButton('None'),QtGui.QPushButton('None'),self.btnBDFSettings]),
-            ('Description',[self.check_mitmproxy.objectName(),self.check_pickleProxy.objectName(),
+            ('Description',[self.check_mitmproxy.objectName(),
             self.check_dns2proy.objectName(),self.check_sergioProxy.objectName(),
             self.check_bdfproxy.objectName()])
         ])
@@ -156,7 +153,6 @@ class PopUpPlugins(QtGui.QVBoxLayout):
 
         self.proxyGroup = QtGui.QButtonGroup()
         self.proxyGroup.addButton(self.check_mitmproxy)
-        self.proxyGroup.addButton(self.check_pickleProxy)
         self.proxyGroup.addButton(self.check_dns2proy)
         self.proxyGroup.addButton(self.check_sergioProxy)
         self.proxyGroup.addButton(self.check_noproxy)
@@ -164,7 +160,6 @@ class PopUpPlugins(QtGui.QVBoxLayout):
 
         self.check_tcpproxy.clicked.connect(self.checkBoxTCPproxy)
         self.check_mitmproxy.clicked.connect(self.checkGeneralOptions)
-        self.check_pickleProxy.clicked.connect(self.checkGeneralOptions)
         self.check_dns2proy.clicked.connect(self.checkGeneralOptions)
         self.check_sergioProxy.clicked.connect(self.checkGeneralOptions)
         self.check_bdfproxy.clicked.connect(self.checkGeneralOptions)
@@ -190,44 +185,38 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.unset_Rules('sslstrip')
         self.unset_Rules('bdfproxy')
         self.FSettings.Settings.set_setting('plugins','mitmproxy_plugin',self.check_mitmproxy.isChecked())
-        self.FSettings.Settings.set_setting('plugins','pickleproxy_plugin',self.check_pickleProxy.isChecked())
         self.FSettings.Settings.set_setting('plugins','sergioproxy_plugin',self.check_sergioProxy.isChecked())
         self.FSettings.Settings.set_setting('plugins','dns2proxy_plugin',self.check_dns2proy.isChecked())
         self.FSettings.Settings.set_setting('plugins','bdfproxy_plugin',self.check_bdfproxy.isChecked())
         self.FSettings.Settings.set_setting('plugins','noproxy',self.check_noproxy.isChecked())
         if self.check_sergioProxy.isChecked():
             self.main_method.set_proxy_statusbar('SSLstrip|Sergio-proxy')
-            self.main_method.PickleProxyTAB.tabcontrol.setEnabled(False) # disable ProxyPickleTAB
-            self.main_method.ProxyPluginsTAB.scrollwidget.setEnabled(True) # enable SSLSTRIP Proxy TAB
+            self.main_method.MitmProxyTAB.tabcontrol.setEnabled(False)
+            self.main_method.MitmPluginsTAB.scrollwidget.setEnabled(True)
             self.set_sslStripRule()
         elif self.check_dns2proy.isChecked():
             self.main_method.set_proxy_statusbar('SSLstrip+|Dns2-proxy')
-            self.main_method.PickleProxyTAB.tabcontrol.setEnabled(False)
+            self.main_method.MitmProxyTAB.tabcontrol.setEnabled(False)
             self.main_method.ProxyPluginsTAB.scrollwidget.setEnabled(True)
             self.set_sslStripRule()
             self.set_Dns2proxyRule()
         elif self.check_bdfproxy.isChecked():
             self.main_method.set_proxy_statusbar('BDF-proxy-ng')
-            self.main_method.PickleProxyTAB.tabcontrol.setEnabled(False)
+            self.main_method.MitmProxyTAB.tabcontrol.setEnabled(False)
             self.main_method.ProxyPluginsTAB.scrollwidget.setEnabled(False)
             self.unset_Rules('dns2proxy')
             self.unset_Rules('sslstrip')
             self.set_BDFproxyRule()
-        elif self.check_pickleProxy.isChecked():
-            self.main_method.set_proxy_statusbar('Pickle-Proxy')
-            self.main_method.PickleProxyTAB.tabcontrol.setEnabled(True)
-            self.main_method.ProxyPluginsTAB.scrollwidget.setEnabled(False)
-            self.unset_Rules('dns2proxy')
-            self.unset_Rules('sslstrip')
-            self.set_PickleProxy()
         elif self.check_mitmproxy.isChecked():
-            self.main_method.set_proxy_statusbar('MITM Proxy')
+            self.main_method.set_proxy_statusbar('MITM-Proxy')
+            self.main_method.MitmProxyTAB.tabcontrol.setEnabled(True)
+            self.main_method.ProxyPluginsTAB.scrollwidget.setEnabled(False)
             self.unset_Rules('dns2proxy')
             self.unset_Rules('sslstrip')
             self.set_MitmProxyRule()
         elif self.check_noproxy.isChecked():
             self.main_method.set_proxy_statusbar('',disabled=True)
-            self.main_method.PickleProxyTAB.tabcontrol.setEnabled(False)
+            self.main_method.MitmProxyTAB.tabcontrol.setEnabled(False)
             self.main_method.ProxyPluginsTAB.scrollwidget.setEnabled(False)
             self.unset_Rules('dns2proxy')
             self.unset_Rules('sslstrip')
@@ -262,12 +251,10 @@ class PopUpPlugins(QtGui.QVBoxLayout):
     def optionsRules(self,type):
         ''' add rules iptable by type plugins'''
         search = {
-        'sslstrip': str('iptables -t nat -A PREROUTING -p tcp'+
-        ' --destination-port 80 -j REDIRECT --to-port '+self.FSettings.redirectport.text()),
-        'dns2proxy':str('iptables -t nat -A PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53'),
-        'bdfproxy':str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080'),
-        'PickleProxy' : str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080'),
-        'mitmproxy': str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081')}
+        'sslstrip': [str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port ' + self.FSettings.redirectport.text())],
+        'dns2proxy': [str('iptables -t nat -A PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53')],
+        'bdfproxy': [str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080')],
+        'mitmproxy': [str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081'), str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081')]}
         return search[type]
 
     # set rules to sslstrip
@@ -275,53 +262,52 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         items = []
         for index in xrange(self.FSettings.ListRules.count()):
             items.append(str(self.FSettings.ListRules.item(index).text()))
-        if self.optionsRules('sslstrip') in items:
+        optionRulesResults = self.optionsRules('sslstrip')
+        if optionsRulesResults in items:
             return
-        item = QtGui.QListWidgetItem()
-        item.setText(self.optionsRules('sslstrip'))
-        item.setSizeHint(QtCore.QSize(30,30))
-        self.FSettings.ListRules.addItem(item)
+        for rule in optionRulesResults:
+            item = QtGui.QListWidgetItem()
+            item.setText(rule)
+            item.setSizeHint(QtCore.QSize(30,30))
+            self.FSettings.ListRules.addItem(item)
 
     # set redirect port rules dns2proy
     def set_Dns2proxyRule(self):
-        item = QtGui.QListWidgetItem()
-        item.setText(self.optionsRules('dns2proxy'))
-        item.setSizeHint(QtCore.QSize(30,30))
-        self.FSettings.ListRules.addItem(item)
+        optionRulesResults = self.optionsRules('dns2proxy')
+        if optionsRulesResults in items:
+            return
+        for rule in optionRulesResults:
+            item = QtGui.QListWidgetItem()
+            item.setText(rule)
+            item.setSizeHint(QtCore.QSize(30,30))
+            self.FSettings.ListRules.addItem(item)
 
     # set redirect port rules bdfproxy
     def set_BDFproxyRule(self):
         items = []
         for index in xrange(self.FSettings.ListRules.count()):
             items.append(str(self.FSettings.ListRules.item(index).text()))
-        if self.optionsRules('bdfproxy') in items:
+        optionRulesResults = self.optionsRules('bdfproxy')
+        if optionRulesResults[0] in items:
             return
-        item = QtGui.QListWidgetItem()
-        item.setText(self.optionsRules('bdfproxy'))
-        item.setSizeHint(QtCore.QSize(30,30))
-        self.FSettings.ListRules.addItem(item)
-
-    def set_PickleProxy(self):
-        items = []
-        for index in xrange(self.FSettings.ListRules.count()):
-            items.append(str(self.FSettings.ListRules.item(index).text()))
-        if self.optionsRules('PickleProxy') in items:
-            return
-        item = QtGui.QListWidgetItem()
-        item.setText(self.optionsRules('PickleProxy'))
-        item.setSizeHint(QtCore.QSize(30,30))
-        self.FSettings.ListRules.addItem(item)
+        for rule in optionRulesResults:
+            item = QtGui.QListWidgetItem()
+            item.setText(rule)
+            item.setSizeHint(QtCore.QSize(30,30))
+            self.FSettings.ListRules.addItem(item)
 
     def set_MitmProxyRule(self):
         items = []
         for index in xrange(self.FSettings.ListRules.count()):
             items.append(str(self.FSettings.ListRules.item(index).text()))
-        if self.optionsRules('mitmproxy') in items:
+        optionRulesResults = self.optionsRules('mitmproxy')
+        if optionRulesResults[0] in items:
             return
-        item = QtGui.QListWidgetItem()
-        item.setText(self.optionsRules('mitmproxy'))
-        item.setSizeHint(QtCore.QSize(30,30))
-        self.FSettings.ListRules.addItem(item)
+        for rule in optionRulesResults:
+            item = QtGui.QListWidgetItem()
+            item.setText(rule)
+            item.setSizeHint(QtCore.QSize(30,30))
+            self.FSettings.ListRules.addItem(item)
 
     def unset_Rules(self,type):
         ''' remove rules from Listwidget in settings widget'''

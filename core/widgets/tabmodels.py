@@ -302,7 +302,7 @@ class ImageCapture(QtGui.QVBoxLayout):
             self.TableImage.setItem(row, col, item)
             self.TableImage.scrollToBottom()
 
-class PickleMitmproxy(QtGui.QVBoxLayout):
+class Mitmproxy(QtGui.QVBoxLayout):
     ''' settings  Transparent Proxy '''
     sendError = QtCore.pyqtSignal(str)
     def __init__(self,mainWindow ):
@@ -837,7 +837,6 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.dockInfo['MITMProxy']['active'] = self.CB_mitmproxy.isChecked()
         self.dockInfo['Dns2Proxy']['active'] = self.CB_dns2proxy.isChecked()
         self.dockInfo['Responder']['active'] = self.CB_responder.isChecked()
-        self.dockInfo['PickleProxy']['active'] = self.CB_picklePro.isChecked()
         if self.CB_ActiveMode.isChecked():
             self.AreaWidgetLoader(self.dockInfo)
             self.checkDockArea.emit(self.AllDockArea)
