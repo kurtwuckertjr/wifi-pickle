@@ -254,7 +254,7 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         'sslstrip': [str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port ' + self.FSettings.redirectport.text())],
         'dns2proxy': [str('iptables -t nat -A PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53')],
         'bdfproxy': [str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080')],
-        'mitmproxy': [str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081'), str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081')]}
+        'mitmproxy': [str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081'), str('iptables -t nat -A PREROUTING -p tcp --destination-port 443 -j REDIRECT --to-port 8081')]}
         return search[type]
 
     # set rules to sslstrip
