@@ -85,7 +85,7 @@ Copyright:
 author      = 'Shane Scott, GoVanguard'
 emails      = ['sscott@gvit.com', 'info@gvit.com']
 license     = ' GNU GPL 3'
-version     = '0.2.0'
+version     = '0.2.1'
 update      = '10/25/2018' # This is the USA :D
 desc        = ['A salty tool for Rogue Wi-Fi Access Point Attacks']
 
@@ -112,7 +112,7 @@ class Initialize(QtGui.QMainWindow):
         dock.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
         # set window title
-        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.2.0'))
+        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.2.1'))
         self.setGeometry(0, 0, C.GEOMETRYH, C.GEOMETRYW) # set geometry window
         self.loadtheme(self.FSettings.get_theme_qss())
 
@@ -1149,8 +1149,7 @@ class WifiPickle(QtGui.QWidget):
                 'ifconfig %s up'%(self.SettingsEnable['AP_iface']),
                 'ifconfig %s %s netmask %s'%(self.SettingsEnable['AP_iface'],self.DHCP['router'],self.DHCP['netmask']),
                 'ifconfig %s mtu 1400'%(self.SettingsEnable['AP_iface']),
-                'route add -net %s netmask %s gw %s'%(self.DHCP['subnet'],
-                self.DHCP['netmask'],self.DHCP['router'])
+                'route add -net %s netmask %s gw %s'%(self.DHCP['subnet'],self.DHCP['netmask'],self.DHCP['router'])
             ],
         'kill':
             [
@@ -1160,6 +1159,7 @@ class WifiPickle(QtGui.QWidget):
                 'iptables --table nat --delete-chain',
                 'ifconfig %s 0'%(self.SettingsEnable['AP_iface']),
                 'killall dhpcd 2>/dev/null',
+                'ps aux | grep mitmproxy | grep python | awk \'{print $2}\'| xargs kill -9'
             ],
         'hostapd':
             [
@@ -1186,10 +1186,10 @@ class WifiPickle(QtGui.QWidget):
         print('[*] Enable forwarding in iptables...')
         Refactor.set_ip_forward(1)
         # clean iptables settings
-        for line in self.SettingsAP['kill']: exec_bash(line)
+        for line in self.SettingsAP['kill']:
+            exec_bash(line)
         # set interface using ifconfig
         for line in self.SettingsAP['interface']:
-            print(str(line))
             exec_bash(line)
         # check if dhcp option is enabled.
         if self.FSettings.Settings.get_setting('accesspoint','dhcp_server',format=bool):
@@ -1487,7 +1487,7 @@ class WifiPickle(QtGui.QWidget):
         # remove iptables commands and stop dhcpd if pesist in process
         for kill in self.SettingsAP['kill']:
             exec_bash(kill)
-        exec_bash('core/helpers/killMitmProxy.sh')
+        #exec_bash('core/helpers/killMitmProxy.sh')
         # stop time count
         self.StatusAPTAB.stop_timer()
         #disabled options

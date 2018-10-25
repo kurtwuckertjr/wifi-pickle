@@ -384,7 +384,7 @@ def is_ascii( text):
 
 def exec_bash(command):
     ''' run command on background hide output'''
-    print('Running {}'.format(command))
+    print('Running: {}'.format(command))
     popen(command)
 
 def del_item_folder(directorys):
