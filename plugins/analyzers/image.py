@@ -33,9 +33,10 @@ class ImageCap(PSniffer):
         http_layer = pkt.getlayer(http.HTTPRequest)
         ip_layer = pkt.getlayer(IP)
 
-        xt = ['.png','.jpg']
+        xt = ['.svg', '.gif', '.png', '.jpg']
         filename, file_extension = splitext(http_layer.fields['Path'])
         if file_extension in xt:
+            print('Plugin imageCap: {filename}'.format(filename=str(filenanme)))
             file_name = 'logs/ImagesCap/%s_%s%s' % (self.session,self.random_char(5), file_extension)
             urlretrieve('http://{}{}'.format(http_layer.fields['Host'], http_layer.fields['Path']),file_name)
             self.output.emit({'image': file_name})

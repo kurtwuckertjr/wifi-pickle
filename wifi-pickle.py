@@ -45,8 +45,7 @@ if __name__ == '__main__':
 
     app = ApplicationLoop(argv)
     if app.isRunning():
-        QtGui.QMessageBox.warning(None,'Already Running','the wifi-pickle is already running')
-        exit('WiFi-Pickle Already Running.')
+        QtGui.QMessageBox.warning(None,'Multiple Instances Warning','WiFi-Pickle is already running. Be aware that multiple instances could produce unusual behavior.')
 
     print('Loading GUI...')
     main = Initialize()

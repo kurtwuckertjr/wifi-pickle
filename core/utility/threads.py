@@ -14,7 +14,6 @@ from core.utils import setup_logger,Refactor
 from subprocess import (Popen,PIPE,STDOUT)
 from PyQt4.QtCore import QThread,pyqtSignal,SIGNAL,pyqtSlot,QProcess,QObject,SLOT
 from PyQt4.QtGui import QMessageBox
-from plugins.external.sergio_proxy.plugins import *
 from multiprocessing import Process,Manager
 import core.utility.constants as C
 

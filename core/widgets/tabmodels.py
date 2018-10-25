@@ -612,6 +612,9 @@ class PickleMonitor(QtGui.QVBoxLayout):
         self.Home.addWidget(self.widget)
         self.addLayout(self.Home)
 
+    def expandAll(self):
+        return self.MonitorTreeView.expandAll()
+
     def addRequests(self,macddress,user,status):
         if status:
             ParentMaster = QtGui.QStandardItem('Connected:: {} at {}'.format(macddress,
@@ -625,6 +628,7 @@ class PickleMonitor(QtGui.QVBoxLayout):
             ParentMaster.appendRow([QtGui.QStandardItem('IPAddr::'),info2])
             ParentMaster.appendRow([QtGui.QStandardItem('Current date::'),info3])
             self.model.appendRow(ParentMaster)
+            self.MonitorTreeView.expandAll()
             return self.MonitorTreeView.setFirstColumnSpanned(ParentMaster.row(),
             self.MonitorTreeView.rootIndex(), True)
 
@@ -641,6 +645,7 @@ class PickleMonitor(QtGui.QVBoxLayout):
         self.model.appendRow(ParentMaster)
         self.MonitorTreeView.setFirstColumnSpanned(ParentMaster.row(),
         self.MonitorTreeView.rootIndex(), True)
+        self.MonitorTreeView.expandAll()
 
 
 class PickleSettings(QtGui.QVBoxLayout):
@@ -711,7 +716,7 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.CB_ActiveMode.setHidden(True)
         self.CB_Cread    = QtGui.QCheckBox('HTTP-Authentication')
         self.CB_monitorURL = QtGui.QCheckBox('HTTP-Requests')
-        self.CB_bdfproxy   = QtGui.QCheckBox('BDFProxy-ng')
+        self.CB_dhcpd   = QtGui.QCheckBox('DHCPD')
         self.CB_mitmproxy  = QtGui.QCheckBox('MITM Proxy')
         self.CB_dns2proxy  = QtGui.QCheckBox('Dns2Proxy')
         self.CB_responder  = QtGui.QCheckBox('Responder')
@@ -719,7 +724,7 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.CB_ActiveMode.setChecked(self.FSettings.Settings.get_setting('dockarea','advanced',format=bool))
         self.CB_Cread.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_credencials',format=bool))
         self.CB_monitorURL.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_urlmonitor',format=bool))
-        self.CB_bdfproxy.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_bdfproxy',format=bool))
+        self.CB_dhcpd.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_dhcpd',format=bool))
         self.CB_mitmproxy.setChecked(self.FSettings.Settings.get_setting('dockarea', 'dock_mitmproxy', format=bool))
         self.CB_dns2proxy.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_dns2proxy',format=bool))
         self.CB_responder.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_responder',format=bool))
@@ -730,7 +735,7 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.CB_ActiveMode.clicked.connect(self.doCheckAdvanced)
         self.CB_monitorURL.clicked.connect(self.doCheckAdvanced)
         self.CB_Cread.clicked.connect(self.doCheckAdvanced)
-        self.CB_bdfproxy.clicked.connect(self.doCheckAdvanced)
+        self.CB_dhcpd.clicked.connect(self.doCheckAdvanced)
         self.CB_mitmproxy.clicked.connect(self.doCheckAdvanced)
         self.CB_dns2proxy.clicked.connect(self.doCheckAdvanced)
         self.CB_responder.clicked.connect(self.doCheckAdvanced)
@@ -740,10 +745,9 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.gridArea.addWidget(self.CB_monitorURL,0,0,)
         self.gridArea.addWidget(self.CB_Cread,0,1)
         self.gridArea.addWidget(self.CB_responder,0,2)
-        self.gridArea.addWidget(self.CB_bdfproxy,1,0)
-        self.gridArea.addWidget(self.CB_mitmproxy,1,0)
-        self.gridArea.addWidget(self.CB_dns2proxy,1,1)
-        #self.gridArea.addWidget(self.CB_picklePro,0,2) disable tab plugin
+        self.gridArea.addWidget(self.CB_dhcpd,1,0)
+        self.gridArea.addWidget(self.CB_mitmproxy,1,1)
+        self.gridArea.addWidget(self.CB_dns2proxy,1,2)
         self.layoutArea.addRow(self.gridArea)
         self.GroupArea.setTitle('Activity Monitor settings')
         self.GroupArea.setLayout(self.layoutArea)
@@ -810,7 +814,7 @@ class PickleSettings(QtGui.QVBoxLayout):
         if self.CB_ActiveMode.isChecked():
             self.CB_monitorURL.setEnabled(True)
             self.CB_Cread.setEnabled(True)
-            self.CB_bdfproxy.setEnabled(True)
+            self.CB_dhcpd.setEnabled(True)
             self.CB_mitmproxy.setEnabled(True)
             self.CB_dns2proxy.setEnabled(True)
             self.CB_responder.setEnabled(True)
@@ -818,22 +822,22 @@ class PickleSettings(QtGui.QVBoxLayout):
         else:
             self.CB_monitorURL.setEnabled(False)
             self.CB_Cread.setEnabled(False)
-            self.CB_bdfproxy.setEnabled(False)
+            self.CB_dhcpd.setEnabled(False)
             self.CB_mitmproxy.setEnabled(False)
             self.CB_dns2proxy.setEnabled(False)
             self.CB_responder.setEnabled(False)
             self.CB_picklePro.setEnabled(False)
-        self.FSettings.Settings.set_setting('dockarea','dock_credencials',self.CB_Cread.isChecked())
-        self.FSettings.Settings.set_setting('dockarea','dock_urlmonitor',self.CB_monitorURL.isChecked())
-        self.FSettings.Settings.set_setting('dockarea','dock_bdfproxy',self.CB_bdfproxy.isChecked())
+        self.FSettings.Settings.set_setting('dockarea', 'dock_credencials', self.CB_Cread.isChecked())
+        self.FSettings.Settings.set_setting('dockarea', 'dock_urlmonitor', self.CB_monitorURL.isChecked())
+        self.FSettings.Settings.set_setting('dockarea', 'dock_dhcpd', self.CB_dhcpd.isChecked())
         self.FSettings.Settings.set_setting('dockarea', 'dock_mitmproxy', self.CB_mitmproxy.isChecked())
-        self.FSettings.Settings.set_setting('dockarea','dock_dns2proxy',self.CB_dns2proxy.isChecked())
-        self.FSettings.Settings.set_setting('dockarea','dock_responder',self.CB_responder.isChecked())
-        self.FSettings.Settings.set_setting('dockarea','dock_PickleProxy',self.CB_picklePro.isChecked())
-        self.FSettings.Settings.set_setting('dockarea','advanced',self.CB_ActiveMode.isChecked())
+        self.FSettings.Settings.set_setting('dockarea', 'dock_dns2proxy', self.CB_dns2proxy.isChecked())
+        self.FSettings.Settings.set_setting('dockarea', 'dock_responder', self.CB_responder.isChecked())
+        self.FSettings.Settings.set_setting('dockarea', 'dock_PickleProxy', self.CB_picklePro.isChecked())
+        self.FSettings.Settings.set_setting('dockarea', 'advanced', self.CB_ActiveMode.isChecked())
         self.dockInfo['HTTP-Requests']['active'] = self.CB_monitorURL.isChecked()
         self.dockInfo['HTTP-Authentication']['active'] = self.CB_Cread.isChecked()
-        self.dockInfo['BDFProxy']['active'] = self.CB_bdfproxy.isChecked()
+        self.dockInfo['DHCPD']['active'] = self.CB_dhcpd.isChecked()
         self.dockInfo['MITMProxy']['active'] = self.CB_mitmproxy.isChecked()
         self.dockInfo['Dns2Proxy']['active'] = self.CB_dns2proxy.isChecked()
         self.dockInfo['Responder']['active'] = self.CB_responder.isChecked()

@@ -53,7 +53,8 @@ class Kerberos(PSniffer):
             dst_ip_port = str(pkt[IP].dst) + ':' + str(pkt[TCP].dport)
 
             # Kerberos over TCP
-            decoded = self.Decode_Ip_Packet(str(pkt)[14:])
+            ## TACOS
+            decoded = self.Decode_Ip_Packet(bytes(str(pkt)[14:]))
             kerb_hash = self.ParseMSKerbv5TCP(decoded['data'][20:])
             if kerb_hash:
                 self.printer(src_ip_port, dst_ip_port, kerb_hash)

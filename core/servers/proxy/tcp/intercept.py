@@ -46,7 +46,7 @@ class ThreadSniffingPackets(QThread):
         while not self.stopped:
             try:
                 sniff(iface=self.interface,
-                      filter="tcp and ( port 80 or port 8080 or port 10000)",
+                      filter="tcp and ( port 80 or 443 or port 8080 or port 10000)",
                       prn =lambda x : q.put(x), store=0)
             except Exception:pass
             if self.stopped:
@@ -91,9 +91,9 @@ class ThreadSniffingPackets(QThread):
                 pkt = q.get(timeout = 0)
                 for Active in self.plugins.keys():
                     if self.plugins[Active].getInstance()._activated:
-                        try:
-                            self.plugins[Active].filterPackets(pkt)
-                        except Exception: pass
+                        #try:
+                        self.plugins[Active].filterPackets(pkt)
+                        #except Exception: pass
             except queue.Empty:
               pass
 

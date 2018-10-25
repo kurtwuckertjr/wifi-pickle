@@ -16,20 +16,17 @@ from shlex import split
 from compat import *
 
 from os import (
-    system,path,getcwd,
-    popen,listdir,mkdir,chown
+    system, path, getcwd, popen, listdir, mkdir, chown
 )
 from subprocess import (
-    Popen,PIPE,call,check_output,
+    Popen, PIPE, call, check_output
 )
 
 from core.utils import (
-    Refactor,set_monitor_mode,waiterSleepThread,
-    setup_logger,is_ascii,is_hexadecimal,exec_bash,del_item_folder
+    Refactor, set_monitor_mode, waiterSleepThread, setup_logger, is_ascii, is_hexadecimal, exec_bash, del_item_folder
 )
 from core.widgets.tabmodels import (
-    ProxySSLstrip,Mitmproxy,PickleMonitor,
-    PickleSettings,PacketsSniffer,ImageCapture,StatusAccessPoint
+    Mitmproxy, PickleMonitor, PickleSettings, PacketsSniffer, ImageCapture, StatusAccessPoint
 )
 
 from core.widgets.popupmodels import (
@@ -37,9 +34,7 @@ from core.widgets.popupmodels import (
 )
 
 from core.utility.threads import  (
-    ProcessHostapd,Thread_sergioProxy,
-    ThRunDhcp,Thread_sslstrip,ProcessThread,
-    ThreadReactor,ThreadPopen,ThreadPickleProxy
+    ProcessHostapd, ThRunDhcp, ProcessThread, ThreadReactor, ThreadPopen, ThreadPickleProxy
 )
 
 from core.widgets.customiseds import AutoTableWidget
@@ -101,8 +96,7 @@ class Initialize(QtGui.QMainWindow):
         self.FSettings      = frm_Settings()
 
         # check mitmproxy lib is installed
-        if not pump_proxy_lib and self.FSettings.Settings.get_setting('plugins',
-            'mitmproxy_plugin', format=bool):
+        if not pump_proxy_lib and self.FSettings.Settings.get_setting('plugins', 'mitmproxy_plugin', format=bool):
             self.FSettings.Settings.set_setting('plugins', 'mitmproxy_plugin', False)
             self.FSettings.Settings.set_setting('plugins', 'dns2proxy_plugin', True)
         self.form_widget    = WifiPickle(self)
@@ -177,21 +171,10 @@ class WifiPickle(QtGui.QWidget):
         self.mainWindow = mainWindow
         self.InternetShareWiFi = True # share internet options
 
-        # This seems like a bad idea -  check update from github repository
-        #self.Timer = waiterSleepThread()
-        #self.Timer.quit.connect(self.get_status_new_commits)
-        #self.UpdateSoftware = frm_githubUpdate(version)
-        #self.UpdateSoftware.resize(480, 280)
-        #self.UpdateSoftware.show()
-        #self.UpdateSoftware.setHidden(True)
-        #self.UpdateSoftware.checkUpdate()
-        #self.Timer.start()
-
         # define all Widget TABs
         self.MainControl    = QtGui.QVBoxLayout()
         self.TabControl     = QtGui.QTabWidget()
         self.Tab_Default    = QtGui.QWidget()
-        self.Tab_Injector   = QtGui.QWidget()
         self.Tab_MitmProxy  = QtGui.QWidget()
         self.Tab_Packetsniffer = QtGui.QWidget()
         self.Tab_statusAP   = QtGui.QWidget()
@@ -229,16 +212,10 @@ class WifiPickle(QtGui.QWidget):
         self.item_plugins.setIcon(QtGui.QIcon('icons/plugins-new.png'))
         self.TabListWidget_Menu.addItem(self.item_plugins)
 
-        self.item_injector = QtGui.QListWidgetItem()
-        self.item_injector.setText('SSLstrip-Proxy')
-        self.item_injector.setSizeHint(QtCore.QSize(30,30))
-        self.item_injector.setIcon(QtGui.QIcon('icons/mac.png'))
-        self.TabListWidget_Menu.addItem(self.item_injector)
-
         self.item_mitmProxy = QtGui.QListWidgetItem()
         self.item_mitmProxy.setText('MITM-Proxy')
         self.item_mitmProxy.setSizeHint(QtCore.QSize(30,30))
-        self.item_mitmProxy.setIcon(QtGui.QIcon('icons/pickle2.png'))
+        self.item_mitmProxy.setIcon(QtGui.QIcon('icons/mac.png'))
         self.TabListWidget_Menu.addItem(self.item_mitmProxy)
 
         self.item_packetsniffer = QtGui.QListWidgetItem()
@@ -277,7 +254,6 @@ class WifiPickle(QtGui.QWidget):
         # create Layout for add contents widgets TABs
         self.ContentTabHome    = QtGui.QVBoxLayout(self.Tab_Default)
         self.ContentTabsettings= QtGui.QVBoxLayout(self.Tab_Settings)
-        self.ContentTabInject  = QtGui.QVBoxLayout(self.Tab_Injector)
         self.ContentTabMitmProxy = QtGui.QVBoxLayout(self.Tab_MitmProxy)
         self.ContentTabPackets = QtGui.QVBoxLayout(self.Tab_Packetsniffer)
         self.ContentImageCap   = QtGui.QHBoxLayout(self.Tab_imageCap)
@@ -286,7 +262,6 @@ class WifiPickle(QtGui.QWidget):
         self.ContentTabStatus  = QtGui.QVBoxLayout(self.Tab_statusAP)
         self.Stack.addWidget(self.Tab_Settings)
         self.Stack.addWidget(self.Tab_Plugins)
-        self.Stack.addWidget(self.Tab_Injector)
         self.Stack.addWidget(self.Tab_MitmProxy)
         self.Stack.addWidget(self.Tab_Packetsniffer)
         self.Stack.addWidget(self.Tab_imageCap)
@@ -305,9 +280,9 @@ class WifiPickle(QtGui.QWidget):
                 'active' : self.FSettings.Settings.get_setting('dockarea',
                 'dock_credencials',format=bool),
             },
-            'BDFProxy': { # plugins bdfproxy ouput
+            'DHCPD': { # dhcps ouput
                 'active' : self.FSettings.Settings.get_setting('dockarea',
-                'dock_bdfproxy',format=bool),
+                'dock_dhcpd',format=bool),
             },
             'MITMProxy': {
                 'active' : self.FSettings.Settings.get_setting('dockarea',
@@ -324,7 +299,7 @@ class WifiPickle(QtGui.QWidget):
         }
         self.SettingsEnable     = {
         'ProgCheck':[],'AP_iface': None,'PortRedirect': None, 'interface':'None'}
-        self.THeaders  = OrderedDict([ ('Devices',[]),('IP Address',[]),('Mac Address',[]),('Vendors',[])])
+        self.THeaders  = OrderedDict([('IP Address',[]), ('Device Name',[]), ('Mac Address',[]), ('Vendors',[])])
         # load all session saved in file ctg
         self.status_plugin_proxy_name = QtGui.QLabel('') # status name proxy activated
         self.SessionsAP     = loads(str(self.FSettings.Settings.get_setting('accesspoint','sessions')))
@@ -337,7 +312,6 @@ class WifiPickle(QtGui.QWidget):
     def initial_GUI_loader(self):
         ''' configure GUI default window '''
         self.default_TAB_Content()
-        self.injector_TAB_Content()
         self.mitmProxy_TAB_Content()
         self.tcpproxy_TAB_Content()
         self.imageCapture_TAB_Content()
@@ -463,12 +437,6 @@ class WifiPickle(QtGui.QWidget):
         self.TabListWidget_Menu.setCurrentRow(0)
         self.setLayout(self.boxHome)
 
-    def injector_TAB_Content(self):
-        ''' add Layout page Pump-Proxy in dashboard '''
-        self.ProxyPluginsTAB = ProxySSLstrip(self.PopUpPlugins,self,self.FSettings)
-        self.ProxyPluginsTAB.sendError.connect(self.get_Error_Injector_tab)
-        self.ContentTabInject.addLayout(self.ProxyPluginsTAB)
-
     def mitmProxy_TAB_Content(self):
         ''' add Layout page MITM Proxy in dashboard '''
         self.MitmProxyTAB = Mitmproxy(self)
@@ -494,18 +462,18 @@ class WifiPickle(QtGui.QWidget):
 
     def apMonitor_Tab_Content(self):
         ''' add Layout page Monitor in dashboard '''
-        self.PumpMonitorTAB = PickleMonitor(self.FSettings)
-        self.ContentTabMonitor.addLayout(self.PumpMonitorTAB)
+        self.PickleMonitorTAB = PickleMonitor(self.FSettings)
+        self.ContentTabMonitor.addLayout(self.PickleMonitorTAB)
 
     def settings_TAB_Content(self):
         ''' add Layout page Pump-settings in dashboard '''
         widgets = {'SettingsAP': self.slipt, 'DockInfo': self.AreaDockInfo,
         'Tab_dock': self.Tab_dock, 'Settings': self.FSettings,'Network': self.GroupAdapter}
-        self.PumpSettingsTAB = PickleSettings(None,widgets)
-        self.PumpSettingsTAB.checkDockArea.connect(self.get_Content_Tab_Dock)
-        self.PumpSettingsTAB.sendMensage.connect(self.set_dhcp_setings_ap)
-        self.DHCP = self.PumpSettingsTAB.getPickleSettings()
-        self.ContentTabsettings.addLayout(self.PumpSettingsTAB)
+        self.PickleSettingsTAB = PickleSettings(None,widgets)
+        self.PickleSettingsTAB.checkDockArea.connect(self.get_Content_Tab_Dock)
+        self.PickleSettingsTAB.sendMensage.connect(self.set_dhcp_setings_ap)
+        self.DHCP = self.PickleSettingsTAB.getPickleSettings()
+        self.ContentTabsettings.addLayout(self.PickleSettingsTAB)
         self.deleteObject(widgets)
 
     def plugins_TAB_Content(self):
@@ -561,7 +529,7 @@ class WifiPickle(QtGui.QWidget):
         self.TabInfoAP.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.TabInfoAP.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.TabInfoAP.verticalHeader().setVisible(False)
-        self.TabInfoAP.setHorizontalHeaderLabels(list(sorted(dict(self.THeaders).keys())))
+        self.TabInfoAP.setHorizontalHeaderLabels(list(dict(self.THeaders).keys()))
         self.TabInfoAP.verticalHeader().setDefaultSectionSize(23)
         self.TabInfoAP.horizontalHeader().resizeSection(3,158)
         self.TabInfoAP.horizontalHeader().resizeSection(0,150)
@@ -767,10 +735,6 @@ class WifiPickle(QtGui.QWidget):
             self.PopUpPlugins.check_responder.setChecked(True)
         if self.FSettings.Settings.get_setting('plugins','dns2proxy_plugin',format=bool):
             self.PopUpPlugins.check_dns2proy.setChecked(True)
-        elif self.FSettings.Settings.get_setting('plugins','sergioproxy_plugin',format=bool):
-            self.PopUpPlugins.check_sergioProxy.setChecked(True)
-        elif self.FSettings.Settings.get_setting('plugins','bdfproxy_plugin',format=bool):
-            self.PopUpPlugins.check_bdfproxy.setChecked(True)
         elif self.FSettings.Settings.get_setting('plugins','mitmproxy_plugin', format=bool):
             self.PopUpPlugins.check_mitmproxy.setChecked(True)
         elif self.FSettings.Settings.get_setting('plugins','noproxy',format=bool):
@@ -820,7 +784,7 @@ class WifiPickle(QtGui.QWidget):
 
     def add_DHCP_Requests_clients(self,mac,user_info):
         ''' get HDCP request data and send for Tab monitor '''
-        return self.PumpMonitorTAB.addRequests(mac,user_info,True)
+        return self.PickleMonitorTAB.addRequests(mac,user_info,True)
 
     def add_data_into_QTableWidget(self,client):
         self.TabInfoAP.addNextWidget(client)
@@ -1080,7 +1044,7 @@ class WifiPickle(QtGui.QWidget):
         ''' get std_ouput the thread dns2proxy and add in DockArea '''
         if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
             if hasattr(self,'dockAreaList'):
-                if self.PumpSettingsTAB.dockInfo['Dns2Proxy']['active']:
+                if self.PickleSettingsTAB.dockInfo['Dns2Proxy']['active']:
                     try:
                         data = str(data).split(' : ')[1]
                         for line in data.split('\n'):
@@ -1089,32 +1053,32 @@ class WifiPickle(QtGui.QWidget):
                     except IndexError:
                         return None
 
-    def get_responder_output(self,data):
+    def get_responder_output(self, data):
         ''' get std_ouput the thread responder and add in DockArea '''
         if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
             if hasattr(self,'dockAreaList'):
-                if self.PumpSettingsTAB.dockInfo['Responder']['active']:
+                if self.PickleSettingsTAB.dockInfo['Responder']['active']:
                     for line in data.split('\n'):
                         self.dockAreaList['Responder'].writeModeData(line)
                         self.responderlog.info(line)
 
-    def get_bdfproxy_output(self,data):
-        ''' get std_ouput the thread bdfproxy and add in DockArea '''
+    def get_dhcpd_output(self, data):
+        ''' get std_ouput the thread dhcpd and add in DockArea '''
         if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
             if hasattr(self,'dockAreaList'):
-                if self.PumpSettingsTAB.dockInfo['BDFProxy']['active']:
+                if self.PickleSettingsTAB.dockInfo['DHCPD']['active']:
                     try:
                         data = str(data).split(' : ')[1]
                         for line in data.split('\n'):
                             if len(line) > 2:
-                                self.dockAreaList['BDFProxy'].writeModeData(line)
+                                self.dockAreaList['DHCPD'].writeModeData(line)
                     except IndexError:
                         return None
 
     def get_mitmproxy_output(self, data):
         if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
             if hasattr(self,'dockAreaList'):
-                if self.PumpSettingsTAB.dockInfo['MITMProxy']['active']:
+                if self.PickleSettingsTAB.dockInfo['MITMProxy']['active']:
                     try:
                         data = str(data).split(' : ')[1]
                         for line in data.split('\n'):
@@ -1131,25 +1095,27 @@ class WifiPickle(QtGui.QWidget):
 
     def get_TCPproxy_output(self,data):
         ''' get std_output from thread TCPproxy module and add in DockArea'''
+        print(str(data))
         if self.FSettings.Settings.get_setting('accesspoint', 'statusAP', format=bool):
             if hasattr(self,'dockAreaList'):
-                if list(sorted(dict(data).keys()))[0] == 'urlsCap':
-                    if self.PumpSettingsTAB.dockInfo['HTTP-Requests']['active']:
+                resultSource = list(dict(data).keys())[0]
+                if resultSource == 'urlsCap':
+                    if self.PickleSettingsTAB.dockInfo['HTTP-Requests']['active']:
                         self.dockAreaList['HTTP-Requests'].writeModeData(data)
                         self.LogUrlMonitor.info('[ {0[src]} > {0[dst]} ] {1[Method]} {1[Host]}{1[Path]}'.format(
                             data['urlsCap']['IP'], data['urlsCap']['Headers']))
-                elif list(sorted(dict(data).keys()))[0] == 'POSTCreds':
-                    if self.PumpSettingsTAB.dockInfo['HTTP-Authentication']['active']:
+                elif resultSource == 'POSTCreds':
+                    if self.PickleSettingsTAB.dockInfo['HTTP-Authentication']['active']:
                         self.dockAreaList['HTTP-Authentication'].writeModeData(data)
                         self.LogCredsMonitor.info('URL: {}'.format(data['POSTCreds']['Url']))
                         self.LogCredsMonitor.info('UserName: {}'.format(data['POSTCreds']['User']))
                         self.LogCredsMonitor.info('UserName: {}'.format(data['POSTCreds']['Pass']))
                         self.LogCredsMonitor.info('Packets: {}'.format(data['POSTCreds']['Destination']))
-                elif list(sorted(dict(data).keys()))[0] == 'image':
+                elif resultSource == 'image':
                     self.ImageCapTAB.SendImageTableWidgets(data['image'])
                 else:
                     self.PacketSnifferTAB.tableLogging.writeModeData(data)
-                    self.LogTcpproxy.info('[{}] {}'.format(list(sorted(dict(data).keys()))[0],data[list(sorted(dict(data).keys()))[0]]))
+                    self.LogTcpproxy.info('[{}] {}'.format(resultSource,data[resultSource]))
 
 
     def deleteObject(self,obj):
@@ -1174,7 +1140,7 @@ class WifiPickle(QtGui.QWidget):
 
     def configure_network_AP(self):
         ''' configure interface and dhcpd for mount Access Point '''
-        self.DHCP = self.PumpSettingsTAB.getPickleSettings()
+        self.DHCP = self.PickleSettingsTAB.getPickleSettings()
         self.SettingsEnable['PortRedirect'] = self.FSettings.Settings.get_setting('settings','redirect_port')
         self.SettingsAP = {
         'interface':
@@ -1262,7 +1228,7 @@ class WifiPickle(QtGui.QWidget):
                     str(self.selectCard.currentText()),line))
 
         # check if range ip class is same
-        gateway_wp, gateway = self.PumpSettingsTAB.getPickleSettings()['router'],self.interfacesLink['gateway']
+        gateway_wp, gateway = self.PickleSettingsTAB.getPickleSettings()['router'],self.interfacesLink['gateway']
         if gateway != None:
             if gateway_wp[:len(gateway_wp)-len(gateway_wp.split('.').pop())] == \
                 gateway[:len(gateway)-len(gateway.split('.').pop())]:
@@ -1347,7 +1313,7 @@ class WifiPickle(QtGui.QWidget):
         self.GroupAP.setEnabled(False)
         self.GroupApPassphrase.setEnabled(False)
         self.GroupAdapter.setEnabled(False)
-        self.PumpSettingsTAB.GroupDHCP.setEnabled(False)
+        self.PickleSettingsTAB.GroupDHCP.setEnabled(False)
         self.PopUpPlugins.tableplugins.setEnabled(False)
         self.PopUpPlugins.tableplugincheckbox.setEnabled(False)
         self.btn_cancelar.setEnabled(True)
@@ -1357,8 +1323,9 @@ class WifiPickle(QtGui.QWidget):
         self.StatusAPTAB.start_timer()
 
         # create thread dhcpd and connect fuction get_DHCP_Requests_clients
-        print('[*] Configuring dhcpd...')
         if  self.FSettings.Settings.get_setting('accesspoint','dhcpd_server',format=bool):
+            print('[*] Configuring dhcpd...')
+
             # create dhcpd.leases and set permission for acesss DHCPD
             leases = C.DHCPLEASES_PATH
             if not path.exists(leases[:-12]):
@@ -1373,47 +1340,50 @@ class WifiPickle(QtGui.QWidget):
             self.Thread_dhcp = ThRunDhcp(['dhcpd','-d','-f','-lf',C.DHCPLEASES_PATH,'-cf',
             'core/config/dhcpd/dhcpd.conf',self.SettingsEnable['AP_iface']],self.currentSessionID)
             self.Thread_dhcp.sendRequest.connect(self.get_DHCP_Requests_clients)
+            self.Thread_dhcp.sendRequest.connect(self.get_dhcpd_output)
             self.Thread_dhcp.setObjectName('DHCP')
             self.Apthreads['RougeAP'].append(self.Thread_dhcp)
             self.PopUpPlugins.checkGeneralOptions() # check rules iptables
+        else:
+            print('[*] Skipping DHCP (using external)')
 
-        elif self.FSettings.Settings.get_setting('accesspoint','pydhcp_server',format=bool):
-            if self.FSettings.Settings.get_setting('accesspoint','pydns_server',format=bool):
-                self.ThreadDNSServer = DNSServer(self.SettingsEnable['AP_iface'],self.DHCP['router'])
-                self.ThreadDNSServer.setObjectName('DNSServer') # use DNS python implements
-
-            elif self.FSettings.Settings.get_setting('accesspoint','dnsproxy_server',format=bool):
-                self.ThreadDNSServer = ProcessThread({'python':['plugins/external/dns2proxy/dns2proxy.py','-i',
-                str(self.selectCard.currentText()),'-k',self.currentSessionID]})
-                self.ThreadDNSServer._ProcssOutput.connect(self.get_dns2proxy_output)
-                self.ThreadDNSServer.setObjectName('DNSServer') # use dns2proxy as DNS server
-
-            if not self.PopUpPlugins.check_dns2proy.isChecked():
-                self.Apthreads['RougeAP'].append(self.ThreadDNSServer)
-                # Cheese
-                #self.PopUpPlugins.set_Dns2proxyRule() # disabled :: redirect UDP port 53
-
-            self.ThreadDHCPserver = DHCPServer(self.SettingsEnable['AP_iface'],self.DHCP)
-            self.ThreadDHCPserver.sendConnetedClient.connect(self.get_DHCP_Discover_clients)
-            self.ThreadDHCPserver.setObjectName('DHCPServer')
-            self.Apthreads['RougeAP'].append(self.ThreadDHCPserver)
+        #elif self.FSettings.Settings.get_setting('accesspoint','pydhcp_server',format=bool):
+        #    if self.FSettings.Settings.get_setting('accesspoint','pydns_server',format=bool):
+        #        self.ThreadDNSServer = DNSServer(self.SettingsEnable['AP_iface'],self.DHCP['router'])
+        #        self.ThreadDNSServer.setObjectName('DNSServer') # use DNS python implements
+        #
+        #    elif self.FSettings.Settings.get_setting('accesspoint','dnsproxy_server',format=bool):
+        #        self.ThreadDNSServer = ProcessThread({'python':['plugins/external/dns2proxy/dns2proxy.py','-i',
+        #        str(self.selectCard.currentText()),'-k',self.currentSessionID]})
+        #        self.ThreadDNSServer._ProcssOutput.connect(self.get_dns2proxy_output)
+        #        self.ThreadDNSServer.setObjectName('DNSServer') # use dns2proxy as DNS server
+        #
+        #    if not self.PopUpPlugins.check_dns2proy.isChecked():
+        #        self.Apthreads['RougeAP'].append(self.ThreadDNSServer)
+        #        # Cheese
+        #        #self.PopUpPlugins.set_Dns2proxyRule() # disabled :: redirect UDP port 53
+        #
+        #    self.ThreadDHCPserver = DHCPServer(self.SettingsEnable['AP_iface'],self.DHCP)
+        #    self.ThreadDHCPserver.sendConnetedClient.connect(self.get_DHCP_Discover_clients)
+        #    self.ThreadDHCPserver.setObjectName('DHCPServer')
+        #    self.Apthreads['RougeAP'].append(self.ThreadDHCPserver)
 
         self.set_status_label_AP(True)
-        self.ProxyPluginsTAB.GroupSettings.setEnabled(False)
+        #self.ProxyPluginsTAB.GroupSettings.setEnabled(False)
         self.FSettings.Settings.set_setting('accesspoint','statusAP',True)
         self.FSettings.Settings.set_setting('accesspoint','interfaceAP',str(self.selectCard.currentText()))
 
 
         # check plugins that use sslstrip
-        if self.PopUpPlugins.check_dns2proy.isChecked() or self.PopUpPlugins.check_sergioProxy.isChecked():
-            # load ProxyPLugins
-            self.plugin_classes = Plugin.PluginProxy.__subclasses__()
-            self.plugins = {}
-            for p in self.plugin_classes:
-                self.plugins[p._name] = p()
-            # check if twisted is started
-            if not self.THReactor.isRunning():
-                self.THReactor.start()
+        #if self.PopUpPlugins.check_dns2proy.isChecked() or self.PopUpPlugins.check_sergioProxy.isChecked():
+        #    # load ProxyPLugins
+        #    self.plugin_classes = Plugin.PluginProxy.__subclasses__()
+        #    self.plugins = {}
+        #    for p in self.plugin_classes:
+        #        self.plugins[p._name] = p()
+        #    # check if twisted is started
+        #    if not self.THReactor.isRunning():
+        #        self.THReactor.start()
 
         #create logging for somes threads
         setup_logger('mitmproxy', C.LOG_PUMPKINPROXY, self.currentSessionID)
@@ -1436,42 +1406,15 @@ class WifiPickle(QtGui.QWidget):
             self.Thread_responder.setObjectName('Responder')
             self.Apthreads['RougeAP'].append(self.Thread_responder)
 
-        if self.PopUpPlugins.check_dns2proy.isChecked():
-            # create thread for plugin DNS2proxy
-            self.Thread_dns2proxy = ProcessThread(
-            {'python':[C.DNS2PROXY_EXEC,'-i',str(self.selectCard.currentText()),'-k',self.currentSessionID]})
-            self.Thread_dns2proxy._ProcssOutput.connect(self.get_dns2proxy_output)
-            self.Thread_dns2proxy.setObjectName('Dns2Proxy')
-            self.Apthreads['RougeAP'].append(self.Thread_dns2proxy)
+        #if self.PopUpPlugins.check_dns2proy.isChecked():
+        #    # create thread for plugin DNS2proxy
+        #    self.Thread_dns2proxy = ProcessThread(
+        #    {'python':[C.DNS2PROXY_EXEC,'-i',str(self.selectCard.currentText()),'-k',self.currentSessionID]})
+        #    self.Thread_dns2proxy._ProcssOutput.connect(self.get_dns2proxy_output)
+        #    self.Thread_dns2proxy.setObjectName('Dns2Proxy')
+        #    self.Apthreads['RougeAP'].append(self.Thread_dns2proxy)
 
-            # create thread for plugin SSLstrip
-            self.Threadsslstrip = Thread_sslstrip(self.SettingsEnable['PortRedirect'],
-            self.plugins,self.ProxyPluginsTAB._PluginsToLoader,self.currentSessionID)
-            self.Threadsslstrip.setObjectName("sslstrip2")
-            self.Apthreads['RougeAP'].append(self.Threadsslstrip)
-
-        elif self.PopUpPlugins.check_sergioProxy.isChecked():
-            # create thread for plugin Sergio-proxy
-            self.Threadsslstrip = Thread_sergioProxy(self.SettingsEnable['PortRedirect'],
-            self.plugins,self.ProxyPluginsTAB._PluginsToLoader,self.currentSessionID)
-            self.Threadsslstrip.setObjectName("sslstrip")
-            self.Apthreads['RougeAP'].append(self.Threadsslstrip)
-
-        elif self.PopUpPlugins.check_bdfproxy.isChecked():
-            # create thread for plugin BDFproxy-ng
-            self.Thread_bdfproxy = ProcessThread({'python':[C.BDFPROXY_EXEC,'-k',self.currentSessionID]})
-            self.Thread_bdfproxy._ProcssOutput.connect(self.get_bdfproxy_output)
-            self.Thread_bdfproxy.setObjectName('BDFProxy-ng')
-            self.Apthreads['RougeAP'].append(self.Thread_bdfproxy)
-
-        #elif self.PopUpPlugins.check_pickleProxy.isChecked():
-        #    # create thread for plugin Pickle-Proxy
-        #    self.Thread_PickleProxy = ThreadPickleProxy(self.currentSessionID)
-        #    self.Thread_PickleProxy.send.connect(self.get_PickleProxy_output)
-        #    self.Thread_PickleProxy.setObjectName('Pickle-Proxy')
-        #    self.Apthreads['RougeAP'].append(self.Thread_PickleProxy)
-
-        elif self.PopUpPlugins.check_mitmproxy.isChecked():
+        if self.PopUpPlugins.check_mitmproxy.isChecked():
             # Create thread for MITM Proxy
             self.Thread_MitmProxy = ProcessThread({'bash':['test.sh']})
             self.Thread_MitmProxy._ProcssOutput.connect(self.get_mitmproxy_output)
@@ -1512,7 +1455,7 @@ class WifiPickle(QtGui.QWidget):
         self.progress.hideProcessbar()
         # check if Advanced mode is enable
         if self.FSettings.Settings.get_setting('dockarea','advanced',format=bool):
-            self.PumpSettingsTAB.doCheckAdvanced()
+            self.PickleSettingsTAB.doCheckAdvanced()
 
         print('-------------------------------')
         print('AP::[{}] Running...'.format(self.EditApName.text()))
@@ -1525,13 +1468,13 @@ class WifiPickle(QtGui.QWidget):
         ''' stop all thread :Access point attack and restore all settings  '''
         if self.Apthreads['RougeAP'] == []: return
         print('-------------------------------')
-        self.ProxyPluginsTAB.GroupSettings.setEnabled(True)
+        #self.ProxyPluginsTAB.GroupSettings.setEnabled(True)
         self.FSettings.Settings.set_setting('accesspoint','statusAP',False)
         self.FSettings.Settings.set_setting('accesspoint','bssid',str(self.EditBSSID.text()))
         self.SessionsAP[self.currentSessionID]['stoped'] = asctime()
         self.FSettings.Settings.set_setting('accesspoint','sessions',dumps(self.SessionsAP))
         # check if dockArea activated and stop dock Area
-        self.PumpSettingsTAB.GroupArea.setEnabled(True)
+        self.PickleSettingsTAB.GroupArea.setEnabled(True)
         # stop all Thread in create for Access Point
         try:
             for thread in self.Apthreads['RougeAP']:
@@ -1541,7 +1484,8 @@ class WifiPickle(QtGui.QWidget):
                         thread.terminate()
         except Exception: pass
         # remove iptables commands and stop dhcpd if pesist in process
-        for kill in self.SettingsAP['kill']: exec_bash(kill)
+        for kill in self.SettingsAP['kill']:
+            exec_bash(kill)
         # stop time count
         self.StatusAPTAB.stop_timer()
         #disabled options
@@ -1558,15 +1502,17 @@ class WifiPickle(QtGui.QWidget):
         self.APclients = {}
         lines = []
         # save logger in ProxyPlugins request
-        if self.ProxyPluginsTAB.log_inject.count()>0:
-            with open('logs/AccessPoint/injectionPage.log','w') as injectionlog:
-                for index in xrange(self.ProxyPluginsTAB.log_inject.count()):
-                    lines.append(str(self.ProxyPluginsTAB.log_inject.item(index).text()))
-                for log in lines: injectionlog.write(log+'\n')
-                injectionlog.close()
+        #if self.ProxyPluginsTAB.log_inject.count()>0:
+        #    with open('logs/AccessPoint/injectionPage.log','w') as injectionlog:
+        #        for index in xrange(self.ProxyPluginsTAB.log_inject.count()):
+        #            lines.append(str(self.ProxyPluginsTAB.log_inject.item(index).text()))
+        #        for log in lines: injectionlog.write(log+'\n')
+        #        injectionlog.close()
         # clear dhcpd.leases
-        with open(C.DHCPLEASES_PATH,'w') as dhcpLease:
-            dhcpLease.write(''),dhcpLease.close()
+        #with open(C.DHCPLEASES_PATH,'w') as dhcpLease:
+        #    dhcpLease.write(''),dhcpLease.close()
+        print('[*] Clearing dhcp leases...')
+        system('rm {0} -f'.format(C.DHCPLEASES_PATH))
         self.btn_start_attack.setDisabled(False)
         # disable IP Forwarding in Linux
         Refactor.set_ip_forward(0)
@@ -1576,11 +1522,12 @@ class WifiPickle(QtGui.QWidget):
         self.GroupAP.setEnabled(True)
         self.GroupApPassphrase.setEnabled(True)
         self.GroupAdapter.setEnabled(True)
-        self.PumpSettingsTAB.GroupDHCP.setEnabled(True)
+        self.PickleSettingsTAB.GroupDHCP.setEnabled(True)
         self.PopUpPlugins.tableplugins.setEnabled(True)
         self.PopUpPlugins.tableplugincheckbox.setEnabled(True)
         self.btn_cancelar.setEnabled(False)
         self.progress.showProcessBar()
+        print('[*] Stopped')
 
     def about(self):
         ''' open about GUI interface '''
