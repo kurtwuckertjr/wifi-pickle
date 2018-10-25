@@ -972,6 +972,7 @@ class WifiPickle(QtGui.QWidget):
                     self.add_DHCP_Requests_clients(data[5],self.APclients[data[5]])
         elif len(data) == 7:
             if Refactor.check_is_mac(data[4]):
+                print(list(self.TabInfoAP.APclients.keys()))
                 if data[4] not in list(self.TabInfoAP.APclients.keys()):
                     leases = IscDhcpLeases(C.DHCPLEASES_PATH)
                     hostname = None
@@ -1501,24 +1502,18 @@ class WifiPickle(QtGui.QWidget):
         self.Apthreads['RougeAP'] = []
         self.APclients = {}
         lines = []
-        # save logger in ProxyPlugins request
-        #if self.ProxyPluginsTAB.log_inject.count()>0:
-        #    with open('logs/AccessPoint/injectionPage.log','w') as injectionlog:
-        #        for index in xrange(self.ProxyPluginsTAB.log_inject.count()):
-        #            lines.append(str(self.ProxyPluginsTAB.log_inject.item(index).text()))
-        #        for log in lines: injectionlog.write(log+'\n')
-        #        injectionlog.close()
+
         # clear dhcpd.leases
-        #with open(C.DHCPLEASES_PATH,'w') as dhcpLease:
-        #    dhcpLease.write(''),dhcpLease.close()
         print('[*] Clearing dhcp leases...')
         system('rm {0} -f'.format(C.DHCPLEASES_PATH))
+
         self.btn_start_attack.setDisabled(False)
         # disable IP Forwarding in Linux
         Refactor.set_ip_forward(0)
         self.TabInfoAP.clearContents()
+        self.TabInfoAP.APclients = {}
         self.window_phishing.killThread()
-
+        self.PickleMonitorTAB.clearAll()
         self.GroupAP.setEnabled(True)
         self.GroupApPassphrase.setEnabled(True)
         self.GroupAdapter.setEnabled(True)

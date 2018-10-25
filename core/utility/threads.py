@@ -103,6 +103,8 @@ class ThRunDhcp(QThread):
                 self.sendRequest.emit(data.split())
             elif 'DHCPACK on' in data.rstrip():
                 self.sendRequest.emit(data.split())
+            elif 'reuse_lease' in data.rstrip():
+                self.sendRequest.emit(data.split())
             loggerDhcp.info(data.rstrip())
 
     def stop(self):

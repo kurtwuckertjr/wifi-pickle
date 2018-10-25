@@ -3,7 +3,7 @@ import modules as GUIs
 from core.main import QtGui,QtCore
 from core.utils import Refactor
 from collections import OrderedDict
-from core.widgets.pluginssettings import BDFProxySettings,ResponderSettings
+from core.widgets.pluginssettings import ResponderSettings
 
 from compat import *
 """
@@ -40,9 +40,9 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.GroupPlugins = QtGui.QGroupBox()
         self.GroupPluginsProxy = QtGui.QGroupBox()
         self.GroupPlugins.setTitle('plugins:')
-        self.GroupPluginsProxy.setTitle('Enable proxy server:')
-        self.GroupPluginsProxy.setCheckable(True)
-        self.GroupPluginsProxy.clicked.connect(self.get_disable_proxyserver)
+        #self.GroupPluginsProxy.setTitle('Enable proxy server:')
+        #self.GroupPluginsProxy.setCheckable(True)
+        #self.GroupPluginsProxy.clicked.connect(self.get_disable_proxyserver)
         self.GroupPluginsProxy.setLayout(self.layoutproxy)
         self.GroupPlugins.setLayout(self.layoutform)
 
@@ -52,9 +52,7 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.check_noproxy      = QtGui.QRadioButton('No Proxy')
         self.check_mitmproxy    = QtGui.QRadioButton('MITM Proxy')
 
-        self.btnBDFSettings    = QtGui.QPushButton('Change')
         self.btnResponderSettings = QtGui.QPushButton('Change')
-        self.btnBDFSettings.setIcon(QtGui.QIcon('icons/config.png'))
         self.btnResponderSettings.setIcon(QtGui.QIcon('icons/config.png'))
         #self.btnResponderSettings.clicked.connect(self.ConfigOBJBResponder)
 
@@ -164,7 +162,7 @@ class PopUpPlugins(QtGui.QVBoxLayout):
     # control checkbox plugins
     def checkGeneralOptions(self):
         ''' settings plugins proxy options and rules iptables '''
-        self.unset_Rules('mitmproxy')
+        self.unsetRules('mitmproxy')
         self.FSettings.Settings.set_setting('plugins','mitmproxy_plugin',self.check_mitmproxy.isChecked())
         self.FSettings.Settings.set_setting('plugins','noproxy',self.check_noproxy.isChecked())
         if self.check_mitmproxy.isChecked():
@@ -174,7 +172,9 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         elif self.check_noproxy.isChecked():
             self.main_method.set_proxy_statusbar('',disabled=True)
             self.main_method.MitmProxyTAB.tabcontrol.setEnabled(False)
-            self.unset_Rules('mitmproxy')
+            self.unsetRules('mitmproxy') 
+            self.tableplugincheckbox.setEnabled(True)
+            self.checkBoxTCPproxy()
 
     def checkBoxTCPproxy(self):
         if self.check_tcpproxy.isChecked():
@@ -204,16 +204,14 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         return search[serviceName]
 
     def setRules(self, serviceName, includeStockRules = True):
-        print('Setting rules for service: {}'.format(str(serviceName)))
         items = []
         optionRulesResults = self.optionsRules(serviceName)
         if includeStockRules:
             for index in xrange(self.FSettings.ListRules.count()):
                 items.append(str(self.FSettings.ListRules.item(index).text()))
-            if optionRulesResults[0] in items:
-                print('Skipping rule set for service: {}'.format(str(serviceName)))
-                return
         for rule in optionRulesResults:
+            if rule in items:
+                continue
             item = QtGui.QListWidgetItem()
             item.setText(rule)
             item.setSizeHint(QtCore.QSize(30,30))
@@ -222,11 +220,15 @@ class PopUpPlugins(QtGui.QVBoxLayout):
     def set_MitmProxyRule(self):
         self.setRules(serviceName = 'mitmproxy')
 
-    def unset_Rules(self,type):
+    def unsetRules(self, serviceName):
         ''' remove rules from Listwidget in settings widget'''
-        items = []
+        optionRulesResults = self.optionsRules(serviceName)
         for index in xrange(self.FSettings.ListRules.count()):
-            items.append(str(self.FSettings.ListRules.item(index).text()))
-        for position,line in enumerate(items):
-            if self.optionsRules(type) == line:
-                self.FSettings.ListRules.takeItem(position)
+            try:
+                ruleData = str(self.FSettings.ListRules.item(index).text())
+            except:
+                self.FSettings.ListRules.takeItem(index)
+                ruleData = '~' 
+            if ruleData in str(optionRulesResults) or ruleData == '~':
+                self.FSettings.ListRules.takeItem(index)
+                continue

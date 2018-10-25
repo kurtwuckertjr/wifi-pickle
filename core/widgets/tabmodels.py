@@ -599,8 +599,7 @@ class PickleMonitor(QtGui.QVBoxLayout):
         self.MonitorTreeView= QtGui.QTreeView()
         self.MonitorTreeView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.model = QtGui.QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(['Devices','Informations'])
-        self.MonitorTreeView.setModel(self.model)
+        self.setModel()
         self.MonitorTreeView.setUniformRowHeights(True)
         self.MonitorTreeView.setColumnWidth(0,130)
 
@@ -612,8 +611,16 @@ class PickleMonitor(QtGui.QVBoxLayout):
         self.Home.addWidget(self.widget)
         self.addLayout(self.Home)
 
+    def setModel(self):
+        self.model.setHorizontalHeaderLabels(['Devices','Informations'])
+        self.MonitorTreeView.setModel(self.model)
+
     def expandAll(self):
         return self.MonitorTreeView.expandAll()
+
+    def clearAll(self):
+        self.model.clear()
+        return self.setModel()
 
     def addRequests(self,macddress,user,status):
         if status:
