@@ -4,7 +4,7 @@ WiFi-Pickle (https://govanguard.io)
 ## Authors:
 Shane Scott
 
-## About legion
+## About Wifi-Pickle
 Based on WiFi-Pumpkin, WiFi-Pickle is a rogue WiFi access point attacks.
 
 WiFi-Pickle is written in Python 3.6, has been partially ported from PyQt4 to PyQt5, and no longer uses anchient and arcane libraries. 
