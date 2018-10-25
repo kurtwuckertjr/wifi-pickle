@@ -4,7 +4,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from core.utility.collection import SettingsINI
 import core.utility.constants as C
-
+from compat import *
+0
 """
 Description:
     This program is a module for wifi-pickle.py.
@@ -198,7 +199,7 @@ class SettingsTabGeneral(QVBoxLayout):
 class frm_Settings(QDialog):
     def __init__(self, parent = None):
         super(frm_Settings, self).__init__(parent)
-        self.setWindowTitle('WiFi-Pompkin - Settings')
+        self.setWindowTitle('WiFi-Pickle - Settings')
         self.Settings = SettingsINI(C.CONFIG_INI)
         self.loadtheme(self.get_theme_qss())
         self.setGeometry(0, 0, 420, 440)

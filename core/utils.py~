@@ -145,12 +145,15 @@ class Refactor:
          'dhcp': {C.LOG_DHCP:[]},
          'urls': {C.LOG_URLCAPTURE:[]},
          'hostapd': {C.LOG_HOSTAPD:[]},
+         'bdfproxy': {C.LOG_BDFPROXY:[]},
          'credentials': {C.LOG_CREDSCAPTURE:[]},
          'dns2proxy': {C.LOG_DNS2PROXY:[]},
+         'injectionPage': {C.LOG_SSLSTRIP:[]},
+         'dnsspoofAP': {C.LOG_DNSSPOOF:[]},
          'responder': {C.LOG_RESPONDER:[]},
          'mitmproxy': {C.LOG_PUMPKINPROXY:[]},
-         'tcpproxy': {C.LOG_TCPPROXY:[]}
-        }
+         'tcpproxy': {C.LOG_TCPPROXY:[]},
+         'phishing': {C.LOG_PHISHING:[]},}
         count_files = len(readFile.keys())
         if unchecked != {}:
             for key in unchecked.keys(): readFile.pop(key)
@@ -173,18 +176,18 @@ class Refactor:
         HTML += '</span><span class="s5">Report Generated at::</span><span class="s0">'+asctime()+'</span>\n\n'
         HTML += '</span><span class="s4"><br></span><span class="s1">\n'
         for key in readFile.keys():
-            if len(readFile[key][list(readFile[key].keys())[0]]) > 0:
+            if len(readFile[key][readFile[key].keys()[0]]) > 0:
                 HTML += '</span><span class="s2">-[ {} Logger ]-</span><span class="s1">\n'.format(key)
-                HTML += readFile[key][list(readFile[key].keys())[0]]
+                HTML += readFile[key][readFile[key].keys()[0]]
                 HTML += '</span><span class="s4"><br><br></span><span class="s1">\n'
                 activated_Files.append(key)
-            elif Refactor.getSize(list(readFile[key].keys())[0]) == 0:
+            elif Refactor.getSize(readFile[key].keys()[0]) == 0:
                 emptyFile.append(key)
         HTML += '</span></pre>\n<TABLE CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#C0C0C0" >\
         <TR><TD><CENTER>''<FONT FACE="Arial, Helvetica" COLOR="#000000">WiFi-Pickle (C) 2015-2017 P0cL4bs Team' \
         '</FONT></center></TD></TR></TABLE></body>\n</html>\n'
 
-        Load_ = {'HTML': HTML,'Files':[list(readFile[x].keys())[0] for x in readFile.keys()],
+        Load_ = {'HTML': HTML,'Files':[readFile[x].keys()[0] for x in readFile.keys()],
         'activated_Files':activated_Files,'empty_files': emptyFile, 'Count': count_files}
         return Load_
 

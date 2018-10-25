@@ -356,70 +356,70 @@ class WifiPickle(QtGui.QWidget):
         Menu_tools.addAction(btn_drift)
 
         # server Menu
-        Menu_Server = self.myQMenuBar.addMenu('&Server')
-        btn_phishing = QtGui.QAction('Phishing Manager',self)
-        btn_winup = QtGui.QAction('Windows Update',self)
-        btn_winup.setShortcut('Ctrl+N')
-        btn_phishing.setShortcut('ctrl+Z')
-        Menu_Server.addAction(btn_phishing)
-        Menu_Server.addAction(btn_winup)
+        #Menu_Server = self.myQMenuBar.addMenu('&Server')
+        #btn_phishing = QtGui.QAction('Phishing Manager',self)
+        #btn_winup = QtGui.QAction('Windows Update',self)
+        #btn_winup.setShortcut('Ctrl+N')
+        #btn_phishing.setShortcut('ctrl+Z')
+        #Menu_Server.addAction(btn_phishing)
+        #Menu_Server.addAction(btn_winup)
 
         #menu module
         Menu_module = self.myQMenuBar.addMenu('&Modules')
         btn_deauth = QtGui.QAction('Wi-Fi deauthentication', self)
         btn_probe = QtGui.QAction('Wi-Fi Probe Request',self)
-        btn_dhcpStar = QtGui.QAction('DHCP Starvation',self)
-        btn_arp = QtGui.QAction('ARP Poisoner ',self)
-        btn_dns = QtGui.QAction('DNS Spoofer ',self)
+        #btn_dhcpStar = QtGui.QAction('DHCP Starvation',self)
+        #btn_arp = QtGui.QAction('ARP Poisoner ',self)
+        #btn_dns = QtGui.QAction('DNS Spoofer ',self)
 
         # Shortcut modules
         btn_deauth.setShortcut('Ctrl+W')
         btn_probe.setShortcut('Ctrl+K')
-        btn_dhcpStar.setShortcut('Ctrl+H')
-        btn_dns.setShortcut('ctrl+D')
-        btn_arp.setShortcut('ctrl+Q')
+        #btn_dhcpStar.setShortcut('Ctrl+H')
+        #btn_dns.setShortcut('ctrl+D')
+        #btn_arp.setShortcut('ctrl+Q')
         action_settings.setShortcut('Ctrl+X')
 
         #connect buttons
         btn_probe.triggered.connect(self.showProbe)
         btn_deauth.triggered.connect(self.showDauth)
-        btn_dhcpStar.triggered.connect(self.show_dhcpDOS)
-        btn_winup.triggered.connect(self.show_windows_update)
-        btn_arp.triggered.connect(self.show_arp_posion)
-        btn_dns.triggered.connect(self.show_dns_spoof)
-        btn_phishing.triggered.connect(self.show_PhishingManager)
+        #btn_dhcpStar.triggered.connect(self.show_dhcpDOS)
+        #btn_winup.triggered.connect(self.show_windows_update)
+        #btn_arp.triggered.connect(self.show_arp_posion)
+        #btn_dns.triggered.connect(self.show_dns_spoof)
+        #btn_phishing.triggered.connect(self.show_PhishingManager)
         action_settings.triggered.connect(self.show_settings)
 
         #icons modules
-        btn_arp.setIcon(QtGui.QIcon('icons/arp_.png'))
-        btn_winup.setIcon(QtGui.QIcon('icons/arp.png'))
-        btn_dhcpStar.setIcon(QtGui.QIcon('icons/dhcp.png'))
+        #btn_arp.setIcon(QtGui.QIcon('icons/arp_.png'))
+        #btn_winup.setIcon(QtGui.QIcon('icons/arp.png'))
+        #btn_dhcpStar.setIcon(QtGui.QIcon('icons/dhcp.png'))
         btn_probe.setIcon(QtGui.QIcon('icons/probe.png'))
         btn_deauth.setIcon(QtGui.QIcon('icons/deauth.png'))
-        btn_dns.setIcon(QtGui.QIcon('icons/dns_spoof.png'))
-        btn_phishing.setIcon(QtGui.QIcon('icons/page.png'))
+        #btn_dns.setIcon(QtGui.QIcon('icons/dns_spoof.png'))
+        #btn_phishing.setIcon(QtGui.QIcon('icons/page.png'))
         action_settings.setIcon(QtGui.QIcon('icons/setting.png'))
 
         # add modules menu
         Menu_module.addAction(btn_deauth)
         Menu_module.addAction(btn_probe)
-        Menu_module.addAction(btn_dhcpStar)
-        Menu_module.addAction(btn_arp)
-        Menu_module.addAction(btn_dns)
+        #Menu_module.addAction(btn_dhcpStar)
+        #Menu_module.addAction(btn_arp)
+        #Menu_module.addAction(btn_dns)
 
         #menu extra
         Menu_extra= self.myQMenuBar.addMenu('&Help')
-        Menu_update = QtGui.QAction('Check for Updates',self)
+        #Menu_update = QtGui.QAction('Check for Updates',self)
         Menu_about = QtGui.QAction('About WiFi-Pickle',self)
-        Menu_issue = QtGui.QAction('Submit issue',self)
+        #Menu_issue = QtGui.QAction('Submit issue',self)
         Menu_about.setIcon(QtGui.QIcon('icons/about.png'))
-        Menu_issue.setIcon(QtGui.QIcon('icons/report.png'))
-        Menu_update.setIcon(QtGui.QIcon('icons/update.png'))
+        #Menu_issue.setIcon(QtGui.QIcon('icons/report.png'))
+        #Menu_update.setIcon(QtGui.QIcon('icons/update.png'))
         Menu_about.triggered.connect(self.about)
-        Menu_issue.triggered.connect(self.issue)
-        Menu_update.triggered.connect(self.show_update)
-        Menu_extra.addAction(Menu_issue)
-        Menu_extra.addAction(Menu_update)
+        #Menu_issue.triggered.connect(self.issue)
+        #Menu_update.triggered.connect(self.show_update)
+        #Menu_extra.addAction(Menu_issue)
+        #Menu_extra.addAction(Menu_update)
         Menu_extra.addAction(Menu_about)
         # create box default Form
         self.boxHome = QtGui.QVBoxLayout(self)
@@ -1417,7 +1417,7 @@ class WifiPickle(QtGui.QWidget):
 
         if self.PopUpPlugins.check_mitmproxy.isChecked():
             # Create thread for MITM Proxy
-            self.Thread_MitmProxy = ProcessThread({'bash':['test.sh']})
+            self.Thread_MitmProxy = ProcessThread({'bash':['core/helpers/runMitmProxy.sh']})
             self.Thread_MitmProxy._ProcssOutput.connect(self.get_mitmproxy_output)
             self.Thread_MitmProxy.setObjectName('MITM Proxy')
             self.Apthreads['RougeAP'].append(self.Thread_MitmProxy)
@@ -1487,6 +1487,7 @@ class WifiPickle(QtGui.QWidget):
         # remove iptables commands and stop dhcpd if pesist in process
         for kill in self.SettingsAP['kill']:
             exec_bash(kill)
+        exec_bash('core/helpers/killMitmProxy.sh')
         # stop time count
         self.StatusAPTAB.stop_timer()
         #disabled options

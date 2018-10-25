@@ -206,12 +206,12 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         search = {
         'mitmproxy':
                     [
-                        str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081'),
+                        str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080'),
                     ],
         'mitmproxyssl':
                     [
-                        str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081'),
-                        str('iptables -t nat -A PREROUTING -p tcp --destination-port 443 -j REDIRECT --to-port 8081')
+                        str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080'),
+                        str('iptables -t nat -A PREROUTING -p tcp --destination-port 443 -j REDIRECT --to-port 8080')
                     ]
         }
         return search[serviceName]
