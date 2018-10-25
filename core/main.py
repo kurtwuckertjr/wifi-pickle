@@ -85,8 +85,8 @@ Copyright:
 author      = 'Shane Scott, GoVanguard'
 emails      = ['sscott@gvit.com', 'info@gvit.com']
 license     = ' GNU GPL 3'
-version     = '0.1.0'
-update      = '10/15/2018' # This is the USA :D
+version     = '0.2.0'
+update      = '10/25/2018' # This is the USA :D
 desc        = ['A salty tool for Rogue Wi-Fi Access Point Attacks']
 
 class Initialize(QtGui.QMainWindow):
@@ -112,7 +112,7 @@ class Initialize(QtGui.QMainWindow):
         dock.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
         # set window title
-        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.1.0'))
+        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.2.0'))
         self.setGeometry(0, 0, C.GEOMETRYH, C.GEOMETRYW) # set geometry window
         self.loadtheme(self.FSettings.get_theme_qss())
 
@@ -1020,7 +1020,7 @@ class WifiPickle(QtGui.QWidget):
         ''' get inactivity client from hostapd response'''
         if self.TabInfoAP.APclients != {}:
             if data in list(self.TabInfoAP.APclients.keys()):
-                self.PumpMonitorTAB.addRequests(data,self.TabInfoAP.APclients[data],False)
+                self.PickleMonitorTAB.addRequests(data,self.TabInfoAP.APclients[data],False)
             self.TabInfoAP.delete_item(data)
             self.connectedCount.setText(str(len(list(self.TabInfoAP.APclients.keys()))))
 

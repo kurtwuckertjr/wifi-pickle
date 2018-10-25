@@ -40,9 +40,6 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.GroupPlugins = QtGui.QGroupBox()
         self.GroupPluginsProxy = QtGui.QGroupBox()
         self.GroupPlugins.setTitle('plugins:')
-        #self.GroupPluginsProxy.setTitle('Enable proxy server:')
-        #self.GroupPluginsProxy.setCheckable(True)
-        #self.GroupPluginsProxy.clicked.connect(self.get_disable_proxyserver)
         self.GroupPluginsProxy.setLayout(self.layoutproxy)
         self.GroupPlugins.setLayout(self.layoutform)
 
@@ -50,14 +47,17 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.check_responder    = QtGui.QCheckBox('Responder')
         self.check_tcpproxy     = QtGui.QCheckBox('TCP-Proxy')
         self.check_noproxy      = QtGui.QRadioButton('No Proxy')
-        self.check_mitmproxy    = QtGui.QRadioButton('MITM Proxy')
+        self.check_mitmproxy    = QtGui.QRadioButton('MITM Proxy (HTTP)')
+        self.check_mitmproxyssl   = QtGui.QRadioButton('MITM Proxy (HTTP/HTTPS)')
 
         self.btnResponderSettings = QtGui.QPushButton('Change')
         self.btnResponderSettings.setIcon(QtGui.QIcon('icons/config.png'))
         #self.btnResponderSettings.clicked.connect(self.ConfigOBJBResponder)
 
         # set text description plugins
-        self.check_mitmproxy.setObjectName('Latest man in the middle proxy')
+        self.check_mitmproxy.setObjectName('MITM Proxy 4.0.4. Forward HTTP only')
+        self.check_mitmproxyssl.setObjectName('MITM Proxy 4.0.4. Forward HTTP and HTTPS')
+        self.check_noproxy.setObjectName('No HTTP / HTTPS proxying')
 
         # desction plugin checkbox
         self.check_netcreds.setObjectName('Sniff passwords and hashes from an interface or pcap file.'
@@ -70,9 +70,9 @@ class PopUpPlugins(QtGui.QVBoxLayout):
 
         # table 1 for add plugins with QradioBtton
         self.THeadersPluginsProxy  = OrderedDict(
-        [   ('Plugins',[self.check_noproxy, self.check_mitmproxy]),
-            ('Settings',[QtGui.QPushButton('None'), QtGui.QPushButton('None')]),
-            ('Description',[self.check_noproxy.objectName(), self.check_mitmproxy.objectName()])
+        [   ('Plugins',[self.check_noproxy, self.check_mitmproxy, self.check_mitmproxyssl]),
+            ('Settings',[QtGui.QPushButton('None'), QtGui.QPushButton('None'), QtGui.QPushButton('None')]),
+            ('Description',[self.check_noproxy.objectName(), self.check_mitmproxy.objectName(), self.check_mitmproxyssl.objectName()])
         ])
 
         # table 2 for add plugins with checkbox
@@ -94,8 +94,8 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.tableplugins.verticalHeader().setDefaultSectionSize(23)
         self.tableplugins.setSortingEnabled(True)
         self.tableplugins.setHorizontalHeaderLabels(list(sorted(dict(self.THeadersPluginsProxy).keys())))
-        self.tableplugins.horizontalHeader().resizeSection(0, 350)
-        self.tableplugins.horizontalHeader().resizeSection(1, 120)
+        self.tableplugins.horizontalHeader().resizeSection(0, 300)
+        self.tableplugins.horizontalHeader().resizeSection(1, 190)
         self.tableplugins.resizeRowsToContents()
 
         self.tableplugincheckbox = QtGui.QTableWidget()
@@ -110,8 +110,8 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.tableplugincheckbox.verticalHeader().setDefaultSectionSize(23)
         self.tableplugincheckbox.setSortingEnabled(True)
         self.tableplugincheckbox.setHorizontalHeaderLabels(list(sorted(dict(self.THeadersPlugins).keys())))
-        self.tableplugincheckbox.horizontalHeader().resizeSection(0, 350)
-        self.tableplugincheckbox.horizontalHeader().resizeSection(1, 120)
+        self.tableplugincheckbox.horizontalHeader().resizeSection(0, 300)
+        self.tableplugincheckbox.horizontalHeader().resizeSection(1, 190)
         self.tableplugincheckbox.resizeRowsToContents()
 
         # add all widgets in Qtable 1 plgins
@@ -140,10 +140,12 @@ class PopUpPlugins(QtGui.QVBoxLayout):
 
         self.proxyGroup = QtGui.QButtonGroup()
         self.proxyGroup.addButton(self.check_mitmproxy)
+        self.proxyGroup.addButton(self.check_mitmproxyssl)
         self.proxyGroup.addButton(self.check_noproxy)
 
         self.check_tcpproxy.clicked.connect(self.checkBoxTCPproxy)
         self.check_mitmproxy.clicked.connect(self.checkGeneralOptions)
+        self.check_mitmproxyssl.clicked.connect(self.checkGeneralOptions)
         self.check_noproxy.clicked.connect(self.checkGeneralOptions)
         self.check_responder.clicked.connect(self.checkBoxResponder)
 
@@ -163,16 +165,23 @@ class PopUpPlugins(QtGui.QVBoxLayout):
     def checkGeneralOptions(self):
         ''' settings plugins proxy options and rules iptables '''
         self.unsetRules('mitmproxy')
+        self.unsetRules('mitmproxyssl')
         self.FSettings.Settings.set_setting('plugins','mitmproxy_plugin',self.check_mitmproxy.isChecked())
+        self.FSettings.Settings.set_setting('plugins','mitmproxyssl_plugin',self.check_mitmproxyssl.isChecked())
         self.FSettings.Settings.set_setting('plugins','noproxy',self.check_noproxy.isChecked())
         if self.check_mitmproxy.isChecked():
             self.main_method.set_proxy_statusbar('MITM-Proxy')
             self.main_method.MitmProxyTAB.tabcontrol.setEnabled(True)
             self.set_MitmProxyRule()
+        elif self.check_mitmproxyssl.isChecked():
+            self.main_method.set_proxy_statusbar('MITM-Proxy-SSL')
+            self.main_method.MitmProxyTAB.tabcontrol.setEnabled(True)
+            self.set_MitmProxySSLRule()
         elif self.check_noproxy.isChecked():
             self.main_method.set_proxy_statusbar('',disabled=True)
             self.main_method.MitmProxyTAB.tabcontrol.setEnabled(False)
             self.unsetRules('mitmproxy') 
+            self.unsetRules('mitmproxyssl')
             self.tableplugincheckbox.setEnabled(True)
             self.checkBoxTCPproxy()
 
@@ -198,6 +207,10 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         'mitmproxy':
                     [
                         str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081'),
+                    ],
+        'mitmproxyssl':
+                    [
+                        str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8081'),
                         str('iptables -t nat -A PREROUTING -p tcp --destination-port 443 -j REDIRECT --to-port 8081')
                     ]
         }
@@ -219,6 +232,9 @@ class PopUpPlugins(QtGui.QVBoxLayout):
 
     def set_MitmProxyRule(self):
         self.setRules(serviceName = 'mitmproxy')
+
+    def set_MitmProxySSLRule(self):
+        self.setRules(serviceName = 'mitmproxyssl')
 
     def unsetRules(self, serviceName):
         ''' remove rules from Listwidget in settings widget'''
