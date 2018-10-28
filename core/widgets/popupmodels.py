@@ -212,6 +212,10 @@ class PopUpPlugins(QtGui.QVBoxLayout):
                     [
                         str('iptables -t nat -A PREROUTING -p tcp --destination-port 80 -j REDIRECT --to-port 8080'),
                         str('iptables -t nat -A PREROUTING -p tcp --destination-port 443 -j REDIRECT --to-port 8080')
+                    ],
+        'meatgluednsproxy':
+                    [
+                        str('iptables -t nat -A PREROUTING -p udp --destination-port 53 -j REDIRECT --to-port 53'),
                     ]
         }
         return search[serviceName]
@@ -235,6 +239,9 @@ class PopUpPlugins(QtGui.QVBoxLayout):
 
     def set_MitmProxySSLRule(self):
         self.setRules(serviceName = 'mitmproxyssl')
+
+    def set_MeatGlueProxyRule(self):
+        self.setRules(serviceName = 'meatgluednsproxy')
 
     def unsetRules(self, serviceName):
         ''' remove rules from Listwidget in settings widget'''

@@ -34,7 +34,7 @@ from core.widgets.popupmodels import (
 )
 
 from core.utility.threads import  (
-    ProcessHostapd, ThRunDhcp, ProcessThread, ThreadReactor, ThreadPopen, ThreadPickleProxy
+    ProcessHostapd, ThRunDhcp, ProcessThread, ThreadReactor, ThreadPopen, ThreadMitmProxy
 )
 
 from core.widgets.customiseds import AutoTableWidget
@@ -46,7 +46,7 @@ from core.utility.settings import frm_Settings
 import core.utility.constants as C
 from core.helpers.update import ProgressBarWid
 from core.helpers.report import frm_ReportLogger
-from core.packets.dhcpserver import DHCPServer,DNSServer
+#from core.packets.dhcpserver import DHCPServer,DNSServer
 from core.widgets.notifications import ServiceNotify
 from isc_dhcp_leases.iscdhcpleases import IscDhcpLeases
 from netfilterqueue import NetfilterQueue
@@ -98,7 +98,6 @@ class Initialize(QtGui.QMainWindow):
         # check mitmproxy lib is installed
         if not pump_proxy_lib and self.FSettings.Settings.get_setting('plugins', 'mitmproxy_plugin', format=bool):
             self.FSettings.Settings.set_setting('plugins', 'mitmproxy_plugin', False)
-            self.FSettings.Settings.set_setting('plugins', 'dns2proxy_plugin', True)
         self.form_widget    = WifiPickle(self)
 
         #for exclude USB adapter if the option is checked in settings tab
@@ -288,9 +287,9 @@ class WifiPickle(QtGui.QWidget):
                 'active' : self.FSettings.Settings.get_setting('dockarea',
                 'dock_mitmproxy', format=bool),
             },
-            'Dns2Proxy': { # plugins dns2proxy output
+            'MeatGlueDNSProxy': {
                 'active' : self.FSettings.Settings.get_setting('dockarea',
-                'dock_dns2proxy',format=bool),
+                'dock_meatglue_proxy',format=bool),
             },
             'Responder': { # plugins responder output
                 'active' : self.FSettings.Settings.get_setting('dockarea',
@@ -355,72 +354,37 @@ class WifiPickle(QtGui.QWidget):
         btn_drift.setIcon(QtGui.QIcon('icons/capture.png'))
         Menu_tools.addAction(btn_drift)
 
-        # server Menu
-        #Menu_Server = self.myQMenuBar.addMenu('&Server')
-        #btn_phishing = QtGui.QAction('Phishing Manager',self)
-        #btn_winup = QtGui.QAction('Windows Update',self)
-        #btn_winup.setShortcut('Ctrl+N')
-        #btn_phishing.setShortcut('ctrl+Z')
-        #Menu_Server.addAction(btn_phishing)
-        #Menu_Server.addAction(btn_winup)
-
         #menu module
         Menu_module = self.myQMenuBar.addMenu('&Modules')
         btn_deauth = QtGui.QAction('Wi-Fi deauthentication', self)
         btn_probe = QtGui.QAction('Wi-Fi Probe Request',self)
-        #btn_dhcpStar = QtGui.QAction('DHCP Starvation',self)
-        #btn_arp = QtGui.QAction('ARP Poisoner ',self)
-        #btn_dns = QtGui.QAction('DNS Spoofer ',self)
 
         # Shortcut modules
         btn_deauth.setShortcut('Ctrl+W')
         btn_probe.setShortcut('Ctrl+K')
-        #btn_dhcpStar.setShortcut('Ctrl+H')
-        #btn_dns.setShortcut('ctrl+D')
-        #btn_arp.setShortcut('ctrl+Q')
         action_settings.setShortcut('Ctrl+X')
 
         #connect buttons
         btn_probe.triggered.connect(self.showProbe)
         btn_deauth.triggered.connect(self.showDauth)
-        #btn_dhcpStar.triggered.connect(self.show_dhcpDOS)
-        #btn_winup.triggered.connect(self.show_windows_update)
-        #btn_arp.triggered.connect(self.show_arp_posion)
-        #btn_dns.triggered.connect(self.show_dns_spoof)
-        #btn_phishing.triggered.connect(self.show_PhishingManager)
         action_settings.triggered.connect(self.show_settings)
 
         #icons modules
-        #btn_arp.setIcon(QtGui.QIcon('icons/arp_.png'))
-        #btn_winup.setIcon(QtGui.QIcon('icons/arp.png'))
-        #btn_dhcpStar.setIcon(QtGui.QIcon('icons/dhcp.png'))
         btn_probe.setIcon(QtGui.QIcon('icons/probe.png'))
         btn_deauth.setIcon(QtGui.QIcon('icons/deauth.png'))
-        #btn_dns.setIcon(QtGui.QIcon('icons/dns_spoof.png'))
-        #btn_phishing.setIcon(QtGui.QIcon('icons/page.png'))
         action_settings.setIcon(QtGui.QIcon('icons/setting.png'))
 
         # add modules menu
         Menu_module.addAction(btn_deauth)
         Menu_module.addAction(btn_probe)
-        #Menu_module.addAction(btn_dhcpStar)
-        #Menu_module.addAction(btn_arp)
-        #Menu_module.addAction(btn_dns)
 
         #menu extra
         Menu_extra= self.myQMenuBar.addMenu('&Help')
-        #Menu_update = QtGui.QAction('Check for Updates',self)
         Menu_about = QtGui.QAction('About WiFi-Pickle',self)
-        #Menu_issue = QtGui.QAction('Submit issue',self)
         Menu_about.setIcon(QtGui.QIcon('icons/about.png'))
-        #Menu_issue.setIcon(QtGui.QIcon('icons/report.png'))
-        #Menu_update.setIcon(QtGui.QIcon('icons/update.png'))
         Menu_about.triggered.connect(self.about)
-        #Menu_issue.triggered.connect(self.issue)
-        #Menu_update.triggered.connect(self.show_update)
-        #Menu_extra.addAction(Menu_issue)
-        #Menu_extra.addAction(Menu_update)
         Menu_extra.addAction(Menu_about)
+
         # create box default Form
         self.boxHome = QtGui.QVBoxLayout(self)
         self.boxHome.addWidget(self.myQMenuBar)
@@ -429,6 +393,7 @@ class WifiPickle(QtGui.QWidget):
         hbox = QtGui.QHBoxLayout()
         self.hBoxbutton.addWidget(self.TabListWidget_Menu)
         self.hBoxbutton.addWidget(self.progress)
+
         # add button start and stop
         hbox.addLayout(self.hBoxbutton)
         hbox.addWidget(self.Stack)
@@ -733,8 +698,8 @@ class WifiPickle(QtGui.QWidget):
         self.PopUpPlugins.checkBoxTCPproxy()
         if self.FSettings.Settings.get_setting('plugins','responder_plugin',format=bool):
             self.PopUpPlugins.check_responder.setChecked(True)
-        if self.FSettings.Settings.get_setting('plugins','dns2proxy_plugin',format=bool):
-            self.PopUpPlugins.check_dns2proy.setChecked(True)
+        if self.FSettings.Settings.get_setting('plugins','meatglue_proxy_plugin',format=bool):
+            self.PopUpPlugins.check_meatglue_proxy.setChecked(True)
         elif self.FSettings.Settings.get_setting('plugins','mitmproxy_plugin', format=bool):
             self.PopUpPlugins.check_mitmproxy.setChecked(True)
         elif self.FSettings.Settings.get_setting('plugins','noproxy',format=bool):
@@ -1041,16 +1006,16 @@ class WifiPickle(QtGui.QWidget):
                 return QtGui.QMessageBox.warning(self,'Error dhcpd','isc-dhcp-server (dhcpd) is not installed')
         return True
 
-    def get_dns2proxy_output(self,data):
-        ''' get std_ouput the thread dns2proxy and add in DockArea '''
+    def get_meatglue_output(self,data):
+        ''' get std_ouput the thread meatGlue and add in DockArea '''
         if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
             if hasattr(self,'dockAreaList'):
-                if self.PickleSettingsTAB.dockInfo['Dns2Proxy']['active']:
+                if self.PickleSettingsTAB.dockInfo['MeatGlueDNSProxy']['active']:
                     try:
                         data = str(data).split(' : ')[1]
                         for line in data.split('\n'):
                             if len(line) > 2 and not self.currentSessionID in line:
-                                self.dockAreaList['Dns2Proxy'].writeModeData(line)
+                                self.dockAreaList['MeatGlueDNSProxy'].writeModeData(line)
                     except IndexError:
                         return None
 
@@ -1342,49 +1307,24 @@ class WifiPickle(QtGui.QWidget):
             'core/config/dhcpd/dhcpd.conf',self.SettingsEnable['AP_iface']],self.currentSessionID)
             self.Thread_dhcp.sendRequest.connect(self.get_DHCP_Requests_clients)
             self.Thread_dhcp.sendRequest.connect(self.get_dhcpd_output)
-            self.Thread_dhcp.setObjectName('DHCP')
+            self.Thread_dhcp.setObjectName('ISC DHCPd')
             self.Apthreads['RougeAP'].append(self.Thread_dhcp)
-            self.PopUpPlugins.checkGeneralOptions() # check rules iptables
+            self.PopUpPlugins.checkGeneralOptions() 
         else:
             print('[*] Skipping DHCP (using external)')
 
-        #elif self.FSettings.Settings.get_setting('accesspoint','pydhcp_server',format=bool):
-        #    if self.FSettings.Settings.get_setting('accesspoint','pydns_server',format=bool):
-        #        self.ThreadDNSServer = DNSServer(self.SettingsEnable['AP_iface'],self.DHCP['router'])
-        #        self.ThreadDNSServer.setObjectName('DNSServer') # use DNS python implements
-        #
-        #    elif self.FSettings.Settings.get_setting('accesspoint','dnsproxy_server',format=bool):
-        #        self.ThreadDNSServer = ProcessThread({'python':['plugins/external/dns2proxy/dns2proxy.py','-i',
-        #        str(self.selectCard.currentText()),'-k',self.currentSessionID]})
-        #        self.ThreadDNSServer._ProcssOutput.connect(self.get_dns2proxy_output)
-        #        self.ThreadDNSServer.setObjectName('DNSServer') # use dns2proxy as DNS server
-        #
-        #    if not self.PopUpPlugins.check_dns2proy.isChecked():
-        #        self.Apthreads['RougeAP'].append(self.ThreadDNSServer)
-        #        # Cheese
-        #        #self.PopUpPlugins.set_Dns2proxyRule() # disabled :: redirect UDP port 53
-        #
-        #    self.ThreadDHCPserver = DHCPServer(self.SettingsEnable['AP_iface'],self.DHCP)
-        #    self.ThreadDHCPserver.sendConnetedClient.connect(self.get_DHCP_Discover_clients)
-        #    self.ThreadDHCPserver.setObjectName('DHCPServer')
-        #    self.Apthreads['RougeAP'].append(self.ThreadDHCPserver)
+        if self.FSettings.Settings.get_setting('accesspoint','meatglue_dns_proxy',format=bool):
+                self.ThreadDNSServer = ProcessThread({'python3.6':['plugins/meatGlue/meatGlueProxy.py','-i',
+                str(self.selectCard.currentText()),'-k',self.currentSessionID]})
+                self.ThreadDNSServer._ProcssOutput.connect(self.get_meatglue_output)
+                self.ThreadDNSServer.setObjectName('MeatGlue DNS Proxy')
+                self.Apthreads['RougeAP'].append(self.ThreadDNSServer)
+                self.PopUpPlugins.set_MeatGlueProxyRule()
 
         self.set_status_label_AP(True)
         #self.ProxyPluginsTAB.GroupSettings.setEnabled(False)
         self.FSettings.Settings.set_setting('accesspoint','statusAP',True)
         self.FSettings.Settings.set_setting('accesspoint','interfaceAP',str(self.selectCard.currentText()))
-
-
-        # check plugins that use sslstrip
-        #if self.PopUpPlugins.check_dns2proy.isChecked() or self.PopUpPlugins.check_sergioProxy.isChecked():
-        #    # load ProxyPLugins
-        #    self.plugin_classes = Plugin.PluginProxy.__subclasses__()
-        #    self.plugins = {}
-        #    for p in self.plugin_classes:
-        #        self.plugins[p._name] = p()
-        #    # check if twisted is started
-        #    if not self.THReactor.isRunning():
-        #        self.THReactor.start()
 
         #create logging for somes threads
         setup_logger('mitmproxy', C.LOG_PUMPKINPROXY, self.currentSessionID)
@@ -1407,17 +1347,9 @@ class WifiPickle(QtGui.QWidget):
             self.Thread_responder.setObjectName('Responder')
             self.Apthreads['RougeAP'].append(self.Thread_responder)
 
-        #if self.PopUpPlugins.check_dns2proy.isChecked():
-        #    # create thread for plugin DNS2proxy
-        #    self.Thread_dns2proxy = ProcessThread(
-        #    {'python':[C.DNS2PROXY_EXEC,'-i',str(self.selectCard.currentText()),'-k',self.currentSessionID]})
-        #    self.Thread_dns2proxy._ProcssOutput.connect(self.get_dns2proxy_output)
-        #    self.Thread_dns2proxy.setObjectName('Dns2Proxy')
-        #    self.Apthreads['RougeAP'].append(self.Thread_dns2proxy)
-
         if self.PopUpPlugins.check_mitmproxy.isChecked():
             # Create thread for MITM Proxy
-            self.Thread_MitmProxy = ProcessThread({'bash':['core/helpers/runMitmProxy.sh']})
+            self.Thread_MitmProxy = ThreadMitmProxy({'bash':['core/helpers/runMitmProxy.sh']})
             self.Thread_MitmProxy._ProcssOutput.connect(self.get_mitmproxy_output)
             self.Thread_MitmProxy.setObjectName('MITM Proxy')
             self.Apthreads['RougeAP'].append(self.Thread_MitmProxy)

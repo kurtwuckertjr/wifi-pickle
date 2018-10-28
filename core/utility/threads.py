@@ -206,6 +206,29 @@ class ProcessThread(QObject):
             self.procThread.waitForFinished()
             self.procThread.kill()
 
+class ThreadMitmProxy(ProcessThread):
+    def __init__(self, cmd, plugins={}, directory_exec=None):
+        QThread.__init__(self)
+        self.plugins  = plugins
+        self.directory_exec = directory_exec
+        self.cmd = cmd
+
+    def disablePlugin(self,name, status):
+        ''' disable plugin by name '''
+        plugin_on = []
+        if status:
+            for plugin in self.plugins:
+                plugin_on.append(self.plugins[plugin].Name)
+            if name not in plugin_on:
+                for p in self.plugin_classes:
+                    pluginconf = p()
+                    if  pluginconf.Name == name:
+                        self.plugins[name] = pluginconf
+                        self.plugins[name].getInstance()._activated = True
+                        print('MITM Proxy::{0:17} status:On'.format(name))
+        else:
+            print('MITM Proxy::{0:17} status:Off'.format(name))
+            self.plugins.pop(self.plugins[name].Name)
 
 class ProcessHostapd(QObject):
     statusAP_connected = pyqtSignal(object)
@@ -262,27 +285,27 @@ class ThreadReactor(QThread):
     def stop(self):
         reactor.callFromThread(reactor.stop)
 
-class ThreadPickleProxy(QObject):
-    '''Thread: run Pickle-Proxy mitmproxy on brackground'''
-    send = pyqtSignal(object)
-    def __init__(self,session=None):
-        QObject.__init__(self)
-        self.session = session
-
-    def start(self):
-        print("[*] Pickle-Proxy running on port:8080 \n")
-        #from mitmproxy import options, proxy, flow
-        #opts = options.Options(listen_port=8080,mode="transparent")
-        #config = proxy.ProxyConfig(opts)
-        #state = flow.State()
-        #server = ProxyServer(config)
-        #server.allow_reuse_address = True
-        #self.m = MasterHandler(opts,server,state,self.session)
-        #self.m.run(self.send)
-
-    def stop(self):
-        self.m.shutdown()
-        print('Thread::[{}] successfully stopped.'.format(self.objectName()))
+#class ThreadPickleProxy(QObject):
+#    '''Thread: run Pickle-Proxy mitmproxy on brackground'''
+#    send = pyqtSignal(object)
+#    def __init__(self,session=None):
+#        QObject.__init__(self)
+#        self.session = session
+#
+#    def start(self):
+#        print("[*] Pickle-Proxy running on port:8080 \n")
+#        #from mitmproxy import options, proxy, flow
+#        #opts = options.Options(listen_port=8080,mode="transparent")
+#        #config = proxy.ProxyConfig(opts)
+#        #state = flow.State()
+#        #server = ProxyServer(config)
+#        #server.allow_reuse_address = True
+#        #self.m = MasterHandler(opts,server,state,self.session)
+#        #self.m.run(self.send)
+#
+#    def stop(self):
+#        self.m.shutdown()
+#        print('Thread::[{}] successfully stopped.'.format(self.objectName()))
 
 
 class Thread_sslstrip(QThread):

@@ -195,7 +195,7 @@ class Refactor:
         configNm  = configparser.RawConfigParser()
         MAC     = Refactor.get_interface_mac(interface)
         exclude = {'MAC': 'mac:{}'.format(MAC),'interface': 'interface-name:{}'.format(interface)}
-        if  not Remove:
+        if not Remove:
             if path.exists(networkmanager):
                 configNm.read(networkmanager)
                 try:
@@ -217,7 +217,10 @@ class Refactor:
                     with open(networkmanager, 'wb') as configfile:
                         configNm.write(configfile)
                         return True
-                except configparser.NoSectionError:
+                except:
+                    configfile = open(networkmanager, 'wb')
+                    configfile.write('[keyfile]')
+                    configfile.close()
                     return True
             return False
 

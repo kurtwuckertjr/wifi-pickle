@@ -255,7 +255,7 @@ class PickleProxySettings(PickleModule):
             data.append([])
             for column in range(model.columnCount()):
                 index = model.index(row, column)
-                data[row].append(str(model.data(index).toString()))
+                data[row].append(str(model.data(index)))
         for key,item in data:
             self.config.set_setting(self.plugin_key,key,item)
         self.close()
