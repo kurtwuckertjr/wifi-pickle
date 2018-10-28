@@ -30,22 +30,23 @@ class ImageCap(PSniffer):
         if not pkt.haslayer(http.HTTPRequest):
             return
 
-        http_layer = pkt.getlayer(http.HTTPRequest)
-        ip_layer = pkt.getlayer(IP)
+        httpLayer = pkt.getlayer(http.HTTPRequest)
+        ipLayer = pkt.getlayer(IP)
 
         xt = ['.svg', '.gif', '.png', '.jpg']
-        filename, fileExtension = splitext(http_layer.fields['Path'])
+        filename, fileExtension = splitext(httpLayer.fields['Path'])
         filename = filename.decode('utf-8')
         fileExtension = fileExtension.decode('utf-8')
         if fileExtension in xt:
             print('Plugin imageCap: {}'.format(filename))
-            targetFileName = 'logs/ImagesCap/%s_%s%s' % (self.session, self.random_char(5), fileExtension)
-            hostName = http_layer.fields['Host']
+            sessionName = self.session.decode('utf-8')
+            targetFileName = 'logs/ImagesCap/%s_%s%s' % (sessionName, self.randomChar(5), fileExtension)
+            hostName = httpLayer.fields['Host']
             hostName = hostName.decode('utf-8')
-            imagePath = http_layer.fields['Path']
+            imagePath = httpLayer.fields['Path']
             imagePath = imagePath.decode('utf-8')
             urlretrieve('http://{}{}'.format(hostName, imagePath), targetFileName)
             self.output.emit({'image': targetFileName})
 
-    def random_char(self,y):
+    def randomChar(self,y):
            return ''.join(random.choice(ascii_letters) for x in range(y))
