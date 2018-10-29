@@ -11,9 +11,10 @@ WiFi-Pickle is written in Python 3.6, has been partially ported from PyQt4 to Py
 
 Tested on Ubuntu, Parrot Security OS, and Windows Subsystem for Linux. Some features do not work on WSL and not all wireless adapters are compatible.
 
-Note that some of the plugins are not yet rewritten and some of the attacks, such as SSL Strip, seem to be ineffective at this time. They may be based on exploits that are patched in SSL, but I didn't dig into it yet.
-
-<img src="https://raw.githubusercontent.com/GoVanguard/legion/master/legion.png" width="1000"></img>
+* HTTP / HTTPS + SSL Strip over MITMProxy 4.0.4
+* TCP Proxy for 80, 443 and 8080. Image Capture for both HTTP and HTTPS where SSL Strip has been effective (not all sites are vulnerable to this)
+* meatGlue DNS Proxy for DNS spoofing, rewrites, etc
+* All deprecated, irrelevant and ineffective attacks removed
 
 ## Installation
 ```
@@ -40,7 +41,10 @@ Then run startLegion as root:
 ```
 sudo ./startWifiPickle.sh
 ```
-Note: Deps will be installed automatically.
+Notes: 
+* Requires Python 3.6. Installer for Python3.6 provided under ./deps if your distro doesn't have it
+* Run installDeps.sh to install Python libraries
+* Requires the exit line in console/master.py of MITMProxy 4.0.4 to be commented out
 
 ## License
 WiFi-Pickle is licensed under the GNU General Public License v3.0.
