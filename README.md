@@ -26,7 +26,7 @@ WiFi-Pickle supports Python 3.6+. It won't run in anything below Python 3.6. Don
 ## Dependencies
 * Ubuntu or variant
 * Python 3.6+
-* mitmproxy 4.0.3+
+* mitmproxy 4.0.4+
 * PyQT4 (Soon PyQT5)
 * six, Twisted
 

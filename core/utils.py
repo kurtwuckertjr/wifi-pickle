@@ -202,12 +202,15 @@ class Refactor:
                 configNm.read(networkmanager)
                 try:
                     configNm.add_section('keyfile')
+                    configfile = open(networkmanager, 'w')
+                    configNm.write(configfile)
                 except configparser.DuplicateSectionError as e:
+                    configNm.read(networkmanager)
                     configNm.set('keyfile','unmanaged-devices','{0}'.format(exclude['interface'] if MAC != None else exclude['MAC']))
                 else:
                     configNm.set('keyfile','unmanaged-devices','{0}'.format(exclude['interface'] if MAC != None else exclude['MAC']))
                 finally:
-                    configfile = open(networkmanager, 'wb')
+                    configfile = open(networkmanager, 'w')
                     configNm.write(configfile)
                 return True
             return False
@@ -216,11 +219,11 @@ class Refactor:
                 configNm.read(networkmanager)
                 try:
                     configNm.remove_option('keyfile','unmanaged-devices')
-                    with open(networkmanager, 'wb') as configfile:
+                    with open(networkmanager, 'w') as configfile:
                         configNm.write(configfile)
                         return True
                 except:
-                    configfile = open(networkmanager, 'wb')
+                    configfile = open(networkmanager, 'w')
                     configfile.write('[keyfile]')
                     configfile.close()
                     return True
