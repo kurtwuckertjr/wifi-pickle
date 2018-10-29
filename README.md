@@ -11,8 +11,8 @@ WiFi-Pickle is written in Python 3.6, has been partially ported from PyQt4 to Py
 
 Tested on Ubuntu, Parrot Security OS, and Windows Subsystem for Linux. Some features do not work on WSL and not all wireless adapters are compatible.
 
-* HTTP / HTTPS + SSL Strip over MITMProxy 4.0.4.
-* TCP Proxy for 80, 443 and 8080. Image Capture for both HTTP and HTTPS where SSL Strip has been effective (not all sites are vulnerable to this).
+* HTTP / HTTPS + SSL Strip over MITMProxy 4.0.4
+* TCP Proxy for 80, 443 and 8080. Image Capture for both HTTP and HTTPS where SSL Strip has been effective (not all sites are vulnerable to this)
 * meatGlue DNS Proxy for DNS spoofing, rewrites, etc
 * All deprecated, irrelevant and ineffective attacks removed
 
