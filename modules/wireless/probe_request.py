@@ -29,7 +29,7 @@ class frm_PMonitor(PickleModule):
         super(frm_PMonitor, self).__init__(parent)
         self.Main       = QtGui.QVBoxLayout()
         self.Requests   = []
-        self.data       = {'Devices':[],'MacAddress': [], 'SSIDs':[]}
+        self.data       = {'Device':[],'MAC Address': [], 'SSID':[]}
         self.setWindowTitle("Probe Request wifi Monitor")
         self.setWindowIcon(QtGui.QIcon('icons/icon.ico'))
         self.setGeometry(QtCore.QRect(100, 100, 420, 450))
@@ -61,7 +61,7 @@ class frm_PMonitor(PickleModule):
         self.tables.verticalHeader().setVisible(False)
         self.tables.setSortingEnabled(True)
         Headers = []
-        for key in reversed(list(sorted(dict(self.data).keys()))):
+        for key in list(sorted(dict(self.data).keys())):
             Headers.append(key)
         self.tables.setHorizontalHeaderLabels(Headers)
         self.tables.verticalHeader().setDefaultSectionSize(23)
@@ -121,22 +121,22 @@ class frm_PMonitor(PickleModule):
             self.StatusProbe.setStyleSheet("QLabel {  color : red; }")
         self.StatusBar.addWidget(self.StatusProbe)
 
-    def threadReceiveScan(self,info):
+    def threadReceiveScan(self, info):
         # add data sended from thread scapy in Table
         if info not in self.Requests:
             Headers = []
             data = info.split('|')
-            self.data['SSIDs'].append(data[1])
-            self.data['MacAddress'].append(data[0])
-            self.data['Devices'].append(data[2])
-            for n, key in enumerate(reversed(list(sorted(dict(self.data).keys())))):
+            self.data['SSID'].append(data[1])
+            self.data['MAC Address'].append(data[0])
+            self.data['Device'].append(data[2])
+            for n, key in enumerate(list(sorted(dict(self.data).keys()))):
                 Headers.append(key)
                 for m, item in enumerate(self.data[key]):
                     item = QtGui.QTableWidgetItem(item)
                     item.setTextAlignment(QtCore.Qt.AlignVCenter | QtCore.Qt.AlignCenter)
                     self.tables.setItem(m, n, item)
             Headers = []
-            for key in reversed(list(sorted(dict(self.data).keys()))):
+            for key in list(sorted(dict(self.data).keys())):
                 Headers.append(key)
             self.tables.setHorizontalHeaderLabels(Headers)
             self.Requests.append(info)
@@ -156,7 +156,7 @@ class frm_PMonitor(PickleModule):
         self.btn_scan.setEnabled(False)
         set_monitor_mode(self.get_placa.currentText()).setEnable()
         self.ThreadProbe = ThreadProbeScan(str(self.get_placa.currentText()))
-        self.connect(self.ThreadProbe,QtCore.SIGNAL('Activated ( QString ) '), self.threadReceiveScan)
+        self.connect(self.ThreadProbe,QtCore.SIGNAL('Activated( PyQt_PyObject )'), self.threadReceiveScan)
         self.ThreadProbe.setObjectName('::ThreadScanProbe')
         self.ThreadProbe.start()
         self.StartedProbe(True)

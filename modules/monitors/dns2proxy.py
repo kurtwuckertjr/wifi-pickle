@@ -23,7 +23,7 @@ class frm_dns2proxy(PickleModule):
         # Thread Capture logs
         if path.exists(C.LOG_DNS2PROXY):
             dns = ThreadPopen(['tail','-f',C.LOG_DNS2PROXY])
-            self.connect(dns,SIGNAL('Activated ( QString ) '), self.loggerdns)
+            self.connect(dns,SIGNAL('Activated ( PyQt_PyObject ) '), self.loggerdns)
             dns.setObjectName('Dns2proxy::Capture')
             self.thread.append(dns)
             dns.start()

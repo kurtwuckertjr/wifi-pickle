@@ -70,7 +70,7 @@ class ThreadPopen(QThread):
         print('[New Thread {} ({})]'.format(self.currentThreadId(),self.objectName()))
         self.process = Popen(self.cmd,stdout=PIPE,stderr=STDOUT,close_fds=True)
         for line in iter(self.process.stdout.readline, b''):
-            self.emit(SIGNAL('Activated( QString )'),line.rstrip())
+            self.emit(SIGNAL('Activated( PyQt_PyObject )'),line.rstrip())
 
     def stop(self):
         print('Stop thread:' + self.objectName())
@@ -132,7 +132,7 @@ class ThreadScan(QThread):
                         if search('<unknown>',mac):mac = '<unknown>'
                         else:mac = mac[13:32]
                         self.result = ip +'|'+mac.replace('\n','')+'|'+hostname.replace('\n','')
-                        self.emit(SIGNAL('Activated( QString )'),self.result)
+                        self.emit(SIGNAL('Activated( PyQt_PyObject )'),self.result)
                     except :
                         pass
         except NameError:

@@ -24,6 +24,6 @@ class Summary(PSniffer):
     def filterPackets(self,pkt):
         if pkt.haslayer(Ether) and pkt.haslayer(Raw) and not pkt.haslayer(IP) and not pkt.haslayer(IPv6):
             return
-        #if pkt.haslayer(DNSQR):
-        #    print ('{} ->() has searched for: {}'.format(pkt[IP].src, pkt[DNS].qd.qname[:len(str(pkt[DNS].qd.qname)) - 1]))
-        #return self.output.emit({'{}'.format(self.meta['Name']): "Packet : %s ==> %s" % (pkt[0][1].src, pkt[0][1].dst)})
+        if pkt.haslayer(DNSQR):
+            print ('{} ->() has searched for: {}'.format(pkt[IP].src, pkt[DNS].qd.qname[:len(str(pkt[DNS].qd.qname)) - 1]))
+        return self.output.emit({'{}'.format(self.meta['Name']): "Packet : %s ==> %s" % (pkt[0][1].src, pkt[0][1].dst)})

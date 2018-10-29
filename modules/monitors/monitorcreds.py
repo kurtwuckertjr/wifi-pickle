@@ -23,10 +23,10 @@ class frm_MonitorCapLogger(PickleModule):
         self.btn_exit.setEnabled(True)
         # Thread Capture logs
         creds = ThreadPopen(['tail','-f',C.LOG_CREDSCAPTURE])
-        self.connect(creds,SIGNAL('Activated ( QString ) '), self.loggercreds)
+        self.connect(creds,SIGNAL('Activated ( PyQt_PyObject ) '), self.loggercreds)
         creds.setObjectName('Monitor::Credentials')
         urls = ThreadPopen(['tail','-f',C.LOG_URLCAPTURE])
-        self.connect(urls,SIGNAL('Activated ( QString ) '), self.loggerurls)
+        self.connect(urls,SIGNAL('Activated ( PyQt_PyObject ) '), self.loggerurls)
         urls.setObjectName('Monitor::Urls')
         if path.exists(C.LOG_CREDSCAPTURE):
             self.thread.append(creds)

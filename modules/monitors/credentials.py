@@ -22,7 +22,7 @@ class frm_get_credentials(PickleModule):
         # Thread Capture logs
         if path.exists(C.LOG_PHISHING):
             dns = ThreadPopen(['tail','-f',C.LOG_PHISHING])
-            self.connect(dns,SIGNAL('Activated ( QString ) '), self.loggerdns)
+            self.connect(dns,SIGNAL('Activated ( PyQt_PyObject ) '), self.loggerdns)
             dns.setObjectName('Phishing::Capture')
             self.thread.append(dns)
             dns.start()

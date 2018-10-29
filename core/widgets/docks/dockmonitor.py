@@ -42,7 +42,7 @@ class ThreadLogger(QObject):
     @pyqtSlot()
     def readProcessOutput(self):
         try:
-            self.emit(SIGNAL('Activated( QString )'),
+            self.emit(SIGNAL('Activated( PyQt_PyObject )'),
             str(self.procLogger.readAllStandardOutput()).rstrip().split(' : ')[1])
         except Exception: pass
 
@@ -179,8 +179,8 @@ class dockTCPproxy(QTableWidget):
 
     def writeModeData(self,data):
         ''' get data output and add on QtableWidgets '''
-        self.THeaders['Plugin'].append(data.keys()[0])
-        self.THeaders['Logging'].append(data[data.keys()[0]])
+        self.THeaders['Plugin'].append(list(data.keys())[0])
+        self.THeaders['Logging'].append(data[list(data.keys())[0]])
         Headers = []
         self.setRowCount(len(self.THeaders['Plugin']))
         for n, key in enumerate(self.THeaders.keys()):
@@ -190,7 +190,7 @@ class dockTCPproxy(QTableWidget):
                 if key != 'Logging':
                     item.setTextAlignment(Qt.AlignVCenter | Qt.AlignCenter)
                 self.setItem(m, n, item)
-        self.setHorizontalHeaderLabels(self.THeaders.keys())
+        self.setHorizontalHeaderLabels(list(dict(self.THeaders).keys()))
         self.verticalHeader().setDefaultSectionSize(27)
         self.scrollToBottom()
 

@@ -88,16 +88,16 @@ class GithubUpdate(QThread):
 
     def checkUpdate(self,Version):
         if self.commit_update['Version'] != Version:
-            return self.emit(SIGNAL('Activated ( QString )'),'New version available WiFi-Pickle v'
+            return self.emit(SIGNAL('Activated ( PyQt_PyObject )'),'New version available WiFi-Pickle v'
             +self.commit_update['Version'])
         if self.commit_update['size'] > self.commit_local['size']:
             for commit in self.commit_update['lines'][self.commit_local['size']:]:
-                self.emit(SIGNAL('Activated ( QString )'),'commit: '+commit)
+                self.emit(SIGNAL('Activated ( PyQt_PyObject )'),'commit: '+commit)
                 self.commit_update['Updates'].append(commit)
         elif self.commit_update['size'] == self.commit_local['size']:
-            return self.emit(SIGNAL('Activated ( QString )'),'no changes into the repository.')
+            return self.emit(SIGNAL('Activated ( PyQt_PyObject )'),'no changes into the repository.')
         else:
-            self.emit(SIGNAL('Activated ( QString )'),'')
+            self.emit(SIGNAL('Activated ( PyQt_PyObject )'),'')
 
     def getchangelog(self,f):
         cfg = Config(f)
@@ -118,10 +118,10 @@ class GithubUpdate(QThread):
         call(['pip', 'install', '-r', 'requirements.txt'])
 
     def status(self):
-        self.emit(SIGNAL('Activated ( QString )'),'alive::')
+        self.emit(SIGNAL('Activated ( PyQt_PyObject )'),'alive::')
         if hasattr(self,'proc'):
             for line in iter(self.proc.stdout.readline, b''):
-                self.emit(SIGNAL('Activated ( QString )'),line)
+                self.emit(SIGNAL('Activated ( PyQt_PyObject )'),line)
 
     def ProcessCall_(self,command=[]):
         self.running = TimerThread(0.5, self.status)
@@ -131,5 +131,5 @@ class GithubUpdate(QThread):
             stderr=STDOUT)
         self.proc.wait()
         self.running.cancel()
-        self.emit(SIGNAL('Activated ( QString )'),'::updated')
+        self.emit(SIGNAL('Activated ( PyQt_PyObject )'),'::updated')
 

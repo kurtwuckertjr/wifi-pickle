@@ -31,8 +31,6 @@ import core.utility.constants as C
 if __name__ == '__main__':
     from core.loaders.checker.depedences import check_dep_pickle
     from PyQt4 import QtGui
-    #from PyQt5 import QtWidgets, QtGui, QtCore
-    #from PyQt5.QtGui import *
     from core.utility.application import ApplicationLoop
     from core.main import Initialize
     from core.loaders.checker.networkmanager import CLI_NetworkManager, UI_NetworkManager

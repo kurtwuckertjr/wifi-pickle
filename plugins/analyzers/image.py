@@ -33,20 +33,31 @@ class ImageCap(PSniffer):
         httpLayer = pkt.getlayer(http.HTTPRequest)
         ipLayer = pkt.getlayer(IP)
 
-        xt = ['.svg', '.gif', '.png', '.jpg']
-        filename, fileExtension = splitext(httpLayer.fields['Path'])
-        filename = filename.decode('utf-8')
-        fileExtension = fileExtension.decode('utf-8')
-        if fileExtension in xt:
-            print('Plugin imageCap: {}'.format(filename))
-            sessionName = self.session.decode('utf-8')
-            targetFileName = 'logs/ImagesCap/%s_%s%s' % (sessionName, self.randomChar(5), fileExtension)
+        xts = ['svg', 'gif', 'png', 'jpg']
+        try:
+            imageType = httpLayer.fields['Accept']
+            imageType = imageType.decode('utf-8')
+        except:
+            return
+        imageUrl = httpLayer.fields['Path']
+        imageUrl = imageUrl.decode('utf-8')
+        fileExtension = None
+
+        for xt in xts:
+            if xt in imageType:
+                fileExtension = xt
+
+        if fileExtension:
+            print('Plugin imageCap: {}'.format(imageUrl))
+            sessionName = self.session
+            targetFileName = 'logs/ImagesCap/%s_%s.%s' % (str(sessionName), str(self.randomChar(5)), str(fileExtension))
             hostName = httpLayer.fields['Host']
             hostName = hostName.decode('utf-8')
-            imagePath = httpLayer.fields['Path']
-            imagePath = imagePath.decode('utf-8')
-            urlretrieve('http://{}{}'.format(hostName, imagePath), targetFileName)
-            self.output.emit({'image': targetFileName})
+            try:
+                urlretrieve('http://{}{}'.format(hostName, imageUrl), targetFileName)
+                self.output.emit({'image': targetFileName})
+            except Exception as e:
+                print('Plugin imageCap error: {}'.format(str(e)))
 
     def randomChar(self,y):
            return ''.join(random.choice(ascii_letters) for x in range(y))

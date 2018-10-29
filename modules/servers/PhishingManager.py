@@ -237,11 +237,11 @@ class frm_PhishingManager(QtGui.QWidget):
                 a = urlopen('http://{}:{}'.format(str(self.txt_redirect.text()),self.BoxPort.value()))
                 if a.getcode() == 200:
                     self.StatusServer(True)
-                    self.emit(QtCore.SIGNAL('Activated( QString )'),'started')
+                    self.emit(QtCore.SIGNAL('Activated( PyQt_PyObject )'),'started')
 
         elif self.check_server.isChecked():
             self.DirectoryPhishing(Path=str(self.EditDirectory.text()))
-            self.emit(QtCore.SIGNAL('Activated( QString )'),'started')
+            self.emit(QtCore.SIGNAL('Activated( PyQt_PyObject )'),'started')
 
         elif self.check_custom.isChecked():
             self.html = BeautifulSoup(str(self.txt_html.toPlainText()),'lxml')
@@ -252,7 +252,7 @@ class frm_PhishingManager(QtGui.QWidget):
             self.proc_Web_server._ProcssOutput.connect(self.get_output_webserver)
             self.proc_Web_server.start()
             self.ThreadTemplates['Server'].append(self.proc_Web_server)
-            self.emit(QtCore.SIGNAL('Activated( QString )'), 'started')
+            self.emit(QtCore.SIGNAL('Activated( PyQt_PyObject )'), 'started')
             self.btn_start_template.setEnabled(False)
             self.btn_stop_template.setEnabled(True)
             self.StatusServer(True)
@@ -268,7 +268,7 @@ class frm_PhishingManager(QtGui.QWidget):
             # self.ServerHTTPLoad.setObjectName('THread::: HTTP Clone')
             # self.ServerHTTPLoad.start()
             # self.StatusServer(True)
-            # self.emit(QtCore.SIGNAL('Activated( QString )'),'started')
+            # self.emit(QtCore.SIGNAL('Activated( PyQt_PyObject )'),'started')
 
     def get_output_webserver(self,data):
         print(data)

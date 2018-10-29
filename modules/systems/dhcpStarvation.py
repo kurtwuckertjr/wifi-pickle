@@ -60,7 +60,7 @@ class frm_dhcp_Attack(PickleModule):
             self.check.setText("[ ON ]")
             self.check.setStyleSheet("QLabel {  color : green; }")
             self.threadstar = ThreadAttackStar(interface)
-            self.connect(self.threadstar,QtCore.SIGNAL("Activated ( QString )"),self.getloggerAttack)
+            self.connect(self.threadstar,QtCore.SIGNAL("Activated ( PyQt_PyObject )"),self.getloggerAttack)
             self.threadstar.setObjectName("DHCP Starvation")
             self.threadstar.start()
             return

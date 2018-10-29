@@ -46,19 +46,13 @@ from core.utility.settings import frm_Settings
 import core.utility.constants as C
 from core.helpers.update import ProgressBarWid
 from core.helpers.report import frm_ReportLogger
-#from core.packets.dhcpserver import DHCPServer,DNSServer
 from core.widgets.notifications import ServiceNotify
 from isc_dhcp_leases.iscdhcpleases import IscDhcpLeases
 from netfilterqueue import NetfilterQueue
 from core.servers.proxy.tcp.intercept import ThreadSniffingPackets
 import emoji
-
-pump_proxy_lib = True #check package is installed
-try:
-    from mitmproxy import proxy, flow, options
-    from mitmproxy.proxy.server import ProxyServer
-except ImportError as e:
-    pump_proxy_lib = False
+from mitmproxy import proxy, flow, options
+from mitmproxy.proxy.server import ProxyServer
 
 """
 Description:
@@ -85,8 +79,8 @@ Copyright:
 author      = 'Shane Scott, GoVanguard'
 emails      = ['sscott@gvit.com', 'info@gvit.com']
 license     = ' GNU GPL 3'
-version     = '0.2.1'
-update      = '10/25/2018' # This is the USA :D
+version     = '0.3.0'
+update      = '10/29/2018' # This is the USA :D
 desc        = ['A salty tool for Rogue Wi-Fi Access Point Attacks']
 
 class Initialize(QtGui.QMainWindow):
@@ -94,12 +88,7 @@ class Initialize(QtGui.QMainWindow):
     def __init__(self, parent=None):
         super(Initialize, self).__init__(parent)
         self.FSettings      = frm_Settings()
-
-        # check mitmproxy lib is installed
-        if not pump_proxy_lib and self.FSettings.Settings.get_setting('plugins', 'mitmproxy_plugin', format=bool):
-            self.FSettings.Settings.set_setting('plugins', 'mitmproxy_plugin', False)
         self.form_widget    = WifiPickle(self)
-
         #for exclude USB adapter if the option is checked in settings tab
         self.networkcontrol = None
         # create advanced mode support
@@ -111,7 +100,7 @@ class Initialize(QtGui.QMainWindow):
         dock.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
         # set window title
-        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.2.1'))
+        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.3.0'))
         self.setGeometry(0, 0, C.GEOMETRYH, C.GEOMETRYW) # set geometry window
         self.loadtheme(self.FSettings.get_theme_qss())
 
@@ -405,9 +394,9 @@ class WifiPickle(QtGui.QWidget):
     def mitmProxy_TAB_Content(self):
         ''' add Layout page MITM Proxy in dashboard '''
         self.MitmProxyTAB = Mitmproxy(self)
-        if not pump_proxy_lib:
-            infoLabel = ServiceNotify(C.PUMPKINPROXY_notify,title='Package Requirement')
-            self.ContentTabMitmProxy.addWidget(infoLabel)
+        #if not pump_proxy_lib:
+        #    infoLabel = ServiceNotify(C.PUMPKINPROXY_notify,title='Package Requirement')
+        #    self.ContentTabMitmProxy.addWidget(infoLabel)
         self.ContentTabMitmProxy.addLayout(self.MitmProxyTAB)
 
     def statusAP_TAB_Content(self):
@@ -700,14 +689,16 @@ class WifiPickle(QtGui.QWidget):
             self.PopUpPlugins.check_responder.setChecked(True)
         if self.FSettings.Settings.get_setting('plugins','meatglue_proxy_plugin',format=bool):
             self.PopUpPlugins.check_meatglue_proxy.setChecked(True)
-        elif self.FSettings.Settings.get_setting('plugins','mitmproxy_plugin', format=bool):
+        if self.FSettings.Settings.get_setting('plugins','mitmproxy_plugin', format=bool):
             self.PopUpPlugins.check_mitmproxy.setChecked(True)
+        elif self.FSettings.Settings.get_setting('plugins','mitmproxyssl_plugin', format=bool):
+            self.PopUpPlugins.check_mitmproxyssl.setChecked(True)
         elif self.FSettings.Settings.get_setting('plugins','noproxy',format=bool):
             self.PopUpPlugins.check_noproxy.setChecked(True)
             self.PopUpPlugins.GroupPluginsProxy.setChecked(False)
             self.PopUpPlugins.tableplugincheckbox.setEnabled(True)
-        if not pump_proxy_lib:
-            self.PopUpPlugins.check_mitmproxy.setDisabled(True)
+        #if not pump_proxy_lib:
+        #    self.PopUpPlugins.check_mitmproxy.setDisabled(True)
         self.PopUpPlugins.checkGeneralOptions()
 
     def check_key_security_invalid(self):
@@ -1354,9 +1345,19 @@ class WifiPickle(QtGui.QWidget):
             self.Thread_MitmProxy.setObjectName('MITM Proxy')
             self.Apthreads['RougeAP'].append(self.Thread_MitmProxy)
 
+        if self.PopUpPlugins.check_mitmproxyssl.isChecked():
+            # Create thread for MITM SSL Proxy
+            self.Thread_MitmProxy = ThreadMitmProxy({'bash':['core/helpers/runMitmSSLProxy.sh']})
+            self.Thread_MitmProxy._ProcssOutput.connect(self.get_mitmproxy_output)
+            self.Thread_MitmProxy.setObjectName('MITM Proxy SSL')
+            self.Apthreads['RougeAP'].append(self.Thread_MitmProxy)
+
         # start thread TCPproxy Module
         if self.PopUpPlugins.check_tcpproxy.isChecked():
-            self.Thread_TCPproxy = ThreadSniffingPackets(str(self.selectCard.currentText()),self.currentSessionID)
+            if self.PopUpPlugins.check_mitmproxyssl.isChecked():
+                self.Thread_TCPproxy = ThreadSniffingPackets(str(self.selectCard.currentText()), [80, 8080, 443], self.currentSessionID)
+            else:
+                self.Thread_TCPproxy = ThreadSniffingPackets(str(self.selectCard.currentText()), [80, 8080], self.currentSessionID)
             self.Thread_TCPproxy.setObjectName('TCPProxy')
             self.Thread_TCPproxy.output_plugins.connect(self.get_TCPproxy_output)
             self.Apthreads['RougeAP'].append(self.Thread_TCPproxy)
@@ -1404,7 +1405,7 @@ class WifiPickle(QtGui.QWidget):
         #self.ProxyPluginsTAB.GroupSettings.setEnabled(True)
         self.FSettings.Settings.set_setting('accesspoint','statusAP',False)
         self.FSettings.Settings.set_setting('accesspoint','bssid',str(self.EditBSSID.text()))
-        self.SessionsAP[self.currentSessionID]['stoped'] = asctime()
+        self.SessionsAP[self.currentSessionID]['stopped'] = asctime()
         self.FSettings.Settings.set_setting('accesspoint','sessions',dumps(self.SessionsAP))
         # check if dockArea activated and stop dock Area
         self.PickleSettingsTAB.GroupArea.setEnabled(True)

@@ -32,9 +32,10 @@ Copyright:
 
 class ThreadSniffingPackets(QThread):
     output_plugins = pyqtSignal(object)
-    def __init__(self,interface,session):
+    def __init__(self, interface, ports, session):
         QThread.__init__(self)
         self.interface  = interface
+        self.ports      = []
         self.session    = session
         self.stopped    = False
         self.config     = SettingsINI(C.TCPPROXY_INI)
@@ -77,7 +78,7 @@ class ThreadSniffingPackets(QThread):
             self.plugins[plugin_load.Name] = plugin_load
             self.plugins[plugin_load.Name].output = self.output_plugins
             self.plugins[plugin_load.Name].session = self.session
-        print('\n[*] TCPProxy running on port 80/8080:\n')
+        print('\n[*] TCPProxy running on port 80/443/8080:\n')
         for name in self.plugins.keys():
             if self.config.get_setting('plugins', name, format=bool):
                 self.plugins[name].getInstance()._activated = True
@@ -91,9 +92,7 @@ class ThreadSniffingPackets(QThread):
                 pkt = q.get(timeout = 0)
                 for Active in self.plugins.keys():
                     if self.plugins[Active].getInstance()._activated:
-                        #try:
                         self.plugins[Active].filterPackets(pkt)
-                        #except Exception: pass
             except queue.Empty:
               pass
 

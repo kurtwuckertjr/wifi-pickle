@@ -97,7 +97,7 @@ class frm_DnsSpoof(PickleModule):
         self.txt_redirect = QtGui.QLineEdit(self)
         self.txt_target = QtGui.QLineEdit(self)
         self.ComboIface = QtGui.QComboBox(self)
-        self.connect(self.ComboIface, QtCore.SIGNAL("currentIndexChanged(QString)"), self.discoveryIface)
+        self.connect(self.ComboIface, QtCore.SIGNAL("currentIndexChanged(PyQt_PyObject)"), self.discoveryIface)
 
         self.layoutform.addRow('Target:',self.txt_target)
         self.layoutform.addRow('Gateway:',self.txt_gateway)
@@ -301,7 +301,7 @@ class frm_DnsSpoof(PickleModule):
             self.StatusMonitor(True,'stas_phishing')
 
     def show_template_dialog(self):
-        self.connect(self.Ftemplates,QtCore.SIGNAL('Activated ( QString ) '), self.emit_template)
+        self.connect(self.Ftemplates,QtCore.SIGNAL('Activated ( PyQt_PyObject ) '), self.emit_template)
         self.Ftemplates.txt_redirect.setText(self.txt_redirect.text())
         self.Ftemplates.show()
 
@@ -369,7 +369,7 @@ class frm_DnsSpoof(PickleModule):
             self.thr = ThreadDNSspoofNF(self.targets,str(self.ComboIface.currentText()),
             str(self.txt_redirect.text()),APmode=True)
             self.thr.DnsReq.connect(self.get_outputDNSspoof)
-        self.connect(self.thr,QtCore.SIGNAL('Activated ( QString ) '), self.StopArpAttack)
+        self.connect(self.thr,QtCore.SIGNAL('Activated ( PyQt_PyObject ) '), self.StopArpAttack)
         self.thr.setObjectName('Dns Spoof')
         self.ThreadDirc['dns_spoof'].append(self.thr)
         self.StatusMonitor(True,'dns_spoof')

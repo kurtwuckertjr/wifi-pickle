@@ -2,6 +2,8 @@ from struct import pack
 from time import sleep,asctime
 from random import randint
 from base64 import b64encode
+import string
+import random
 from os import popen,path,walk,stat,kill,remove
 from subprocess import check_output,Popen,PIPE,STDOUT,CalledProcessError,call
 from re import search,compile,VERBOSE,IGNORECASE
@@ -359,7 +361,8 @@ class Refactor:
     @staticmethod
     def generateSessionID():
         ''' generate session encoded base64 '''
-        return str(b64encode(str(random.randint(0,100000)).encode()))
+        #return b64encode(str(random.randint(0,100000)).encode()).decode('utf-8')
+        return ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
 class waiterSleepThread(QtCore.QThread):
     ''' Simples Thread for wait 10 segunds for check update app'''

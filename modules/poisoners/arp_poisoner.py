@@ -172,7 +172,7 @@ class frm_Arp_Poison(PickleModule):
             self.txt_gateway.setText(x['gateway'])
             self.txt_redirect.setText(x['IPaddress'])
             self.txt_mac.setText(Refactor.get_interface_mac(x['activated'][0]))
-        self.connect(self.ComboIface, QtCore.SIGNAL("currentIndexChanged(QString)"), self.discoveryIface)
+        self.connect(self.ComboIface, QtCore.SIGNAL("currentIndexChanged(PyQt_PyObject)"), self.discoveryIface)
         n = self.interfaces['all']
         for i,j in enumerate(n):
             if n[i] != '':
@@ -219,7 +219,7 @@ class frm_Arp_Poison(PickleModule):
             self.StatusMonitor(True,'stas_phishing')
 
     def show_template_dialog(self):
-        self.connect(self.Ftemplates,QtCore.SIGNAL('Activated ( QString ) '), self.emit_template)
+        self.connect(self.Ftemplates,QtCore.SIGNAL('Activated ( PyQt_PyObject ) '), self.emit_template)
         self.Ftemplates.txt_redirect.setText(self.txt_redirect.text())
         self.Ftemplates.show()
 
@@ -266,14 +266,14 @@ class frm_Arp_Poison(PickleModule):
 
                     arp_target = ThARP_posion(str(self.txt_target.text()),str(self.txt_gateway.text()),
                     str(self.txt_mac.text()))
-                    self.connect(arp_target,QtCore.SIGNAL('Activated ( QString ) '), self.StopArpAttack)
+                    self.connect(arp_target,QtCore.SIGNAL('Activated ( PyQt_PyObject ) '), self.StopArpAttack)
                     arp_target.setObjectName('Arp::Poison => [target]')
                     self.ThreadDirc['Arp_posion'].append(arp_target)
                     arp_target.start()
 
                     redirectPackets = ThSpoofAttack('',
                     str(self.ComboIface.currentText()),'udp port 53',True,str(self.txt_redirect.text()))
-                    self.connect(redirectPackets,QtCore.SIGNAL('Activated ( QString ) '), self.StopArpAttack)
+                    self.connect(redirectPackets,QtCore.SIGNAL('Activated ( PyQt_PyObject ) '), self.StopArpAttack)
                     redirectPackets.setObjectName('Packets Spoof')
                     self.ThreadDirc['Arp_posion'].append(redirectPackets)
                     redirectPackets.start()

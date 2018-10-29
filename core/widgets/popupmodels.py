@@ -48,7 +48,7 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.check_tcpproxy     = QtGui.QCheckBox('TCP-Proxy')
         self.check_noproxy      = QtGui.QRadioButton('No Proxy')
         self.check_mitmproxy    = QtGui.QRadioButton('MITM Proxy (HTTP)')
-        self.check_mitmproxyssl   = QtGui.QRadioButton('MITM Proxy (HTTP/HTTPS)')
+        self.check_mitmproxyssl   = QtGui.QRadioButton('MITM Proxy (HTTP/HTTPS) + SSL-Strip')
 
         self.btnResponderSettings = QtGui.QPushButton('Change')
         self.btnResponderSettings.setIcon(QtGui.QIcon('icons/config.png'))
@@ -56,7 +56,7 @@ class PopUpPlugins(QtGui.QVBoxLayout):
 
         # set text description plugins
         self.check_mitmproxy.setObjectName('MITM Proxy 4.0.4. Forward HTTP only')
-        self.check_mitmproxyssl.setObjectName('MITM Proxy 4.0.4. Forward HTTP and HTTPS')
+        self.check_mitmproxyssl.setObjectName('MITM Proxy 4.0.4. Forward HTTP + HTTPS and run SSLStrip')
         self.check_noproxy.setObjectName('No HTTP / HTTPS proxying')
 
         # desction plugin checkbox
@@ -94,8 +94,8 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.tableplugins.verticalHeader().setDefaultSectionSize(23)
         self.tableplugins.setSortingEnabled(True)
         self.tableplugins.setHorizontalHeaderLabels(list(sorted(dict(self.THeadersPluginsProxy).keys())))
-        self.tableplugins.horizontalHeader().resizeSection(0, 300)
-        self.tableplugins.horizontalHeader().resizeSection(1, 190)
+        self.tableplugins.horizontalHeader().resizeSection(0, 400)
+        self.tableplugins.horizontalHeader().resizeSection(1, 290)
         self.tableplugins.resizeRowsToContents()
 
         self.tableplugincheckbox = QtGui.QTableWidget()
@@ -110,8 +110,8 @@ class PopUpPlugins(QtGui.QVBoxLayout):
         self.tableplugincheckbox.verticalHeader().setDefaultSectionSize(23)
         self.tableplugincheckbox.setSortingEnabled(True)
         self.tableplugincheckbox.setHorizontalHeaderLabels(list(sorted(dict(self.THeadersPlugins).keys())))
-        self.tableplugincheckbox.horizontalHeader().resizeSection(0, 300)
-        self.tableplugincheckbox.horizontalHeader().resizeSection(1, 190)
+        self.tableplugincheckbox.horizontalHeader().resizeSection(0, 400)
+        self.tableplugincheckbox.horizontalHeader().resizeSection(1, 290)
         self.tableplugincheckbox.resizeRowsToContents()
 
         # add all widgets in Qtable 1 plgins

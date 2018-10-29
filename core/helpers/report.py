@@ -188,7 +188,7 @@ class frm_ReportLogger(PickleModule):
             all_sessions.append(self.sessions[key]['started'])
         all_sessions.append('select All logger file...')
         self.CB_Data_Logger.addItems(all_sessions)
-        self.connect(self.CB_Data_Logger, QtCore.SIGNAL('activated(QString)'), self.combo_clicked)
+        self.connect(self.CB_Data_Logger, QtCore.SIGNAL('activated(PyQt_PyObject)'), self.combo_clicked)
         index = self.CB_Data_Logger.findText(all_sessions[len(all_sessions)-2], QtCore.Qt.MatchFixedString)
         self.CB_Data_Logger.setCurrentIndex(index)
         self.combo_clicked(self.CB_Data_Logger.currentText())

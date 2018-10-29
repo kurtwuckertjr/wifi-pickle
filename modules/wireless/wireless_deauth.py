@@ -212,6 +212,7 @@ class frm_deauth(PickleModule):
 
     def monitorThreadScan(self,apData):
         apData = list(apData.split('|'))
+        print(apData)
         if not str(apData[0]) in self.ApsCaptured.keys():
             self.ApsCaptured[str(apData[0])] = apData
             if Refactor.check_is_mac(str(apData[0])):
@@ -238,7 +239,7 @@ class frm_deauth(PickleModule):
             if self.interface != None:
                 if self.configure.Settings.get_setting('settings','scan_scapy',format=bool):
                     self.threadScanAP = ThreadScannerAP(self.interface)
-                    self.connect(self.threadScanAP,QtCore.SIGNAL('Activated ( QString ) '), self.monitorThreadScan)
+                    self.connect(self.threadScanAP,QtCore.SIGNAL('Activated ( PyQt_PyObject ) '), self.monitorThreadScan)
                     self.threadScanAP.setObjectName('Thread Scanner AP::scapy')
                     self.threadScanAP.start()
                 elif self.configure.Settings.get_setting('settings','scan_airodump',format=bool):

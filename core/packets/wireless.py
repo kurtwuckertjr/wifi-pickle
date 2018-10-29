@@ -60,7 +60,7 @@ class ThreadScannerAP(QThread):
     def Scanner_devices(self,pkt):
         if pkt.haslayer(Dot11):
             if pkt.type == 0 and pkt.subtype == 8:
-                self.emit(SIGNAL('Activated( QString )'),'{}|{}|{}'.format(pkt.addr2,
+                self.emit(SIGNAL('Activated( String )'),'{}|{}|{}'.format(pkt.addr2,
                 str(int(ord(pkt[Dot11Elt:3].info))),pkt.info))
 
     def stop(self):
@@ -129,6 +129,7 @@ class ThreadProbeScan(QThread):
         if pkt.haslayer(Dot11ProbeReq) and b'\x00' not in pkt[Dot11ProbeReq].info:
             mac_address = pkt.addr2
             ssid        = pkt[Dot11Elt].info
+            ssid = ssid.decode('utf-8')
             if len(ssid) == 0:  ssid='Hidden'
             try:
                 devices = EUI(mac_address)
@@ -137,8 +138,10 @@ class ThreadProbeScan(QThread):
                 devices = 'unknown device'
             if not mac_address in self.captured:
                 self.captured.append(mac_address)
-                print(mac_addess)
-                self.emit(SIGNAL("Activated( QString )"), mac_address + '|' + ssid + '|' + devices)
+                #print(mac_address)
+                #print(ssid)
+                #print(devices)
+                self.emit(SIGNAL("Activated( PyQt_PyObject )"), mac_address + '|' + ssid + '|' + devices)
 
     def stop(self):
         print("Stop thread:" + self.objectName())

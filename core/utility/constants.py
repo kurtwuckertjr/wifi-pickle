@@ -24,8 +24,8 @@ Copyright:
 dir_of_executable = os.path.dirname(__file__)
 dir_path          = os.getcwd()
 # window constants
-GEOMETRYH = 820
-GEOMETRYW = 500
+GEOMETRYH = 1024
+GEOMETRYW = 768
 
 MENU_STYLE = 'QListWidget::item {border-style: solid; border-width:1px; ' \
              'border-color:#3A3939;}QListWidget::item:selected {border-style:' \
