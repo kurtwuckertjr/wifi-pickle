@@ -27,27 +27,20 @@ dir_path          = os.getcwd()
 GEOMETRYH = 1024
 GEOMETRYW = 768
 
-MENU_STYLE = 'QListWidget::item {border-style: solid; border-width:1px; ' \
+MENU_STYLE = 'QListWidget::item {border-style: solid; border-width:3px; ' \
              'border-color:#3A3939;}QListWidget::item:selected {border-style:' \
-             ' solid;color:#ff6600;  background-color: #3A3939; border-width:1px; border-radius: 2px; border: 1px solid #ff6600;}QListWidget ' \
-             '{background-color: #302F2F; border-radius 2px; border-width:1px;border-color:#201F1F;} QListWidget:item:hover'\
-'{color: #ff6600;border-radius: 2px; }'
+             ' solid; color:#FFFFFF;  background-color: #3A3939; border-width:2px; border-radius: 2px; border: 3px solid #5d198e;}QListWidget ' \
+             '{background-color: #302F2F; border-radius 2px; border-width:3px;border-color:#201F1F;} QListWidget:item:hover'\
+'{color: #6d2f99;border-radius: 2px; }'
 GTKTHEME = 'Plastique'
 
 NOTIFYSTYLE = "; ".join((
     "color: #302F2F",
     'background-color: #996633',
     "border-color: #996633",
-    "border: 1dpx solid #996633",
+    "border: 2px solid #996633",
     "padding: 5px"))
 
-
-PUMPKINPROXY_notify = 'the package requirement mitmproxy==0.18.2 is ' \
-                      'not satisfied.'
-
-#donation button
-DONATE = 'https://github.com/P0cL4bs/WiFi-Pickle#donation'
-DONATE_TXT = 'Consider donating to support the development and maintenance of WiFi-Pickle. '
 
 #settings DHCP
 DHCPLEASES_PATH = '/var/lib/dhcp/dhcpd.leases'
@@ -68,8 +61,6 @@ LOG_URLCAPTURE   = 'logs/AccessPoint/urls.log'
 LOG_CREDSCAPTURE = 'logs/AccessPoint/credentials.log'
 LOG_TCPPROXY     = 'logs/AccessPoint/tcp-proxy.log'
 LOG_RESPONDER    = 'logs/AccessPoint/responder.log'
-LOG_BDFPROXY     = 'logs/AccessPoint/bdfproxy.log'
-LOG_DNS2PROXY    = 'logs/AccessPoint/dns2proxy.log'
 LOG_SSLSTRIP     = 'logs/AccessPoint/injectionPage.log'
 LOG_DNSSPOOF     = 'logs/AccessPoint/dnsspoof.log'
 LOG_PHISHING     = 'logs/Phishing/requests.log'

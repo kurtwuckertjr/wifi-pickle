@@ -776,7 +776,7 @@ class WifiPickle(QtGui.QWidget):
             self.status_ap_runing.setStyleSheet("QLabel {  color : green; }")
         else:
             self.status_ap_runing.setText("[OFF]")
-            self.status_ap_runing.setStyleSheet("QLabel {  color : #df1f1f; }")
+            self.status_ap_runing.setStyleSheet("QLabel {  color : #2e0c47; }")
 
     def setAP_essid_random(self):
         ''' set random mac 3 last digits  '''
