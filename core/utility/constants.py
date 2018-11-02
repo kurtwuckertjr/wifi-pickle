@@ -42,9 +42,6 @@ NOTIFYSTYLE = "; ".join((
     "padding: 5px"))
 
 
-PUMPKINPROXY_notify = 'the package requirement mitmproxy==0.18.2 is ' \
-                      'not satisfied.'
-
 #donation button
 DONATE = 'https://github.com/P0cL4bs/WiFi-Pickle#donation'
 DONATE_TXT = 'Consider donating to support the development and maintenance of WiFi-Pickle. '
