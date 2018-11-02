@@ -25,7 +25,6 @@ class Hexdump(PSniffer):
 
     def filterPackets(self,pkt):
         if pkt.haslayer(TCP) and pkt.haslayer(Raw) and pkt.haslayer(IP):
-            self.load = pkt[Raw].load.decode()
+            self.load = pkt[Raw].load #.decode()
             if self.load.startswith('POST'):
                 self.hexdumpPackets(pkt)
-                #self.logging.info(self.hexdumpPackets(pkt))
