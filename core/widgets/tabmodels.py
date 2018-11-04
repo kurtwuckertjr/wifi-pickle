@@ -308,7 +308,7 @@ class Mitmproxy(QtGui.QVBoxLayout):
     def __init__(self,mainWindow ):
         QtGui.QVBoxLayout.__init__(self)
         self.mainLayout     = QtGui.QVBoxLayout()
-        self.config         = SettingsINI(C.PUMPPROXY_INI)
+        self.config         = SettingsINI(C.MITMPROXY_INI)
         self.plugins        = []
         self.main_method    = mainWindow
         self.bt_SettingsDict    = {}

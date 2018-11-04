@@ -463,9 +463,10 @@ class WifiPickle(QtGui.QWidget):
         self.EditApGateway = QtGui.QLineEdit(self)
         self.EditApName = QtGui.QLineEdit(self)
         self.EditApBSSID  = QtGui.QLineEdit(self)
-        self.EditApIpTablesRules = QtGui.QCheckBox(self)
+        self.EditApEnableIpTablesRules = QtGui.QCheckBox(self)
+        self.EditApFlushIpTablesRules = QtGui.QCheckBox(self)
         self.btn_random_essid = QtGui.QPushButton(self)
-        self.EditApChannel =QtGui.QSpinBox(self)
+        self.EditApChannel = QtGui.QSpinBox(self)
         self.EditApChannel.setMinimum(1)
         self.EditApChannel.setMaximum(13)
         self.EditApChannel.setFixedWidth(50)
@@ -532,8 +533,10 @@ class WifiPickle(QtGui.QWidget):
         self.FormGroup3.addWidget(self.btn_random_essid, 1, 2)
         self.FormGroup3.addWidget(QtGui.QLabel("Channel:"), 2, 0)
         self.FormGroup3.addWidget(self.EditApChannel, 2, 1)
-        self.FormGroup3.addWidget(QtGui.QLabel("Flush IPTables"), 3, 0)
-        self.FormGroup3.addWidget(self.EditApIpTablesRules, 3, 1)
+        self.FormGroup3.addWidget(QtGui.QLabel("Insert IP Tables Rules"), 3, 0)
+        self.FormGroup3.addWidget(self.EditApEnableIpTablesRules, 3, 1)
+        self.FormGroup3.addWidget(QtGui.QLabel("Flush IP Tables"), 4, 0)
+        self.FormGroup3.addWidget(self.EditApFlushIpTablesRules, 4, 1)
         self.GroupAP.setLayout(self.FormGroup3)
         self.GroupAP.setFixedWidth(260)
 
@@ -811,7 +814,8 @@ class WifiPickle(QtGui.QWidget):
         self.EditApName.setText(self.FSettings.Settings.get_setting('accesspoint','ssid'))
         self.EditApBSSID.setText(self.FSettings.Settings.get_setting('accesspoint','bssid'))
         self.EditApChannel.setValue(self.FSettings.Settings.get_setting('accesspoint','channel',format=int))
-        self.EditApIpTablesRules.setChecked(self.FSettings.Settings.get_setting('accesspoint', 'flushiptables', format=bool))
+        self.EditApEnableIpTablesRules.setChecked(self.FSetting.Settings.get_setting('accesspoint', 'enableiptables', format = bool))
+        self.EditApFlushIpTablesRules.setChecked(self.FSettings.Settings.get_setting('accesspoint', 'flushiptables', format = bool))
         self.SettingsEnable['PortRedirect'] = self.FSettings.redirectport.text()
 
         # get all Wireless Adapter available and add in comboBox
@@ -1125,14 +1129,16 @@ class WifiPickle(QtGui.QWidget):
         Refactor.set_ip_forward(1)
 
         # clean iptables settings
-        if self.EditApIpTablesRules.isChecked():
+        if self.EditApFlushIpTablesRules.isChecked():
             print("Flushing IP Tables...")
             for line in self.SettingsAP['kill']:
                 exec_bash(line)
 
         # set interface using ifconfig
-        for line in self.SettingsAP['interface']:
-            exec_bash(line)
+        if self.EditApEnableIpTablesRules.isChecked():
+            print("Configuring IP Tables...")
+            for line in self.SettingsAP['interface']:
+                exec_bash(line)
 
     def start_access_point(self):
         ''' start Access Point and settings plugins  '''
@@ -1297,7 +1303,7 @@ class WifiPickle(QtGui.QWidget):
         self.FSettings.Settings.set_setting('accesspoint','interfaceAP',str(self.selectCard.currentText()))
 
         #create logging for somes threads
-        setup_logger('mitmproxy', C.LOG_PUMPKINPROXY, self.currentSessionID)
+        setup_logger('mitmproxy', C.LOG_MITMPROXY, self.currentSessionID)
         setup_logger('urls_capture', C.LOG_URLCAPTURE, self.currentSessionID)
         setup_logger('creds_capture', C.LOG_CREDSCAPTURE, self.currentSessionID)
         setup_logger('tcp_proxy', C.LOG_TCPPROXY, self.currentSessionID)

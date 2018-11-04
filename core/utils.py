@@ -150,7 +150,7 @@ class Refactor:
          'credentials': {C.LOG_CREDSCAPTURE:[]},
          'dns2proxy': {C.LOG_DNS2PROXY:[]},
          'responder': {C.LOG_RESPONDER:[]},
-         'mitmproxy': {C.LOG_PUMPKINPROXY:[]},
+         'mitmproxy': {C.LOG_MITMPROXY:[]},
          'tcpproxy': {C.LOG_TCPPROXY:[]}
         }
         count_files = len(readFile.keys())

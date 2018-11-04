@@ -56,7 +56,7 @@ NETWORKMANAGER = '/etc/NetworkManager/NetworkManager.conf'
 IPFORWARD      = '/proc/sys/net/ipv4/ip_forward'
 
 #logging
-LOG_PUMPKINPROXY = 'logs/AccessPoint/pickle-proxy.log'
+LOG_MITMPROXY = 'logs/AccessPoint/pickle-proxy.log'
 LOG_URLCAPTURE   = 'logs/AccessPoint/urls.log'
 LOG_CREDSCAPTURE = 'logs/AccessPoint/credentials.log'
 LOG_TCPPROXY     = 'logs/AccessPoint/tcp-proxy.log'
@@ -71,7 +71,7 @@ LOG_HOSTAPD      = 'logs/AccessPoint/hostapd.log'
 #APP SETTINGS
 CONFIG_INI      = 'core/config/app/config.ini'
 TCPPROXY_INI    = 'core/config/app/tcpproxy.ini'
-PUMPPROXY_INI   = 'core/config/app/proxy.ini'
+MITMPROXY_INI   = 'core/config/app/proxy.ini'
 TEMPLATES       = 'templates/fakeupdate/Windows_Update/Settins_WinUpdate.html'
 TEMPLATE_PH     = 'templates/phishing/custom/index.html'
 TEMPLATE_CLONE  = 'templates/phishing/web_server/index.html'

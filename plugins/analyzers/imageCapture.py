@@ -1,30 +1,31 @@
-from random import randint
 from scapy.all import *
 from plugins.analyzers.default import PSniffer
 from urllib.request import urlretrieve
 from scapy_http import http
 from os.path import splitext
 from string import ascii_letters
+from compat import *
 
-class ImageCap(PSniffer):
-    ''' capture image content http'''
+class ImageCapture(PSniffer):
+    '''TCP Proxy plugin to capture image content from TCP Proxy monitored ports'''
     _activated     = False
     _instance      = None
     meta = {
-        'Name'      : 'imageCap',
-        'Version'   : '1.0',
-        'Description' : 'capture image content http',
-        'Author'    : 'Pickle-Dev',
+        'Name'      : 'imageCapture',
+        'Version'   : '2.0',
+        'Description' : 'TCP Proxy plugin to capture image content from TCP Proxy monitored ports',
+        'Author'    : 'Shane W. Scott',
     }
+
     def __init__(self):
         for key,value in self.meta.items():
             self.__dict__[key] = value
 
     @staticmethod
     def getInstance():
-        if ImageCap._instance is None:
-            ImageCap._instance = ImageCap()
-        return ImageCap._instance
+        if ImageCapture._instance is None:
+            ImageCapture._instance = ImageCapture()
+        return ImageCapture._instance
 
     def filterPackets(self,pkt):
         if not pkt.haslayer(http.HTTPRequest):
@@ -50,14 +51,14 @@ class ImageCap(PSniffer):
         if fileExtension:
             print('Plugin imageCap: {}'.format(imageUrl))
             sessionName = self.session
-            targetFileName = 'logs/ImagesCap/%s_%s.%s' % (str(sessionName), str(self.randomChar(5)), str(fileExtension))
+            targetFileName = 'logs/ImagesCap/%s_%s.%s' % (str(sessionName), str(randomChar(5)), str(fileExtension))
             hostName = httpLayer.fields['Host']
             hostName = hostName.decode('utf-8')
             try:
-                urlretrieve('http://{}{}'.format(hostName, imageUrl), targetFileName)
+                try:
+                    urlretrieve('http://{}{}'.format(hostName, imageUrl), targetFileName)
+                except urllib.err Refused:
+                    urlretrieve('https://{}{}'.format(hostName, imageUrl), targetFileName)
                 self.output.emit({'image': targetFileName})
             except Exception as e:
                 print('Plugin imageCap error: {}'.format(str(e)))
-
-    def randomChar(self,y):
-           return ''.join(random.choice(ascii_letters) for x in range(y))

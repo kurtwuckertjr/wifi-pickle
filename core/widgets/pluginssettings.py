@@ -226,7 +226,7 @@ class PickleProxySettings(PickleModule):
         super(PickleProxySettings, self).__init__(parent)
         self.setWindowTitle('Settings: {} '.format(plugin[4:]))
         self.THeaders   = {'Config':[],'Value':[] }
-        self.config     = SettingsINI(C.PUMPPROXY_INI)
+        self.config     = SettingsINI(C.MITMPROXY_INI)
         self.main       = QtGui.QVBoxLayout()
         self.plugin_items = items
         self.plugin_key = plugin
