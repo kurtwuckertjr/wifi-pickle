@@ -60,7 +60,7 @@ Description:
     for mount Access point.
 
 Copyright:
-    Copyright (C) 2015-2017 Marcos Nesster P0cl4bs Team
+    Copyright (C) 2018-2019 Shane W. Scott GoVanguard Inc.
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -79,8 +79,8 @@ Copyright:
 author      = 'Shane Scott, GoVanguard'
 emails      = ['sscott@gvit.com', 'info@gvit.com']
 license     = ' GNU GPL 3'
-version     = '0.3.0'
-update      = '10/29/2018' # This is the USA :D
+version     = '0.3.2'
+update      = '11/04/2018' # This is the USA :D
 desc        = ['A salty tool for Rogue Wi-Fi Access Point Attacks']
 
 class Initialize(QtGui.QMainWindow):
@@ -100,7 +100,7 @@ class Initialize(QtGui.QMainWindow):
         dock.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
         self.addDockWidget(QtCore.Qt.LeftDockWidgetArea, dock)
         # set window title
-        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.3.0'))
+        self.setWindowTitle(emoji.emojize('WiFi-Pickle :cucumber: 0.3.2'))
         self.setGeometry(0, 0, C.GEOMETRYH, C.GEOMETRYW) # set geometry window
         self.loadtheme(self.FSettings.get_theme_qss())
 
@@ -460,16 +460,17 @@ class WifiPickle(QtGui.QWidget):
         self.connectedCount.setText("0")
         self.connectedCount.setStyleSheet("QLabel {  color : yellow; }")
         self.StatusBar.addWidget(self.connectedCount)
-        self.EditGateway = QtGui.QLineEdit(self)
+        self.EditApGateway = QtGui.QLineEdit(self)
         self.EditApName = QtGui.QLineEdit(self)
-        self.EditBSSID  = QtGui.QLineEdit(self)
+        self.EditApBSSID  = QtGui.QLineEdit(self)
+        self.EditApIpTablesRules = QtGui.QCheckBox(self)
         self.btn_random_essid = QtGui.QPushButton(self)
-        self.EditChannel =QtGui.QSpinBox(self)
-        self.EditChannel.setMinimum(1)
-        self.EditChannel.setMaximum(13)
-        self.EditChannel.setFixedWidth(50)
-        self.EditGateway.setFixedWidth(120)
-        self.EditGateway.setHidden(True) # disable Gateway
+        self.EditApChannel =QtGui.QSpinBox(self)
+        self.EditApChannel.setMinimum(1)
+        self.EditApChannel.setMaximum(13)
+        self.EditApChannel.setFixedWidth(50)
+        self.EditApGateway.setFixedWidth(120)
+        self.EditApGateway.setHidden(True) # disable Gateway
         self.selectCard = QtGui.QComboBox(self)
         self.btn_random_essid.clicked.connect(self.setAP_essid_random)
         self.btn_random_essid.setIcon(QtGui.QIcon('icons/refresh.png'))
@@ -524,13 +525,15 @@ class WifiPickle(QtGui.QWidget):
         # settings info access point
         self.GroupAP = QtGui.QGroupBox()
         self.GroupAP.setTitle('Access Point')
-        self.FormGroup3.addWidget(QtGui.QLabel("SSID:"),0,0)
+        self.FormGroup3.addWidget(QtGui.QLabel("SSID:"), 0, 0)
         self.FormGroup3.addWidget(self.EditApName,0,1)
         self.FormGroup3.addWidget(QtGui.QLabel("BSSID:"), 1, 0)
-        self.FormGroup3.addWidget(self.EditBSSID, 1, 1)
+        self.FormGroup3.addWidget(self.EditApBSSID, 1, 1)
         self.FormGroup3.addWidget(self.btn_random_essid, 1, 2)
-        self.FormGroup3.addWidget(QtGui.QLabel("Channel:"),2,0)
-        self.FormGroup3.addWidget(self.EditChannel,2,1)
+        self.FormGroup3.addWidget(QtGui.QLabel("Channel:"), 2, 0)
+        self.FormGroup3.addWidget(self.EditApChannel, 2, 1)
+        self.FormGroup3.addWidget(QtGui.QLabel("Flush IPTables"), 3, 0)
+        self.FormGroup3.addWidget(self.EditApIpTablesRules, 3, 1)
         self.GroupAP.setLayout(self.FormGroup3)
         self.GroupAP.setFixedWidth(260)
 
@@ -697,8 +700,6 @@ class WifiPickle(QtGui.QWidget):
             self.PopUpPlugins.check_noproxy.setChecked(True)
             self.PopUpPlugins.GroupPluginsProxy.setChecked(False)
             self.PopUpPlugins.tableplugincheckbox.setEnabled(True)
-        #if not pump_proxy_lib:
-        #    self.PopUpPlugins.check_mitmproxy.setDisabled(True)
         self.PopUpPlugins.checkGeneralOptions()
 
     def check_key_security_invalid(self):
@@ -781,9 +782,9 @@ class WifiPickle(QtGui.QWidget):
     def setAP_essid_random(self):
         ''' set random mac 3 last digits  '''
         prefix = []
-        for item in [x for x in str(self.EditBSSID.text()).split(':')]:
+        for item in [x for x in str(self.EditApBSSID.text()).split(':')]:
             prefix.append(int(item,16))
-        self.EditBSSID.setText(Refactor.randomMacAddress([prefix[0],prefix[1],prefix[2]]).upper())
+        self.EditApBSSID.setText(Refactor.randomMacAddress([prefix[0],prefix[1],prefix[2]]).upper())
 
     def set_proxy_statusbar(self,name,disabled=False):
         if not disabled:
@@ -808,8 +809,9 @@ class WifiPickle(QtGui.QWidget):
         ''' settings edits default and check tools '''
         self.get_interfaces = Refactor.get_interfaces()
         self.EditApName.setText(self.FSettings.Settings.get_setting('accesspoint','ssid'))
-        self.EditBSSID.setText(self.FSettings.Settings.get_setting('accesspoint','bssid'))
-        self.EditChannel.setValue(self.FSettings.Settings.get_setting('accesspoint','channel',format=int))
+        self.EditApBSSID.setText(self.FSettings.Settings.get_setting('accesspoint','bssid'))
+        self.EditApChannel.setValue(self.FSettings.Settings.get_setting('accesspoint','channel',format=int))
+        self.EditApIpTablesRules.setChecked(self.FSettings.Settings.get_setting('accesspoint', 'flushiptables', format=bool))
         self.SettingsEnable['PortRedirect'] = self.FSettings.redirectport.text()
 
         # get all Wireless Adapter available and add in comboBox
@@ -1044,12 +1046,6 @@ class WifiPickle(QtGui.QWidget):
                     except IndexError:
                         return None
 
-    #def get_PickleProxy_output(self,data):
-    #    ''' get std_ouput the thread Pickle-Proxy and add in DockArea '''
-    #    if self.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
-    #        self.PickleProxyTAB.tableLogging.writeModeData(data)
-    #        self.LogPickleproxy.info(data)
-
     def get_TCPproxy_output(self,data):
         ''' get std_output from thread TCPproxy module and add in DockArea'''
         print(str(data))
@@ -1121,39 +1117,22 @@ class WifiPickle(QtGui.QWidget):
             [
                 'interface={}\n'.format(str(self.selectCard.currentText())),
                 'ssid={}\n'.format(str(self.EditApName.text())),
-                'channel={}\n'.format(str(self.EditChannel.value())),
-                'bssid={}\n'.format(str(self.EditBSSID.text())),
-            ],
-        'dhcp-server':
-            [
-                'authoritative;\n',
-                'default-lease-time {};\n'.format(self.DHCP['leasetimeDef']),
-                'max-lease-time {};\n'.format(self.DHCP['leasetimeMax']),
-                'subnet %s netmask %s {\n'%(self.DHCP['subnet'],self.DHCP['netmask']),
-                'option routers {};\n'.format(self.DHCP['router']),
-                'option subnet-mask {};\n'.format(self.DHCP['netmask']),
-                'option broadcast-address {};\n'.format(self.DHCP['broadcast']),
-                'option domain-name \"%s\";\n'%(str(self.EditApName.text())),
-                'option domain-name-servers {};\n'.format('8.8.8.8'),
-                'range {};\n'.format(self.DHCP['range'].replace('/',' ')),
-                '}',
-            ],
+                'channel={}\n'.format(str(self.EditApChannel.value())),
+                'bssid={}\n'.format(str(self.EditApBSSID.text())),
+            ]
         }
         print('[*] Enable forwarding in iptables...')
         Refactor.set_ip_forward(1)
+
         # clean iptables settings
-        for line in self.SettingsAP['kill']:
-            exec_bash(line)
+        if self.EditApIpTablesRules.isChecked():
+            print("Flushing IP Tables...")
+            for line in self.SettingsAP['kill']:
+                exec_bash(line)
+
         # set interface using ifconfig
         for line in self.SettingsAP['interface']:
             exec_bash(line)
-        # check if dhcp option is enabled.
-        if self.FSettings.Settings.get_setting('accesspoint','dhcp_server',format=bool):
-            with open(C.DHCPCONF_PATH,'w') as dhcp:
-                for line in self.SettingsAP['dhcp-server']:dhcp.write(line)
-                dhcp.close()
-                if not path.isdir('/etc/dhcp/'): mkdir('/etc/dhcp')
-                move(C.DHCPCONF_PATH, '/etc/dhcp/')
 
     def start_access_point(self):
         ''' start Access Point and settings plugins  '''
@@ -1394,9 +1373,9 @@ class WifiPickle(QtGui.QWidget):
         print('-------------------------------')
         print('AP::[{}] Running...'.format(self.EditApName.text()))
         print('AP::BSSID::[{}] CH {}'.format(Refactor.get_interface_mac(
-        self.selectCard.currentText()),self.EditChannel.value()))
+        self.selectCard.currentText()),self.EditApChannel.value()))
         self.FSettings.Settings.set_setting('accesspoint','ssid',str(self.EditApName.text()))
-        self.FSettings.Settings.set_setting('accesspoint','channel',str(self.EditChannel.value()))
+        self.FSettings.Settings.set_setting('accesspoint','channel',str(self.EditApChannel.value()))
 
     def stop_access_point(self):
         ''' stop all thread :Access point attack and restore all settings  '''
@@ -1404,7 +1383,7 @@ class WifiPickle(QtGui.QWidget):
         print('-------------------------------')
         #self.ProxyPluginsTAB.GroupSettings.setEnabled(True)
         self.FSettings.Settings.set_setting('accesspoint','statusAP',False)
-        self.FSettings.Settings.set_setting('accesspoint','bssid',str(self.EditBSSID.text()))
+        self.FSettings.Settings.set_setting('accesspoint','bssid',str(self.EditApBSSID.text()))
         self.SessionsAP[self.currentSessionID]['stopped'] = asctime()
         self.FSettings.Settings.set_setting('accesspoint','sessions',dumps(self.SessionsAP))
         # check if dockArea activated and stop dock Area

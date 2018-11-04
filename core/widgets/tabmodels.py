@@ -25,7 +25,7 @@ Description:
     for pickle-proxy,pumokin-monitor,pickle-settings tab.
 
 Copyright:
-    Copyright (C) 2015-2017 Marcos Nesster P0cl4bs Team
+    Copyright (C) 2018-2019 Shane W. Scott GoVanguard Inc.
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -65,8 +65,8 @@ class StatusAccessPoint(QtGui.QVBoxLayout):
         guageWindow.addLayout(currentTime, 0, 1)
 
         self.AP_name = QtGui.QLabel(self.main_method.EditApName.text())
-        self.AP_BSSID = QtGui.QLabel(self.main_method.EditBSSID.text())
-        self.AP_Channel = QtGui.QLabel(self.main_method.EditChannel.text())
+        self.AP_BSSID = QtGui.QLabel(self.main_method.EditApBSSID.text())
+        self.AP_Channel = QtGui.QLabel(self.main_method.EditApChannel.text())
         self.AP_NetworkApdater = QtGui.QLabel(self.main_method.selectCard.currentText())
         self.AP_ROUTER = QtGui.QLabel(self.main_method.DHCP['router'])
         self.AP_DHCP_range = QtGui.QLabel(self.main_method.DHCP['range'])
@@ -104,8 +104,8 @@ class StatusAccessPoint(QtGui.QVBoxLayout):
 
     def update_labels(self):
         self.AP_name.setText(self.main_method.EditApName.text())
-        self.AP_BSSID.setText(self.main_method.EditBSSID.text())
-        self.AP_Channel.setText(self.main_method.EditChannel.text())
+        self.AP_BSSID.setText(self.main_method.EditApBSSID.text())
+        self.AP_Channel.setText(self.main_method.EditApChannel.text())
         self.AP_NetworkApdater.setText(self.main_method.selectCard.currentText())
         self.AP_ROUTER.setText(self.main_method.DHCP['router'])
         self.AP_DHCP_range.setText(self.main_method.DHCP['range'])
