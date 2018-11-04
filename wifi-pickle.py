@@ -3,7 +3,7 @@ from logging import getLogger,ERROR
 getLogger('scapy.runtime').setLevel(ERROR)
 
 """
-Author : Marcos Nesster - mh4root@gmail.com  PocL4bs Team
+Author : Shane W. Scott - sscott@gvit.com GoVanguard Inc.
 Licence : GPL v3
 
 Description:

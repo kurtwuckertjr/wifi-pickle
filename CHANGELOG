@@ -2,6 +2,30 @@ Version 0.1.0
 -------------
 - Fork from WiFi-Pickle 0.8.4
 - Port to Python3
-- Port to PyQt5
 - ???
 - Profit
+
+Version 0.3.0
+-------------
+- Port to MITM Proxy 4.0.4+
+- Removal of legacy attacks
+- Removal of irrelevant features
+- Removal of pyDhcpd
+- Removal of dns2prox
+- Added meatGlue DNS Proxy
+- Conf options to Enable/Disable dhcpd and meatGlue DNS
+- Revised control methods for starting, stopping and staging AP up/ AP down operations
+- TCP Proxy control methods updated
+- Update to Proxy controls to simplify configuration
+- MITM Proxy HTTP plugin created
+- MITM Proxy HTTPS + SSL Strip plugin created
+- TCP Proxy ImageCapture updated
+
+Version 0.3.2
+-------------
+- Removal of theming elements
+- DHCP configuration now writes dhcpd.conf for dhcpd
+- Revisions to meatGlue DNS Proxy
+- Conf options to Enable/Disable certain IP Tables operations during starting, stopping, and staging of AP up / AP down operations
+- Added DNS and extra option fields to DHCP configuration
+- Option to run multiple instances 
