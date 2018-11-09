@@ -1142,6 +1142,8 @@ class WifiPickle(QtGui.QWidget):
 
     def start_access_point(self):
         ''' start Access Point and settings plugins  '''
+        self.saveApSettings()
+
         if len(self.selectCard.currentText()) == 0:
             return QtGui.QMessageBox.warning(self,'Error interface ','Network interface is not found')
         if not type(self.get_soft_dependencies()) is bool: return
@@ -1380,18 +1382,27 @@ class WifiPickle(QtGui.QWidget):
         print('AP::[{}] Running...'.format(self.EditApName.text()))
         print('AP::BSSID::[{}] CH {}'.format(Refactor.get_interface_mac(
         self.selectCard.currentText()),self.EditApChannel.value()))
-        self.FSettings.Settings.set_setting('accesspoint','ssid',str(self.EditApName.text()))
-        self.FSettings.Settings.set_setting('accesspoint','channel',str(self.EditApChannel.value()))
+        self.saveApSettings()
+
+
+    def saveApSettings(self):
+        self.FSettings.Settings.set_setting('accesspoint', 'ssid', str(self.EditApName.text()))
+        self.FSettings.Settings.set_setting('accesspoint', 'bssid', str(self.EditApBSSID.text()))
+        self.FSettings.Settings.set_setting('accesspoint', 'channel', str(self.EditApChannel.value()))
+        self.FSettings.Settings.set_setting('accesspoint', 'enableiptables', self.EditApEnableIpTablesRules.isChecked())
+        self.FSettings.Settings.set_setting('accesspoint', 'flushiptables', self.EditApFlushIpTablesRules.isChecked())
+
+    def saveApSession(self):
+        self.FSettings.Settings.set_setting('accesspoint', 'statusAP', False)
+        self.SessionsAP[self.currentSessionID]['stopped'] = asctime()
+        self.FSettings.Settings.set_setting('accesspoint', 'sessions', dumps(self.SessionsAP))
 
     def stop_access_point(self):
         ''' stop all thread :Access point attack and restore all settings  '''
         if self.Apthreads['RougeAP'] == []: return
         print('-------------------------------')
         #self.ProxyPluginsTAB.GroupSettings.setEnabled(True)
-        self.FSettings.Settings.set_setting('accesspoint','statusAP',False)
-        self.FSettings.Settings.set_setting('accesspoint','bssid',str(self.EditApBSSID.text()))
-        self.SessionsAP[self.currentSessionID]['stopped'] = asctime()
-        self.FSettings.Settings.set_setting('accesspoint','sessions',dumps(self.SessionsAP))
+        self.saveApSession(self)
         # check if dockArea activated and stop dock Area
         self.PickleSettingsTAB.GroupArea.setEnabled(True)
         # stop all Thread in create for Access Point
