@@ -294,7 +294,7 @@ class WifiPickle(QtGui.QWidget):
         self.PopUpPlugins   = PopUpPlugins(self.FSettings,self) # create popupPlugins
         self.PopUpPlugins.sendSingal_disable.connect(self.get_disable_proxy_status)
         self.THReactor = ThreadReactor() # thread reactor for sslstrip
-        self.window_phishing = GUIModules.frm_PhishingManager()
+        #self.window_phishing = GUIModules.frm_PhishingManager()
         self.initial_GUI_loader()
 
     def initial_GUI_loader(self):

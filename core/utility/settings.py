@@ -50,7 +50,7 @@ class SettingsTabGeneral(QVBoxLayout):
         self.groupDNS =  QGroupBox()
         self.groupDeauth = QGroupBox()
         self.groupScan   = QGroupBox()
-        self.groupThemes = QGroupBox()
+        #self.groupThemes = QGroupBox()
 
         #form group
         self.formGroupAP = QFormLayout()
@@ -58,7 +58,7 @@ class SettingsTabGeneral(QVBoxLayout):
         self.formGroupDNS = QFormLayout()
         self.formGroupDeauth = QFormLayout()
         self.formGroupScan = QFormLayout()
-        self.formGroupThemes = QFormLayout()
+        #self.formGroupThemes = QFormLayout()
 
         # set layout into groupbox
         self.groupAP.setLayout(self.formGroupAP)
@@ -66,14 +66,14 @@ class SettingsTabGeneral(QVBoxLayout):
         self.groupDNS.setLayout(self.formGroupDNS)
         self.groupDeauth.setLayout(self.formGroupDeauth)
         self.groupScan.setLayout(self.formGroupScan)
-        self.groupThemes.setLayout(self.formGroupThemes)
+        #self.groupThemes.setLayout(self.formGroupThemes)
 
         self.groupAP.setTitle('Access Point:')
         self.groupDhcp.setTitle('DHCP Server:')
         self.groupDNS.setTitle('DNS Server:')
         self.groupDeauth.setTitle('Deauth Attack:')
         self.groupScan.setTitle('Scan Network:')
-        self.groupThemes.setTitle('Pickle Themes:')
+        #self.groupThemes.setTitle('Pickle Themes:')
 
         #page general
         self.Apname =  QLineEdit()
@@ -102,12 +102,12 @@ class SettingsTabGeneral(QVBoxLayout):
         self.scan_airodump = QRadioButton('Scan from airodump-ng')
         self.dhcpdserver = QCheckBox('ISC DHCP Server (dhcpd)')
         self.ch_meatglueproxy = QCheckBox('MeatGlue DNS Proxy')
-        self.theme1 = QRadioButton('theme Default')
-        self.theme2 = QRadioButton('theme Blue Dark ')
-        self.theme3 = QRadioButton('theme Orange Dark')
-        self.theme1.setObjectName('themes/'+''.join(str(self.theme1.text()).split()))
-        self.theme2.setObjectName('themes/'+''.join(str(self.theme2.text()).split()))
-        self.theme3.setObjectName('themes/'+''.join(str(self.theme3.text()).split()))
+        #self.theme1 = QRadioButton('theme Default')
+        #self.theme2 = QRadioButton('theme Blue Dark ')
+        #self.theme3 = QRadioButton('theme Orange Dark')
+        #self.theme1.setObjectName('themes/'+''.join(str(self.theme1.text()).split()))
+        #self.theme2.setObjectName('themes/'+''.join(str(self.theme2.text()).split()))
+        #self.theme3.setObjectName('themes/'+''.join(str(self.theme3.text()).split()))
         #grup page 1
         self.GruPag0.addButton(self.AP_0)
         self.GruPag0.addButton(self.AP_1)
@@ -117,9 +117,9 @@ class SettingsTabGeneral(QVBoxLayout):
         self.GruPag5.addButton(self.ch_meatglueproxy)
         self.GruPag3.addButton(self.scan_scapy)
         self.GruPag3.addButton(self.scan_airodump)
-        self.GruPag4.addButton(self.theme1)
-        self.GruPag4.addButton(self.theme2)
-        self.GruPag4.addButton(self.theme3)
+        #self.GruPag4.addButton(self.theme1)
+        #self.GruPag4.addButton(self.theme2)
+        #self.GruPag4.addButton(self.theme3)
 
         #page 1 config widgets
         self.GruPag0.buttonClicked.connect(self.get_options_hostapd)
@@ -133,7 +133,7 @@ class SettingsTabGeneral(QVBoxLayout):
         self.dhcpdserver.setChecked(self.Settings.get_setting('accesspoint', 'dhcpd_server',format=bool))
         #self.ch_pyDNS_server.setChecked(self.Settings.get_setting('accesspoint', 'pydns_server',format=bool))
         self.ch_meatglueproxy.setChecked(self.Settings.get_setting('accesspoint', 'meatglue_dns_proxy',format=bool))
-        self.theme_selected = self.Settings.get_setting('settings','themes')
+        #self.theme_selected = self.Settings.get_setting('settings','themes')
 
         check_path_hostapd = self.Settings.get_setting('accesspoint','hostapd_path')
         if len(check_path_hostapd) > 2: self.edit_hostapd_path.setText(check_path_hostapd)
@@ -145,12 +145,12 @@ class SettingsTabGeneral(QVBoxLayout):
             self.AP_0.setChecked(True)
 
         # setting page 1
-        if self.theme_selected in self.theme1.objectName():
-            self.theme1.setChecked(True)
-        elif self.theme_selected in self.theme2.objectName():
-            self.theme2.setChecked(True)
-        elif self.theme_selected in self.theme3.objectName():
-            self.theme3.setChecked(True)
+        #if self.theme_selected in self.theme1.objectName():
+        #    self.theme1.setChecked(True)
+        #elif self.theme_selected in self.theme2.objectName():
+        #    self.theme2.setChecked(True)
+        #elif self.theme_selected in self.theme3.objectName():
+        #    self.theme3.setChecked(True)
         self.formGroupAP.addRow('SSID:',self.Apname)
         self.formGroupAP.addRow('Channel:',self.channel)
         self.formGroupAP.addRow(self.AP_0)
@@ -166,16 +166,16 @@ class SettingsTabGeneral(QVBoxLayout):
         self.formGroupDHCP.addRow(self.dhcpdserver)
         #self.formGroupDNS.addRow(self.ch_pyDNS_server)
         self.formGroupDNS.addRow(self.ch_meatglueproxy)
-        self.formGroupThemes.addRow(self.theme1)
-        self.formGroupThemes.addRow(self.theme2)
-        self.formGroupThemes.addRow(self.theme3)
+        #self.formGroupThemes.addRow(self.theme1)
+        #self.formGroupThemes.addRow(self.theme2)
+        #self.formGroupThemes.addRow(self.theme3)
 
         self.mainLayout.addRow(self.groupAP)
         self.mainLayout.addRow(self.groupDhcp)
         self.mainLayout.addRow(self.groupDNS)
         self.mainLayout.addRow(self.groupScan)
         self.mainLayout.addRow(self.groupDeauth)
-        self.mainLayout.addRow(self.groupThemes)
+        #self.mainLayout.addRow(self.groupThemes)
 
         self.layout = QHBoxLayout()
         self.layout.addWidget(self.scroll)
@@ -226,12 +226,12 @@ class frm_Settings(QDialog):
         self.Settings.set_setting('settings','scan_airodump',self.pageTab1.scan_airodump.isChecked())
         self.Settings.set_setting('accesspoint','dhcpd_server',self.pageTab1.dhcpdserver.isChecked())
         self.Settings.set_setting('accesspoint','meatglue_dns_proxy',self.pageTab1.ch_meatglueproxy.isChecked())
-        if self.pageTab1.theme1.isChecked():
-            self.Settings.set_setting('settings','themes',str(self.pageTab1.theme1.objectName()))
-        elif self.pageTab1.theme2.isChecked():
-            self.Settings.set_setting('settings','themes',str(self.pageTab1.theme2.objectName()))
-        elif self.pageTab1.theme3.isChecked():
-            self.Settings.set_setting('settings','themes',str(self.pageTab1.theme3.objectName()))
+        #if self.pageTab1.theme1.isChecked():
+        #    self.Settings.set_setting('settings','themes',str(self.pageTab1.theme1.objectName()))
+        #elif self.pageTab1.theme2.isChecked():
+        #    self.Settings.set_setting('settings','themes',str(self.pageTab1.theme2.objectName()))
+        #elif self.pageTab1.theme3.isChecked():
+        #    self.Settings.set_setting('settings','themes',str(self.pageTab1.theme3.objectName()))
         if self.pageTab1.AP_0.isChecked():
             self.Settings.set_setting('accesspoint','hostapd_custom',False)
         elif self.pageTab1.AP_1.isChecked():

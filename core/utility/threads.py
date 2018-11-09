@@ -247,7 +247,9 @@ class ProcessHostapd(QObject):
         self.data = str(self.procHostapd.readAllStandardOutput())
         if 'AP-STA-DISCONNECTED' in self.data.rstrip() or 'inactivity (timer DEAUTH/REMOVE)' in self.data.rstrip():
             self.statusAP_connected.emit(self.data.split()[2])
-        ### Add back here
+        ## TEST - To address clients not showing back up after associate/disassociate cycle
+        elif 'AP-STA-CONNECTED' in self.data.rstrip():
+            self.statusAP_Connected.emit(self.sata.split()[2])
         self.log_hostapd.info(self.data)
         for error in self.errorAPDriver:
             if self.data.find(error) != -1:

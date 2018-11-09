@@ -3,7 +3,6 @@ from core.utils import Refactor,set_monitor_mode
 from subprocess import Popen,PIPE
 from core.utility.collection import SettingsINI
 from core.utility.settings import frm_Settings
-from modules.servers.PhishingManager import frm_PhishingManager
 from core.utility.threads import ThreadPopen,ThreadScan,ProcessThread,ThreadFastScanIP
 from core.packets.network import ThARP_posion,ThSpoofAttack
 import core.utility.constants as C
