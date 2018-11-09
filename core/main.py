@@ -533,12 +533,12 @@ class WifiPickle(QtGui.QWidget):
         self.FormGroup3.addWidget(self.btn_random_essid, 1, 2)
         self.FormGroup3.addWidget(QtGui.QLabel("Channel:"), 2, 0)
         self.FormGroup3.addWidget(self.EditApChannel, 2, 1)
-        self.FormGroup3.addWidget(QtGui.QLabel("Insert IP Tables Rules"), 3, 0)
+        self.FormGroup3.addWidget(QtGui.QLabel("Insert IP Tables Rules at Start"), 3, 0)
         self.FormGroup3.addWidget(self.EditApEnableIpTablesRules, 3, 1)
-        self.FormGroup3.addWidget(QtGui.QLabel("Flush IP Tables"), 4, 0)
+        self.FormGroup3.addWidget(QtGui.QLabel("Flush IP Tables at Start/Stop"), 4, 0)
         self.FormGroup3.addWidget(self.EditApFlushIpTablesRules, 4, 1)
         self.GroupAP.setLayout(self.FormGroup3)
-        self.GroupAP.setFixedWidth(260)
+        self.GroupAP.setFixedWidth(450)
 
         # create widgets for Wireless Security options
         self.GroupApPassphrase = QtGui.QGroupBox()
@@ -814,7 +814,7 @@ class WifiPickle(QtGui.QWidget):
         self.EditApName.setText(self.FSettings.Settings.get_setting('accesspoint','ssid'))
         self.EditApBSSID.setText(self.FSettings.Settings.get_setting('accesspoint','bssid'))
         self.EditApChannel.setValue(self.FSettings.Settings.get_setting('accesspoint','channel',format=int))
-        self.EditApEnableIpTablesRules.setChecked(self.FSetting.Settings.get_setting('accesspoint', 'enableiptables', format = bool))
+        self.EditApEnableIpTablesRules.setChecked(self.FSettings.Settings.get_setting('accesspoint', 'enableiptables', format = bool))
         self.EditApFlushIpTablesRules.setChecked(self.FSettings.Settings.get_setting('accesspoint', 'flushiptables', format = bool))
         self.SettingsEnable['PortRedirect'] = self.FSettings.redirectport.text()
 

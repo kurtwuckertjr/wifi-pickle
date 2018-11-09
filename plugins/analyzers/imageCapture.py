@@ -57,7 +57,7 @@ class ImageCapture(PSniffer):
             try:
                 try:
                     urlretrieve('http://{}{}'.format(hostName, imageUrl), targetFileName)
-                except urllib.err Refused:
+                except urllib.error.HTTPError:
                     urlretrieve('https://{}{}'.format(hostName, imageUrl), targetFileName)
                 self.output.emit({'image': targetFileName})
             except Exception as e:
