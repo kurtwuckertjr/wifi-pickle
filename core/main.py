@@ -77,7 +77,7 @@ Copyright:
 
 
 author      = 'Shane Scott, GoVanguard'
-emails      = ['sscott@gvit.com', 'info@gvit.com']
+emails      = ['hello@gvit.com']
 license     = ' GNU GPL 3'
 version     = '0.3.2'
 update      = '11/04/2018' # This is the USA :D
@@ -394,9 +394,6 @@ class WifiPickle(QtGui.QWidget):
     def mitmProxy_TAB_Content(self):
         ''' add Layout page MITM Proxy in dashboard '''
         self.MitmProxyTAB = Mitmproxy(self)
-        #if not pump_proxy_lib:
-        #    infoLabel = ServiceNotify(C.PUMPKINPROXY_notify,title='Package Requirement')
-        #    self.ContentTabMitmProxy.addWidget(infoLabel)
         self.ContentTabMitmProxy.addLayout(self.MitmProxyTAB)
 
     def statusAP_TAB_Content(self):
