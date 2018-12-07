@@ -1,7 +1,7 @@
 WiFi-Pickle (https://govanguard.io)
 ==
 
-[![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/wifi-pickle/badge.svg?targetFile=package.json)](https://snyk.io/test/github/dwyl/hapi-auth-jwt2?targetFile=package.json) 
+[![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/wifi-pickle/badge.svg?targetFile=package.json)](https://snyk.io/test/github/GoVanguard/wifi-pickle?targetFile=package.json) 
 
 ## Authors:
 Shane Scott
