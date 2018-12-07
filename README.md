@@ -1,7 +1,7 @@
 WiFi-Pickle (https://govanguard.io)
 ==
 
-[![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/wifi-pickle/badge.svg?targetFile=package.json)](https://snyk.io/test/github/GoVanguard/wifi-pickle?targetFile=package.json) 
+[![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/wifi-pickle/badge.svg?targetFile=deps%2Frequirements.txt)](https://snyk.io/test/github/GoVanguard/wifi-pickle?targetFile=deps%2Frequirements.txt)
 
 ## Authors:
 Shane Scott
