@@ -13,8 +13,7 @@ sudo make install
 make clean
 cd ..
 cd PyQt4_gpl_x11-4.12.3/
-python3.6 configure-ng.py -d /usr/local/lib/python3.6/site-packages --target-py-version=3.6 -silent -release -opensource -no-compile-examples -nomake examples -nomake t
-ests -no-qml-debug -confirm-license
+python3.6 configure-ng.py --confirm-license -d /usr/local/lib/python3.6/site-packages --target-py-version=3.6
 make
 sudo make install
 make clean
