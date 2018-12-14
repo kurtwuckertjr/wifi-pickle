@@ -88,8 +88,7 @@ class ThRunDhcp(QThread):
         return '[New Thread {} ({})]'.format(self.currentThreadId(),self.objectName())
 
     def run(self):
-        self.process = Popen(self.args,
-        stdout=PIPE,stderr=STDOUT,preexec_fn=setsid)
+        self.process = Popen(self.args, stdout=PIPE, stderr=STDOUT, preexec_fn=setsid)
         print('[New Thread {} ({})]'.format(self.process.pid,self.objectName()))
         setup_logger('dhcp', C.LOG_DHCP,self.session)
         loggerDhcp = logging.getLogger('dhcp')
@@ -249,7 +248,7 @@ class ProcessHostapd(QObject):
             self.statusAP_connected.emit(self.data.split()[2])
         ## TEST - To address clients not showing back up after associate/disassociate cycle
         elif 'AP-STA-CONNECTED' in self.data.rstrip():
-            self.statusAP_Connected.emit(self.sata.split()[2])
+            self.statusAP_connected.emit(self.data.split()[2])
         self.log_hostapd.info(self.data)
         for error in self.errorAPDriver:
             if self.data.find(error) != -1:

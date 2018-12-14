@@ -51,8 +51,8 @@ from isc_dhcp_leases.iscdhcpleases import IscDhcpLeases
 from netfilterqueue import NetfilterQueue
 from core.servers.proxy.tcp.intercept import ThreadSniffingPackets
 import emoji
-from mitmproxy import proxy, flow, options
-from mitmproxy.proxy.server import ProxyServer
+#from mitmproxy import proxy, flow, options
+#from mitmproxy.proxy.server import ProxyServer
 
 """
 Description:
@@ -884,7 +884,7 @@ class WifiPickle(QtGui.QWidget):
         session_id = Refactor.generateSessionID()
         while session_id in list(self.SessionsAP.keys()):
             session_id = Refactor.generateSessionID()
-        self.window_phishing.session = session_id
+        #self.window_phishing.session = session_id
         return session_id
 
     def get_disable_proxy_status(self,status):
@@ -1278,8 +1278,7 @@ class WifiPickle(QtGui.QWidget):
             gid = getgrnam('root').gr_gid
             chown(leases, uid, gid)
 
-            self.Thread_dhcp = ThRunDhcp(['dhcpd','-d','-f','-lf',C.DHCPLEASES_PATH,'-cf',
-            'core/config/dhcpd/dhcpd.conf',self.SettingsEnable['AP_iface']],self.currentSessionID)
+            self.Thread_dhcp = ThRunDhcp(['dhcpd', '--no-pid', '-d', '-f', '-lf', C.DHCPLEASES_PATH, '-cf', 'core/config/dhcpd/dhcpd.conf', self.SettingsEnable['AP_iface']], self.currentSessionID)
             self.Thread_dhcp.sendRequest.connect(self.get_DHCP_Requests_clients)
             self.Thread_dhcp.sendRequest.connect(self.get_dhcpd_output)
             self.Thread_dhcp.setObjectName('ISC DHCPd')
@@ -1399,7 +1398,7 @@ class WifiPickle(QtGui.QWidget):
         if self.Apthreads['RougeAP'] == []: return
         print('-------------------------------')
         #self.ProxyPluginsTAB.GroupSettings.setEnabled(True)
-        self.saveApSession(self)
+        self.saveApSession()
         # check if dockArea activated and stop dock Area
         self.PickleSettingsTAB.GroupArea.setEnabled(True)
         # stop all Thread in create for Access Point
@@ -1439,7 +1438,7 @@ class WifiPickle(QtGui.QWidget):
         Refactor.set_ip_forward(0)
         self.TabInfoAP.clearContents()
         self.TabInfoAP.APclients = {}
-        self.window_phishing.killThread()
+        #self.window_phishing.killThread()
         self.PickleMonitorTAB.clearAll()
         self.GroupAP.setEnabled(True)
         self.GroupApPassphrase.setEnabled(True)

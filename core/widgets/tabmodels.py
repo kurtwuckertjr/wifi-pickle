@@ -44,8 +44,8 @@ class StatusAccessPoint(QtGui.QVBoxLayout):
     ''' dashboard  infor Acccess Point '''
     def __init__(self,mainWindow ):
         QtGui.QVBoxLayout.__init__(self)
-        self.mainLayout     = QtGui.QFormLayout()
-        self.main_method    = mainWindow
+        self.mainLayout = QtGui.QFormLayout()
+        self.main_method = mainWindow
 
         self.scrollwidget = QtGui.QWidget()
         self.scrollwidget.setLayout(self.mainLayout)
@@ -73,8 +73,8 @@ class StatusAccessPoint(QtGui.QVBoxLayout):
         self.AP_Security  = QtGui.QLabel('')
         self.update_security_label(self.main_method.GroupApPassphrase.isChecked())
 
-        self.group_AccessPoint  = QtGui.QGroupBox()
-        self.form_window        = AutoGridLayout()
+        self.group_AccessPoint = QtGui.QGroupBox()
+        self.form_window = AutoGridLayout()
         self.form_window.setSpacing(10)
         self.group_AccessPoint.setTitle('Access Point')
         self.form_window.addNextWidget(QtGui.QLabel('AP Name:'))
@@ -154,14 +154,14 @@ class StatusAccessPoint(QtGui.QVBoxLayout):
 class PacketsSniffer(QtGui.QVBoxLayout):
     ''' settings  Transparent Proxy '''
     sendError = QtCore.pyqtSignal(str)
-    def __init__(self,main_method,parent = None):
+    def __init__(self, main_method, parent = None):
         super(PacketsSniffer, self).__init__(parent)
-        self.mainLayout     = QtGui.QVBoxLayout()
-        self.config         = SettingsINI(C.TCPPROXY_INI)
-        self.plugins        = []
-        self.main_method    = main_method
-        self.bt_SettingsDict    = {}
-        self.check_PluginDict   = {}
+        self.mainLayout = QtGui.QVBoxLayout()
+        self.config = SettingsINI(C.TCPPROXY_INI)
+        self.plugins = []
+        self.main_method = main_method
+        self.bt_SettingsDict = {}
+        self.check_PluginDict = {}
         self.search_all_ProxyPlugins()
         #scroll area
         self.scrollwidget = QtGui.QWidget()
@@ -191,10 +191,10 @@ class PacketsSniffer(QtGui.QVBoxLayout):
         self.TabPlugins.verticalHeader().setVisible(False)
         self.TabPlugins.verticalHeader().setDefaultSectionSize(27)
         self.TabPlugins.setSortingEnabled(True)
-        self.THeaders  = OrderedDict([ ('Plugins',[]),('Author',[]),('Description',[])])
+        self.THeaders = OrderedDict([('Plugins', []), ('Author', []), ('Description', [])])
         self.TabPlugins.setHorizontalHeaderLabels(list(dict(self.THeaders).keys()))
-        self.TabPlugins.horizontalHeader().resizeSection(0,158)
-        self.TabPlugins.horizontalHeader().resizeSection(1,120)
+        self.TabPlugins.horizontalHeader().resizeSection(0, 158)
+        self.TabPlugins.horizontalHeader().resizeSection(1, 120)
 
         self.page_1.addWidget(self.TabPlugins)
         self.page_2.addWidget(self.tableLogging)
@@ -204,7 +204,7 @@ class PacketsSniffer(QtGui.QVBoxLayout):
             self.bt_SettingsDict[plugin.Name] = QtGui.QPushButton(plugin.Author)
             self.check_PluginDict[plugin.Name] = QtGui.QCheckBox(plugin.Name)
             self.check_PluginDict[plugin.Name].setObjectName(plugin.Name)
-            self.check_PluginDict[plugin.Name].clicked.connect(partial(self.setPluginOption,plugin.Name))
+            self.check_PluginDict[plugin.Name].clicked.connect(partial(self.setPluginOption, plugin.Name))
             self.THeaders['Plugins'].append(self.check_PluginDict[plugin.Name])
             self.THeaders['Author'].append({'name': plugin.Name})
             self.THeaders['Description'].append(plugin.Description)
@@ -212,9 +212,9 @@ class PacketsSniffer(QtGui.QVBoxLayout):
             Headers.append(key)
             for m, item in enumerate(self.THeaders[key]):
                 if type(item) == type(QtGui.QCheckBox()):
-                    self.TabPlugins.setCellWidget(m,n,item)
+                    self.TabPlugins.setCellWidget(m, n, item)
                 elif type(item) == type(dict()):
-                    self.TabPlugins.setCellWidget(m,n,self.bt_SettingsDict[item['name']])
+                    self.TabPlugins.setCellWidget(m, n, self.bt_SettingsDict[item['name']])
                 else:
                     item = QtGui.QTableWidgetItem(item)
                     self.TabPlugins.setItem(m, n, item)
@@ -222,19 +222,19 @@ class PacketsSniffer(QtGui.QVBoxLayout):
 
         # check status all checkbox plugins
         for box in self.check_PluginDict.keys():
-            self.check_PluginDict[box].setChecked(self.config.get_setting('plugins',box,format=bool))
+            self.check_PluginDict[box].setChecked(self.config.get_setting('plugins', box, format=bool))
 
         self.mainLayout.addWidget(self.tabcontrol)
         self.layout = QtGui.QHBoxLayout()
         self.layout.addWidget(self.scroll)
         self.addLayout(self.layout)
 
-    def setPluginOption(self, name,status):
+    def setPluginOption(self, name, status):
         ''' get each plugins status'''
         # enable realtime disable and enable plugin
-        if self.main_method.FSettings.Settings.get_setting('accesspoint','statusAP',format=bool):
+        if self.main_method.FSettings.Settings.get_setting('accesspoint', 'statusAP', format=bool):
             self.main_method.Thread_TCPproxy.disablePlugin(name, status)
-        self.config.set_setting('plugins',name,status)
+        self.config.set_setting('plugins', name, status)
 
     def search_all_ProxyPlugins(self):
         ''' load all plugins function '''
@@ -248,8 +248,8 @@ class ImageCapture(QtGui.QVBoxLayout):
     sendError = QtCore.pyqtSignal(str)
     def __init__(self,main_method,parent = None):
         super(ImageCapture, self).__init__(parent)
-        self.mainLayout     = QtGui.QVBoxLayout()
-        self.main_method    = main_method
+        self.mainLayout = QtGui.QVBoxLayout()
+        self.main_method = main_method
         #scroll area
         self.scrollwidget = QtGui.QWidget()
         self.scrollwidget.setLayout(self.mainLayout)
@@ -272,7 +272,7 @@ class ImageCapture(QtGui.QVBoxLayout):
         self.TableImage.horizontalHeader().hide()
 
         self.TableImage.setMinimumWidth((self.THUMBNAIL_SIZE + self.SPACING) * self.IMAGES_PER_ROW + (self.SPACING * 2))
-        self.imageListPath  = OrderedDict([ ('Path',[])])
+        self.imageListPath = OrderedDict([('Path',[])])
         self.mainLayout.addWidget(self.TableImage)
         self.layout = QtGui.QHBoxLayout()
         self.layout.addWidget(self.scroll)
@@ -305,14 +305,14 @@ class ImageCapture(QtGui.QVBoxLayout):
 class Mitmproxy(QtGui.QVBoxLayout):
     ''' settings  Transparent Proxy '''
     sendError = QtCore.pyqtSignal(str)
-    def __init__(self,mainWindow ):
+    def __init__(self, mainWindow):
         QtGui.QVBoxLayout.__init__(self)
-        self.mainLayout     = QtGui.QVBoxLayout()
-        self.config         = SettingsINI(C.MITMPROXY_INI)
-        self.plugins        = []
-        self.main_method    = mainWindow
-        self.bt_SettingsDict    = {}
-        self.check_PluginDict   = {}
+        self.mainLayout = QtGui.QVBoxLayout()
+        self.config = SettingsINI(C.MITMPROXY_INI)
+        self.plugins = []
+        self.main_method = mainWindow
+        self.bt_SettingsDict = {}
+        self.check_PluginDict = {}
         self.search_all_ProxyPlugins()
         #scroll area
         self.scrollwidget = QtGui.QWidget()
@@ -327,7 +327,7 @@ class Mitmproxy(QtGui.QVBoxLayout):
         self.tab2 = QtGui.QWidget()
         self.page_1 = QtGui.QVBoxLayout(self.tab1)
         self.page_2 = QtGui.QVBoxLayout(self.tab2)
-        self.tableLogging  = dockPickleProxy()
+        self.tableLogging = dockPickleProxy()
 
         self.tabcontrol.addTab(self.tab1, 'Plugins')
         self.tabcontrol.addTab(self.tab2, 'Logging')
@@ -343,10 +343,10 @@ class Mitmproxy(QtGui.QVBoxLayout):
         self.TabPlugins.verticalHeader().setVisible(False)
         self.TabPlugins.verticalHeader().setDefaultSectionSize(27)
         self.TabPlugins.setSortingEnabled(True)
-        self.THeaders  = OrderedDict([ ('Plugins',[]),('Settings',[]),('Description',[])])
+        self.THeaders = OrderedDict([('Plugins', []), ('Settings', []), ('Description', [])])
         self.TabPlugins.setHorizontalHeaderLabels(list(dict(self.THeaders).keys()))
-        self.TabPlugins.horizontalHeader().resizeSection(0,158)
-        self.TabPlugins.horizontalHeader().resizeSection(1,80)
+        self.TabPlugins.horizontalHeader().resizeSection(0, 158)
+        self.TabPlugins.horizontalHeader().resizeSection(1, 80)
 
         # add on tab
         self.page_1.addWidget(self.TabPlugins)
@@ -410,20 +410,20 @@ class Mitmproxy(QtGui.QVBoxLayout):
 
 class PickleMonitor(QtGui.QVBoxLayout):
     ''' Monitor Access Point cleints connections'''
-    def __init__(self,FsettingsUI=None ,parent = None):
+    def __init__(self, FsettingsUI=None, parent = None):
         super(PickleMonitor, self).__init__(parent)
-        self.FSettings      = FsettingsUI
-        self.Home   = QtGui.QVBoxLayout()
+        self.FSettings = FsettingsUI
+        self.Home = QtGui.QVBoxLayout()
         self.widget = QtGui.QWidget()
         self.layout = QtGui.QVBoxLayout(self.widget)
 
-        self.GroupMonitor   = QtGui.QGroupBox()
-        self.MonitorTreeView= QtGui.QTreeView()
+        self.GroupMonitor = QtGui.QGroupBox()
+        self.MonitorTreeView = QtGui.QTreeView()
         self.MonitorTreeView.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.model = QtGui.QStandardItemModel()
         self.setModel()
         self.MonitorTreeView.setUniformRowHeights(True)
-        self.MonitorTreeView.setColumnWidth(0,130)
+        self.MonitorTreeView.setColumnWidth(0, 130)
 
         self.GroupMonitor.setTitle('Station Monitor AP:')
         self.MonitorLayout = QtGui.QVBoxLayout()
@@ -483,13 +483,13 @@ class PickleSettings(QtGui.QVBoxLayout):
     checkDockArea = QtCore.pyqtSignal(dict)
     def __init__(self, parent=None,widgets=None):
         super(PickleSettings, self).__init__(parent)
-        self.SettingsAp      = widgets['SettingsAP']
-        self.Tab_Dock      = widgets['Tab_dock']
-        self.dockInfo      = widgets['DockInfo']
-        self.FSettings     = widgets['Settings']
-        self.NetworkGroup  = widgets['Network']
-        self.mainLayout    = QtGui.QFormLayout()
-        self.SettingsDHCP  = {}
+        self.SettingsAp = widgets['SettingsAP']
+        self.Tab_Dock = widgets['Tab_dock']
+        self.dockInfo = widgets['DockInfo']
+        self.FSettings = widgets['Settings']
+        self.NetworkGroup = widgets['Network']
+        self.mainLayout = QtGui.QFormLayout()
+        self.SettingsDHCP = {}
 
         #scroll area
         self.scrollwidget = QtGui.QWidget()
@@ -498,32 +498,32 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.scroll.setWidgetResizable(True)
         self.scroll.setWidget(self.scrollwidget)
 
-        self.GroupDHCP     = QtGui.QGroupBox()
-        self.GroupArea     = QtGui.QGroupBox()
-        self.layoutDHCP    = QtGui.QFormLayout()
-        self.layoutArea    = QtGui.QFormLayout()
+        self.GroupDHCP = QtGui.QGroupBox()
+        self.GroupArea = QtGui.QGroupBox()
+        self.layoutDHCP = QtGui.QFormLayout()
+        self.layoutArea = QtGui.QFormLayout()
         self.layoutbuttons = QtGui.QHBoxLayout()
-        self.btnDefault    = QtGui.QPushButton('Default')
-        self.btnSave       = QtGui.QPushButton('save settings')
+        self.btnDefault = QtGui.QPushButton('Default')
+        self.btnSave = QtGui.QPushButton('Apply & Save')
         self.btnSave.setIcon(QtGui.QIcon('icons/export.png'))
         self.btnDefault.setIcon(QtGui.QIcon('icons/settings.png'))
-        self.dhcpClassIP   = QtGui.QComboBox()
+        self.dhcpClassIP = QtGui.QComboBox()
         # dhcp class
-        self.classtypes = ['Class-A-Address','Class-B-Address','Class-C-Address','Class-Custom-Address']
+        self.classtypes = ['Class-A-Address', 'Class-B-Address', 'Class-C-Address']
         for types in self.classtypes:
-            if 'Class-{}-Address'.format(self.FSettings.Settings.get_setting('dhcp','classtype')) in types:
-                self.classtypes.remove(types),self.classtypes.insert(0,types)
+            if 'Class-{}-Address'.format(self.FSettings.Settings.get_setting('dhcp', 'classtype')) in types:
+                self.classtypes.remove(types),self.classtypes.insert(0, types)
         self.dhcpClassIP.addItems(self.classtypes)
 
-        self.leaseTime_def = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','leasetimeDef'))
-        self.leaseTime_Max = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','leasetimeMax'))
-        self.netmask = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','netmask'))
-        self.range_dhcp = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','range'))
-        self.route = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','router'))
-        self.subnet = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','subnet'))
-        self.broadcast = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','broadcast'))
-        self.option = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','option'))
-        self.dns = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp','dns'))
+        self.leaseTime_def = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'leasetimeDef'))
+        self.leaseTime_Max = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'leasetimeMax'))
+        self.netmask = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'netmask'))
+        self.range_dhcp = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'range'))
+        self.route = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'router'))
+        self.subnet = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'subnet'))
+        self.broadcast = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'broadcast'))
+        self.option = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'option'))
+        self.dns = QtGui.QLineEdit(self.FSettings.Settings.get_setting('dhcp', 'dns'))
         self.dhcpClassIP.currentIndexChanged.connect(self.dhcpClassIPClicked)
         self.GroupDHCP.setTitle('DHCP-Settings')
         self.GroupDHCP.setLayout(self.layoutDHCP)
@@ -536,8 +536,9 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.layoutDHCP.addRow('broadcast-address', self.broadcast)
         self.layoutDHCP.addRow('DNS', self.dns)
         self.layoutDHCP.addRow('option', self.option)
-        self.layoutDHCP.addRow('range-dhcp',self.range_dhcp)
+        self.layoutDHCP.addRow('range-dhcp', self.range_dhcp)
         self.GroupDHCP.setFixedWidth(350)
+
         # layout add
         self.layoutbuttons.addWidget(self.btnSave)
         self.layoutbuttons.addWidget(self.btnDefault)
@@ -547,21 +548,21 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.gridArea = QtGui.QGridLayout()
         self.CB_ActiveMode = QtGui.QCheckBox('::Advanced Mode:: Monitor MITM Attack')
         self.CB_ActiveMode.setHidden(True)
-        self.CB_Cread    = QtGui.QCheckBox('HTTP-Authentication')
+        self.CB_Cread = QtGui.QCheckBox('HTTP-Authentication')
         self.CB_monitorURL = QtGui.QCheckBox('HTTP-Requests')
-        self.CB_dhcpd   = QtGui.QCheckBox('DHCPD')
-        self.CB_mitmproxy  = QtGui.QCheckBox('MITM Proxy')
-        self.CB_meatglueproxy  = QtGui.QCheckBox('MeatGlueDNSProxy')
-        self.CB_responder  = QtGui.QCheckBox('Responder')
+        self.CB_dhcpd = QtGui.QCheckBox('DHCPD')
+        self.CB_mitmproxy = QtGui.QCheckBox('MITM Proxy')
+        self.CB_meatglueproxy = QtGui.QCheckBox('MeatGlueDNSProxy')
+        self.CB_responder = QtGui.QCheckBox('Responder')
         self.CB_picklePro = QtGui.QCheckBox('Pickle-Proxy')
-        self.CB_ActiveMode.setChecked(self.FSettings.Settings.get_setting('dockarea','advanced',format=bool))
-        self.CB_Cread.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_credencials',format=bool))
-        self.CB_monitorURL.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_urlmonitor',format=bool))
-        self.CB_dhcpd.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_dhcpd',format=bool))
+        self.CB_ActiveMode.setChecked(self.FSettings.Settings.get_setting('dockarea', 'advanced', format=bool))
+        self.CB_Cread.setChecked(self.FSettings.Settings.get_setting('dockarea', 'dock_credencials', format=bool))
+        self.CB_monitorURL.setChecked(self.FSettings.Settings.get_setting('dockarea', 'dock_urlmonitor', format=bool))
+        self.CB_dhcpd.setChecked(self.FSettings.Settings.get_setting('dockarea', 'dock_dhcpd', format=bool))
         self.CB_mitmproxy.setChecked(self.FSettings.Settings.get_setting('dockarea', 'dock_mitmproxy', format=bool))
-        self.CB_meatglueproxy.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_meatglueproxy',format=bool))
-        self.CB_responder.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_responder',format=bool))
-        self.CB_picklePro.setChecked(self.FSettings.Settings.get_setting('dockarea','dock_PickleProxy',format=bool))
+        self.CB_meatglueproxy.setChecked(self.FSettings.Settings.get_setting('dockarea', 'dock_meatglueproxy', format=bool))
+        self.CB_responder.setChecked(self.FSettings.Settings.get_setting('dockarea', 'dock_responder', format=bool))
+        self.CB_picklePro.setChecked(self.FSettings.Settings.get_setting('dockarea', 'dock_PickleProxy', format=bool))
 
         #connect
         self.doCheckAdvanced()
@@ -575,12 +576,12 @@ class PickleSettings(QtGui.QVBoxLayout):
         self.CB_picklePro.clicked.connect(self.doCheckAdvanced)
         # group
         self.layoutArea.addRow(self.CB_ActiveMode)
-        self.gridArea.addWidget(self.CB_monitorURL,0,0,)
-        self.gridArea.addWidget(self.CB_Cread,0,1)
-        self.gridArea.addWidget(self.CB_responder,0,2)
-        self.gridArea.addWidget(self.CB_dhcpd,1,0)
-        self.gridArea.addWidget(self.CB_mitmproxy,1,1)
-        self.gridArea.addWidget(self.CB_meatglueproxy,1,2)
+        self.gridArea.addWidget(self.CB_monitorURL, 0, 0)
+        self.gridArea.addWidget(self.CB_Cread, 0, 1)
+        self.gridArea.addWidget(self.CB_responder, 0, 2)
+        self.gridArea.addWidget(self.CB_dhcpd, 1, 0)
+        self.gridArea.addWidget(self.CB_mitmproxy, 1, 1)
+        self.gridArea.addWidget(self.CB_meatglueproxy, 1, 2)
         self.layoutArea.addRow(self.gridArea)
         self.GroupArea.setTitle('Activity Monitor settings')
         self.GroupArea.setLayout(self.layoutArea)
@@ -599,21 +600,21 @@ class PickleSettings(QtGui.QVBoxLayout):
 
     def dhcpClassIPClicked(self,classIP):
         self.selected = str(self.dhcpClassIP.currentText())
-        if 'class-Custom-Address' in self.selected: self.selected = 'dhcp'
-        self.leaseTime_def.setText(self.FSettings.Settings.get_setting(self.selected,'leasetimeDef'))
-        self.leaseTime_Max.setText(self.FSettings.Settings.get_setting(self.selected,'leasetimeMax'))
-        self.netmask.setText(self.FSettings.Settings.get_setting(self.selected,'netmask'))
-        self.range_dhcp.setText(self.FSettings.Settings.get_setting(self.selected,'range'))
-        self.route.setText(self.FSettings.Settings.get_setting(self.selected,'router'))
-        self.subnet.setText(self.FSettings.Settings.get_setting(self.selected,'subnet'))
-        self.broadcast.setText(self.FSettings.Settings.get_setting(self.selected,'broadcast'))
-        self.dns.setText(self.FSettings.Settings.get_setting(self.selected,'router'))
+        self.leaseTime_def.setText(self.FSettings.Settings.get_setting(self.selected, 'leasetimeDef'))
+        self.leaseTime_Max.setText(self.FSettings.Settings.get_setting(self.selected, 'leasetimeMax'))
+        self.netmask.setText(self.FSettings.Settings.get_setting(self.selected, 'netmask'))
+        self.range_dhcp.setText(self.FSettings.Settings.get_setting(self.selected, 'range'))
+        self.route.setText(self.FSettings.Settings.get_setting(self.selected, 'router'))
+        self.subnet.setText(self.FSettings.Settings.get_setting(self.selected, 'subnet'))
+        self.broadcast.setText(self.FSettings.Settings.get_setting(self.selected, 'broadcast'))
+        self.dns.setText(self.FSettings.Settings.get_setting(self.selected, 'router'))
+        self.savesettingsDHCP()
 
     def AreaWidgetLoader(self,DockInfo):
         if hasattr(self,'dockList'):
             for dock in self.dockList: dock.close()
         self.AllDockArea = {}
-        if self.FSettings.Settings.get_setting('dockarea','advanced',format=bool):
+        if self.FSettings.Settings.get_setting('dockarea', 'advanced',format=bool):
             self.dockList = []
             for key in DockInfo.keys():
                 if DockInfo[key]['active']:
@@ -631,9 +632,9 @@ class PickleSettings(QtGui.QVBoxLayout):
                     self.dock.setAllowedAreas(QtCore.Qt.AllDockWidgetAreas)
                     self.dock.setFeatures(QtGui.QDockWidget.DockWidgetMovable | QtGui.QDockWidget.DockWidgetFloatable)
                     self.Tab_Dock.addDockWidget(QtCore.Qt.LeftDockWidgetArea, self.dock)
-                    self.dockList.insert(0,self.dock)
+                    self.dockList.insert(0, self.dock)
             if len(self.dockList) > 1:
-                for index in range(1, len(self.dockList) - 1):
+                for index in range(1 , len(self.dockList) - 1):
                     if self.dockList[index].objectName() != 'HTTP-Requests':
                         self.Tab_Dock.tabifyDockWidget(self.dockList[index],
                             self.dockList[index + 1])
@@ -678,41 +679,42 @@ class PickleSettings(QtGui.QVBoxLayout):
         if self.CB_ActiveMode.isChecked():
             self.AreaWidgetLoader(self.dockInfo)
             self.checkDockArea.emit(self.AllDockArea)
-            if hasattr(self.Tab_Dock,'form_widget'):
+            if hasattr(self.Tab_Dock, 'form_widget'):
                 if hasattr(self.Tab_Dock.form_widget,'Apthreads'):
                     if self.Tab_Dock.form_widget.Apthreads['RougeAP'] != []:
                         for dock in self.Tab_Dock.form_widget.dockAreaList.keys():
                             self.Tab_Dock.form_widget.dockAreaList[dock].RunThread()
         else:
             if hasattr(self,'dockList'):
-                for dock in self.dockList: dock.close()
+                for dock in self.dockList:
+                    dock.close()
 
 
     def setdefaultSettings(self):
         self.dhcpClassIP.setCurrentIndex(self.classtypes.index('Class-A-Address'))
-        self.leaseTime_def.setText(self.FSettings.Settings.get_setting('dhcpdefault','leasetimeDef'))
-        self.leaseTime_Max.setText(self.FSettings.Settings.get_setting('dhcpdefault','leasetimeMax'))
-        self.netmask.setText(self.FSettings.Settings.get_setting('dhcpdefault','netmask'))
-        self.range_dhcp.setText(self.FSettings.Settings.get_setting('dhcpdefault','range'))
-        self.route.setText(self.FSettings.Settings.get_setting('dhcpdefault','router'))
-        self.subnet.setText(self.FSettings.Settings.get_setting('dhcpdefault','subnet'))
-        self.broadcast.setText(self.FSettings.Settings.get_setting('dhcpdefault','broadcast'))
-        self.dns.setText(self.FSettings.Settings.get_setting('dhcpdefault','router'))
+        self.leaseTime_def.setText(self.FSettings.Settings.get_setting('dhcpdefault', 'leasetimeDef'))
+        self.leaseTime_Max.setText(self.FSettings.Settings.get_setting('dhcpdefault', 'leasetimeMax'))
+        self.netmask.setText(self.FSettings.Settings.get_setting('dhcpdefault', 'netmask'))
+        self.range_dhcp.setText(self.FSettings.Settings.get_setting('dhcpdefault', 'range'))
+        self.route.setText(self.FSettings.Settings.get_setting('dhcpdefault', 'router'))
+        self.subnet.setText(self.FSettings.Settings.get_setting('dhcpdefault', 'subnet'))
+        self.broadcast.setText(self.FSettings.Settings.get_setting('dhcpdefault', 'broadcast'))
+        self.dns.setText(self.FSettings.Settings.get_setting('dhcpdefault', 'router'))
         self.option.setText("")
 
     def writeDhcpConf(self):
         dhcpFile = open(str(C.DHCPCONF_PATH), 'w')
-        leaseTimeDefault = self.FSettings.Settings.get_setting('dhcp','leasetimeDef')
-        leaseTimeMax = self.FSettings.Settings.get_setting('dhcp','leasetimeMax')
-        networkNetmask = self.FSettings.Settings.get_setting('dhcp','netmask')
-        fullRange = self.FSettings.Settings.get_setting('dhcp','range')
-        networkRouterAddr = self.FSettings.Settings.get_setting('dhcp','router')
-        networkAddr = self.FSettings.Settings.get_setting('dhcp','subnet')
-        networkBroadcastAddr = self.FSettings.Settings.get_setting('dhcp','broadcast')
+        leaseTimeDefault = self.FSettings.Settings.get_setting('dhcp', 'leasetimeDef')
+        leaseTimeMax = self.FSettings.Settings.get_setting('dhcp', 'leasetimeMax')
+        networkNetmask = self.FSettings.Settings.get_setting('dhcp', 'netmask')
+        fullRange = self.FSettings.Settings.get_setting('dhcp', 'range')
+        networkRouterAddr = self.FSettings.Settings.get_setting('dhcp', 'router')
+        networkAddr = self.FSettings.Settings.get_setting('dhcp', 'subnet')
+        networkBroadcastAddr = self.FSettings.Settings.get_setting('dhcp', 'broadcast')
         lowerRange = str(fullRange).split('/')[0]
         upperRange = str(fullRange).split('/')[1]
-        dnsAddr = self.FSettings.Settings.get_setting('dhcp','dns')
-        dhcpOption = self.FSettings.Settings.get_setting('dhcp','option')
+        dnsAddr = self.FSettings.Settings.get_setting('dhcp', 'dns')
+        dhcpOption = self.FSettings.Settings.get_setting('dhcp', 'option')
         confSkeleton = """
 default-lease-time %s;
 max-lease-time %s;
@@ -734,10 +736,9 @@ subnet %s netmask %s {
         dhcpFile.close()
 
     def savesettingsDHCP(self):
-        self.all_geteway_check = []
+        self.all_gateway_check = []
         for types in self.classtypes:
-            if not 'Class-Custom-Address' in types:
-                self.all_geteway_check.append(self.FSettings.Settings.get_by_index_key(5, types))
+            self.all_gateway_check.append(self.FSettings.Settings.get_by_index_key(5, types))
         self.FSettings.Settings.set_setting('dhcp','classtype', str(self.dhcpClassIP.currentText()).split('-')[1])
         self.FSettings.Settings.set_setting('dhcp','leasetimeDef', str(self.leaseTime_def.text()))
         self.FSettings.Settings.set_setting('dhcp','leasetimeMax', str(self.leaseTime_Max.text()))
@@ -748,11 +749,11 @@ subnet %s netmask %s {
         self.FSettings.Settings.set_setting('dhcp','broadcast', str(self.broadcast.text()))
         self.FSettings.Settings.set_setting('dhcp','dns', str(self.dns.text()))
         self.FSettings.Settings.set_setting('dhcp','option', str(self.option.text()))
-        if not str(self.route.text()) in self.all_geteway_check:
+        if not str(self.route.text()) in self.all_gateway_check:
             self.FSettings.Settings.set_setting('dhcp', 'classtype', 'Custom')
         self.btnSave.setEnabled(False)
         self.writeDhcpConf()
-        self.sendMensage.emit('settings DHCP saved with success...')
+        #self.sendMensage.emit('settings DHCP saved with success...')
         self.btnSave.setEnabled(True)
 
     def getPickleSettings(self):
