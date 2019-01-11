@@ -1,12 +1,13 @@
-Twisted
-scapy
+pcapy==0.11.4
+scapy==2.4.0
+scapy-http==1.8.2
+Twisted==18.9.0
 bs4
 netaddr
 config
 dnspython
 isc_dhcp_leases
 netifaces
-pcapy
 NetfilterQueue
 configobj
 libarchive-c==2.1
@@ -15,5 +16,4 @@ pefile
 capstone
 hyperframe
 h2
-scapy_http
 service_identity

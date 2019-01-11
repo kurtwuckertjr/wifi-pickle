@@ -20,13 +20,6 @@ except ImportError as e:
     exit(1)
 
 try:
-    from core.utility.application import ApplicationLoop
-    print("Wifi-Pickle ApplicationLoop classes import OK.")
-except ImportError as e:
-    print("Import failed on ApplicationLoop.")
-    exit(1)
-
-try:
     from core.loaders.checker.networkmanager import CLI_NetworkManager, UI_NetworkManager
     print("Wifi-Pickle core.loaders.checker.networkmanager, CLI_NetworkManager, UI_NetworkManager classes import OK.")
 except ImportError as e:

@@ -32,7 +32,7 @@ class ApplicationLoop(QtGui.QApplication):
         self._memory.setKey(self.key)
         self.setApplicationName(self.key)
         self.setApplicationVersion(version)
-        self.setOrganizationName('P0cL4bs Team')
+        self.setOrganizationName('GoVanguard')
         self.setWindowIcon(QtGui.QIcon('icons/icon.ico'))
         self.setAppQTDesigner(self.style().objectName())
         if self._memory.attach():
