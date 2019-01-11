@@ -18,17 +18,3 @@ try:
 except ImportError as e:
     print("Import failed on core.loaders.checker.depedences, check_dep_pickle.")
     exit(1)
-
-try:
-    from core.loaders.checker.networkmanager import CLI_NetworkManager, UI_NetworkManager
-    print("Wifi-Pickle core.loaders.checker.networkmanager, CLI_NetworkManager, UI_NetworkManager classes import OK.")
-except ImportError as e:
-    print("Import failed on core.loaders.checker.networkmanager, CLI_NetworkManager, UI_NetworkManager.")
-    exit(1)
-
-try:
-    from core.main import Initialize
-    print("Wifi-Pickle core.main, Initialize classes import OK.")
-except ImportError as e:
-    print("Import failed on core.main, Initialize.")
-    exit(1)
