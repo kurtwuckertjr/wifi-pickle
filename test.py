@@ -6,12 +6,36 @@ except ImportError as e:
     exit(1)
 
 try:
-    from core.loaders.checker.depedences import check_dep_pickle
-    from core.utility.application import ApplicationLoop
-    from core.main import Initialize
-    from core.loaders.checker.networkmanager import CLI_NetworkManager, UI_NetworkManager
-    from core.utility.collection import SettingsINI
-    print("Wifi-Pickle classes import OK.")
+    import core.utility.constants as C
+    print("Wifi-Pickle core.utility.constants, C classes import OK.")
 except ImportError as e:
-    print("Import failed. One or more modules failed to import correctly.")
+    print("Import failed on core.utility.constants, C.")
+    exit(1)
+
+try:
+    from core.loaders.checker.depedences import check_dep_pickle
+    print("Wifi-Pickle core.loaders.checker.depedences, check_dep_pickle classes import OK.")
+except ImportError as e:
+    print("Import failed on core.loaders.checker.depedences, check_dep_pickle.")
+    exit(1)
+
+try:
+    from core.utility.application import ApplicationLoop
+    print("Wifi-Pickle ApplicationLoop classes import OK.")
+except ImportError as e:
+    print("Import failed on ApplicationLoop.")
+    exit(1)
+
+try:
+    from core.loaders.checker.networkmanager import CLI_NetworkManager, UI_NetworkManager
+    print("Wifi-Pickle core.loaders.checker.networkmanager, CLI_NetworkManager, UI_NetworkManager classes import OK.")
+except ImportError as e:
+    print("Import failed on core.loaders.checker.networkmanager, CLI_NetworkManager, UI_NetworkManager.")
+    exit(1)
+
+try:
+    from core.main import Initialize
+    print("Wifi-Pickle core.main, Initialize classes import OK.")
+except ImportError as e:
+    print("Import failed on core.main, Initialize.")
     exit(1)
