@@ -1,5 +1,12 @@
 #!/bin/bash
 # Setup Python deps
-sudo pip3.6 install mitmproxy==4.0.4 emoji netaddr
-sudo pip3.6 install -r requirements.txt
-sudo pip3.6 install service_identity --upgrade
+testForPip=`pip --version`
+if [[ $testForPip == *"3.6"* ]]; then
+    pipBin='pip'
+else
+    pipBin='pip3.6'
+fi
+
+sudo $pipBin install mitmproxy==4.0.4 emoji netaddr
+sudo $pipBin install -r requirements.txt
+sudo $pipBin install service_identity --upgrade
