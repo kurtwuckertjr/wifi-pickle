@@ -7,6 +7,6 @@ else
     pipBin='pip3.6'
 fi
 
-sudo $pipBin install mitmproxy==4.0.4 emoji netaddr
-sudo $pipBin install -r requirements.txt
-sudo $pipBin install service_identity --upgrade
+$pipBin install -r requirements.txt
+$pipBin install mitmproxy==4.0.4 emoji netaddr
+$pipBin install service_identity --upgrade
