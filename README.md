@@ -3,6 +3,7 @@ WiFi-Pickle (https://govanguard.io)
 [![Build Status](https://travis-ci.com/GoVanguard/wifi-pickle.svg?branch=master)](https://travis-ci.com/GoVanguard/wifi-pickle)
 [![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/wifi-pickle/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/GoVanguard/wifi-pickle?targetFile=requirements.txt)
 [![Maintainability](https://api.codeclimate.com/v1/badges/260fbce0dd2d3d2ea216/maintainability)](https://codeclimate.com/github/GoVanguard/wifi-pickle/maintainability)
+[![Analytics](https://ga-beacon-gvit.appspot.com/UA-126307374-3/wifi-pickle/readme)](https://github.com/GoVanguard/wifi-pickle)
 
 ## Authors:
 Shane Scott
