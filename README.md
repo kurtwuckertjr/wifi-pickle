@@ -1,4 +1,4 @@
-WiFi-Pickle (https://govanguard.io)
+WiFi-Pickle (https://govanguard.com)
 ==
 [![Build Status](https://travis-ci.com/GoVanguard/wifi-pickle.svg?branch=master)](https://travis-ci.com/GoVanguard/wifi-pickle)
 [![Known Vulnerabilities](https://snyk.io/test/github/GoVanguard/wifi-pickle/badge.svg?targetFile=requirements.txt)](https://snyk.io/test/github/GoVanguard/wifi-pickle?targetFile=requirements.txt)
