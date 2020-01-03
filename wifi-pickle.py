@@ -3,7 +3,7 @@ from logging import getLogger,ERROR
 getLogger('scapy.runtime').setLevel(ERROR)
 
 """
-Author : Shane W. Scott - sscott@gvit.com GoVanguard Inc.
+Author : Shane W. Scott - sscott@govanguard.com GoVanguard Inc.
 Licence : GPL v3
 
 Description:
